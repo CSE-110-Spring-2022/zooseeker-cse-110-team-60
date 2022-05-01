@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Locale;
 
 @Entity(tableName = "exhibit_list_items")
 public class ExhibitItem {
@@ -40,23 +41,27 @@ public class ExhibitItem {
 
     @Override public String toString() {
         return "ExhibitListItem{" + "id=" + id + ", kind=" + kind + ", name=" +
-               name + "}, tags=[" + tags + "], added=" + added + "}";
+                name + "}, tags=[" + tags + "], added=" + added + "}";
     }
 
     public static List<ExhibitItem> loadJSON(Context context, String path) {
         List<ExhibitItem> exhibitItems = new ArrayList<>();
         List<VertexInfo> vertexInfos   =
                 VertexInfo.loadVertexInfoJSON(context, path);
-        for (ListIterator<VertexInfo> iterator = vertexInfos.listIterator(); iterator.hasNext();) {
-            VertexInfo item = iterator.next();
-            ExhibitItem exhibitItem = new ExhibitItem(item.id, item.kind,
-                                                      item.name, String.join(
-                                                              ", ", item
-                                                              .tags));
-            exhibitItems.add(exhibitItem);
+        for (VertexInfo item : vertexInfos) {
+            if (item.kind == VertexInfo.Kind.EXHIBIT) {
+                ExhibitItem exhibitItem =
+                        new ExhibitItem(item.id, item.kind, item.name,
+                                String.join(", ", item.tags));
+                exhibitItems.add(exhibitItem);
+            }
+            else {
+                continue;
+            }
         }
         return exhibitItems;
     }
+
     public static List<ExhibitItem> getSearchItems(Context context,
                                                    String path, String search) {
         List<ExhibitItem> searchItems = new ArrayList<>();
