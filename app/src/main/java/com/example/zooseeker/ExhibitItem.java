@@ -57,4 +57,18 @@ public class ExhibitItem {
         }
         return exhibitItems;
     }
+    public static List<ExhibitItem> getSearchItems(Context context,
+                                                   String path, String search) {
+        List<ExhibitItem> searchItems = new ArrayList<>();
+        List<ExhibitItem> exhibitItems = loadJSON(context, path);
+        for (ExhibitItem item : exhibitItems) {
+            if ((item.name.toLowerCase()).contains(search.toLowerCase())) {
+                searchItems.add(item);
+            }
+            else {
+                continue;
+            }
+        }
+        return searchItems;
+    }
 }
