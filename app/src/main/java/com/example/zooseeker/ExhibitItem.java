@@ -62,11 +62,12 @@ public class ExhibitItem {
         List<ExhibitItem> searchItems = new ArrayList<>();
         List<ExhibitItem> exhibitItems = loadJSON(context, path);
         for (ExhibitItem item : exhibitItems) {
-            if ((item.name.toLowerCase()).contains(search.toLowerCase())) {
-                searchItems.add(item);
-            }
-            else {
-                continue;
+            String[] nameA = item.name.split(" ");
+            for (String word : nameA) {
+                word = word.toLowerCase();
+                if (word.indexOf(search) == 0) {
+                    searchItems.add(item);
+                }
             }
         }
         return searchItems;

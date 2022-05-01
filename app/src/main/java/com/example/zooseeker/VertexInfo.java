@@ -30,11 +30,11 @@ public class VertexInfo {
 
     @Override public String toString() {
         return "VertexInfo{" + "id=" + id + ", kind=" + kind + ", name=" +
-               name + ", tags=[" + tags + "]}";
+                name + ", tags=[" + tags + "]}";
     }
 
     public static List<VertexInfo> loadVertexInfoJSON(Context context,
-                                                  String path) {
+                                                      String path) {
         try {
             InputStream input  = context.getAssets().open(path);
             Reader      reader = new InputStreamReader(input);
@@ -50,4 +50,3 @@ public class VertexInfo {
         }
     }
 }
-
