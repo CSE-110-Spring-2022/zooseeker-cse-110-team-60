@@ -2,4 +2,7 @@
     <string name="app_name">ZooSeeker</string>
     <string name="search_hint">Search for an exhibit</string>
     <string name="get_directions">Get Directions</string>
+    <string name="directions">Directions</string>
+    <string name="start">Start</string>
+    <string name="goal">Goal</string>
 </resources>
