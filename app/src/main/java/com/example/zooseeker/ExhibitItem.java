@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Locale;
 
 @Entity(tableName = "exhibit_list_items")
 public class ExhibitItem {
@@ -38,23 +39,40 @@ public class ExhibitItem {
         this.added = false;
     }
 
-    @Override public String toString() {
+    @NonNull @Override public String toString() {
         return "ExhibitListItem{" + "id=" + id + ", kind=" + kind + ", name=" +
                name + "}, tags=[" + tags + "], added=" + added + "}";
     }
 
     public static List<ExhibitItem> loadJSON(Context context, String path) {
-        List<ExhibitItem> exhibitItems = new ArrayList<>();
-        List<VertexInfo> vertexInfos   =
-                VertexInfo.loadVertexInfoJSON(context, path);
-        for (ListIterator<VertexInfo> iterator = vertexInfos.listIterator(); iterator.hasNext();) {
-            VertexInfo item = iterator.next();
-            ExhibitItem exhibitItem = new ExhibitItem(item.id, item.kind,
-                                                      item.name, String.join(
-                                                              ", ", item
-                                                              .tags));
-            exhibitItems.add(exhibitItem);
+            List<ExhibitItem> exhibitItems = new ArrayList<>();
+            List<VertexInfo> vertexInfos =
+                    VertexInfo.loadVertexInfoJSON(context, path);
+            for (VertexInfo item : vertexInfos) {
+                if (item.kind == VertexInfo.Kind.EXHIBIT) {
+                    ExhibitItem exhibitItem =
+                            new ExhibitItem(item.id, item.kind, item.name,
+                                            String.join(", ", item.tags));
+                    exhibitItems.add(exhibitItem);
+                }
+            }
+            return exhibitItems;
+    }
+
+    public static List<ExhibitItem> getSearchItems(Context context,
+                                                   String path, String search) {
+        List<ExhibitItem> searchItems = new ArrayList<>();
+        List<ExhibitItem> exhibitItems = loadJSON(context, path);
+        search = search.toLowerCase();
+        for (ExhibitItem item : exhibitItems) {
+            String[] nameA = item.name.split(" ");
+            for (String word : nameA) {
+                word = word.toLowerCase();
+                if (word.indexOf(search) == 0) {
+                    searchItems.add(item);
+                }
+            }
         }
-        return exhibitItems;
+        return searchItems;
     }
 }
