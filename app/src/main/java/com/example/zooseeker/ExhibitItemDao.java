@@ -25,8 +25,6 @@ public interface ExhibitItemDao {
 
     @Update
     int update(ExhibitItem exhibitItem);
-
-
 }
 
 
