@@ -20,12 +20,13 @@ public interface ExhibitItemDao {
     @Query("SELECT * FROM `exhibit_list_items` ORDER BY `name`")
     List<ExhibitItem> getAll();
 
+    @Query("SELECT * FROM `exhibit_list_items` ORDER BY `name`")
+    LiveData<List<ExhibitItem>> getAllLive();
+
     @Update
     int update(ExhibitItem exhibitItem);
 
 
-    @Query("SELECT * FROM `exhibit_list_items` ORDER BY `name`")
-    LiveData<List<ExhibitItem>> getAllLive();
 }
 
 
