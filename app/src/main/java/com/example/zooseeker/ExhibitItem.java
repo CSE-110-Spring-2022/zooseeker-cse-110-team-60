@@ -29,6 +29,7 @@ public class ExhibitItem {
     @NonNull public             String          name;
     @NonNull public String tags;
     public          boolean  added;
+    public static int count = 0;
 
     public ExhibitItem(@NonNull String id, @NonNull VertexInfo.Kind kind,
                        @NonNull String name, @NonNull String tags) {

@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -38,7 +39,6 @@ public class MainActivity extends AppCompatActivity {
         adapter.setOnCheckBoxClickedHandler(viewModel::toggleAdded);
         viewModel.getExhibitItems().observe(this,
                                             adapter::setExhibitListItems);
-
         recyclerView = findViewById(R.id.rvExhibits);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);

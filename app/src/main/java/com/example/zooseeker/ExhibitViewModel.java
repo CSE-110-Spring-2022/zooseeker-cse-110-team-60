@@ -2,6 +2,8 @@ package com.example.zooseeker;
 
 import android.app.Application;
 import android.content.Context;
+import android.view.View;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -34,5 +36,13 @@ public class ExhibitViewModel extends AndroidViewModel {
     public void toggleAdded(ExhibitItem exhibitItem) {
         exhibitItem.added = !exhibitItem.added;
         exhibitItemDao.update(exhibitItem);
+        /*if (exhibitItem.added) {
+            ExhibitItem.count++;
+        }
+        else {
+            ExhibitItem.count--;
+        }
+        TextView counter = MainActivity.findViewById(R.id.counter);
+        counter.setText("Number of Planned Exhibits" + ExhibitItem.count);*/
     }
 }
