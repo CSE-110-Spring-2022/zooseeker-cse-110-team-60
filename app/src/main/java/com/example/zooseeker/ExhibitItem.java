@@ -4,6 +4,7 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverter;
 import androidx.room.TypeConverters;
@@ -27,11 +28,10 @@ public class ExhibitItem {
     @PrimaryKey @NonNull public String          id;
     @NonNull public             VertexInfo.Kind kind;
     @NonNull public             String          name;
-    @NonNull public String tags;
-    public          boolean  added;
+    @NonNull public             String          tags;
+             public             Boolean         added;
 
-    public ExhibitItem(@NonNull String id, @NonNull VertexInfo.Kind kind,
-                       @NonNull String name, @NonNull String tags) {
+    public ExhibitItem(@NonNull String id, @NonNull VertexInfo.Kind kind, @NonNull String name, @NonNull String tags) {
         this.id = id;
         this.kind = kind;
         this.name = name;
@@ -51,8 +51,7 @@ public class ExhibitItem {
         for (VertexInfo item : vertexInfos) {
             if (item.kind == VertexInfo.Kind.EXHIBIT) {
                 ExhibitItem exhibitItem =
-                        new ExhibitItem(item.id, item.kind, item.name,
-                                String.join(", ", item.tags));
+                        new ExhibitItem(item.id, item.kind, item.name, String.join(",", item.tags));
                 exhibitItems.add(exhibitItem);
             }
             else {
@@ -66,6 +65,7 @@ public class ExhibitItem {
                                                    String path, String search) {
         List<ExhibitItem> searchItems = new ArrayList<>();
         List<ExhibitItem> exhibitItems = loadJSON(context, path);
+        search = search.toLowerCase();
         for (ExhibitItem item : exhibitItems) {
             String[] nameA = item.name.split(" ");
             for (String word : nameA) {

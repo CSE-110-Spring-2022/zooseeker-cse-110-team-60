@@ -47,6 +47,8 @@ public class ExhibitListAdapter extends RecyclerView.Adapter<ExhibitListAdapter.
         return exhibitItems.size();
     }
 
+    public List<ExhibitItem> getExhibitItems() {return exhibitItems;}
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         private ExhibitItem exhibitItem;
         private final TextView textView;
@@ -63,8 +65,8 @@ public class ExhibitListAdapter extends RecyclerView.Adapter<ExhibitListAdapter.
             });
         }
 
-        public ExhibitItem getExhibitItem() {
-            return exhibitItem;
+        public List<ExhibitItem> getExhibitItem() {
+            return exhibitItems;
         }
 
         public void setExhibitItem(ExhibitItem exhibitItem) {

@@ -34,6 +34,7 @@ android {
 }
 
 dependencies {
+    implementation 'com.google.ar.sceneform:filament-android:1.17.1'
     def gson_version = "2.9.0"
     def room_version = "2.4.2"
 
