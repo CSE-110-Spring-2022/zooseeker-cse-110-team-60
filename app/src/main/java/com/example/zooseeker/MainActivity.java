@@ -15,6 +15,9 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
     public  RecyclerView     recyclerView;
     private ExhibitViewModel     viewModel;
