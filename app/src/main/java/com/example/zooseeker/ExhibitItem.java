@@ -29,7 +29,6 @@ public class ExhibitItem {
     @NonNull public             String          name;
     @NonNull public String tags;
     public          boolean  added;
-    public static int count = 0;
 
     public ExhibitItem(@NonNull String id, @NonNull VertexInfo.Kind kind,
                        @NonNull String name, @NonNull String tags) {
@@ -60,7 +59,6 @@ public class ExhibitItem {
             return exhibitItems;
     }
 
-    // TODO
     public static List<ExhibitItem> getSearchItems(Context context,
                                                    String path, String search) {
         List<ExhibitItem> searchItems = new ArrayList<>();
