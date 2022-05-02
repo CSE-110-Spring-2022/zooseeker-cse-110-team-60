@@ -73,7 +73,7 @@ public class SearchTest {
     }
 
     @Test
-    public void testExhibitNotExist() {
+    public void testExhibitNotExist() { // 2nd Test
         ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
         scenario.moveToState(Lifecycle.State.CREATED);
         scenario.moveToState(Lifecycle.State.STARTED);
