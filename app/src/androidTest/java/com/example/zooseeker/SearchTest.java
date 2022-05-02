@@ -10,6 +10,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 
 
@@ -72,6 +73,29 @@ public class SearchTest {
     }
 
     @Test
+    public void testExhibitNotExist() {
+        ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
+        scenario.moveToState(Lifecycle.State.CREATED);
+        scenario.moveToState(Lifecycle.State.STARTED);
+        scenario.moveToState(Lifecycle.State.RESUMED);
+
+        scenario.onActivity(activity -> {
+            RecyclerView recyclerView = activity.recyclerView;
+            AutoCompleteTextView searchBar =
+                    activity.findViewById(R.id.searchBar);
+            Button searchButton = activity.findViewById(R.id.searchButton);
+
+            searchBar.setText("HELLO");
+            searchButton.performClick();
+
+            RecyclerView.ViewHolder firstVH = recyclerView.findViewHolderForAdapterPosition(0);
+            assertNull(firstVH);
+        });
+    }
+}
+
+/*
+@Test
     public void testExhibitExists() {
         ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
         scenario.moveToState(Lifecycle.State.CREATED);
@@ -80,16 +104,14 @@ public class SearchTest {
 
         scenario.onActivity(activity -> {
             RecyclerView recyclerView = activity.recyclerView;
-            RecyclerView.ViewHolder firstVH = recyclerView.findViewHolderForAdapterPosition(0);
-            assertNotNull(firstVH);
-
             AutoCompleteTextView searchBar =
                     activity.findViewById(R.id.searchBar);
             Button searchButton = activity.findViewById(R.id.searchButton);
 
             searchBar.setText("G");
             searchButton.performClick();
-            firstVH = recyclerView.findViewHolderForAdapterPosition(0);
+
+            RecyclerView.ViewHolder firstVH = recyclerView.findViewHolderForAdapterPosition(0);
             assertNotNull(firstVH);
 
 //            TextView exhibit =
@@ -97,17 +119,4 @@ public class SearchTest {
 //            assertEquals("Gorillas", exhibit.getText().toString());
         });
     }
-
-    @Test public void testExhibitNotExist() {
-        ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
-        scenario.moveToState(Lifecycle.State.CREATED);
-        scenario.moveToState(Lifecycle.State.STARTED);
-        scenario.moveToState(Lifecycle.State.RESUMED);
-
-        scenario.onActivity(activity -> {
-            RecyclerView recyclerView = activity.recyclerView;
-            RecyclerView.ViewHolder firstVH = recyclerView.findViewHolderForAdapterPosition(0);
-            assertNotNull(firstVH);
-        });
-    }
-}
+ */
