@@ -36,11 +36,6 @@ public class ExhibitDatabaseTest {
     }
 
     @Test
-    public void testInsert() {
-
-    }
-
-    @Test
     public void testGet() {
         String id = "gorillas";
         ExhibitItem item = dao.get(id);
