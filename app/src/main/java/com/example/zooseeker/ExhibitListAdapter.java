@@ -41,11 +41,15 @@ public class ExhibitListAdapter extends RecyclerView.Adapter<ExhibitListAdapter.
         holder.setExhibitItem(exhibitItems.get(position));
     }
 
-
     @Override
     public int getItemCount() {
         return exhibitItems.size();
     }
+
+//    @Override
+//    public long getItemId(int position) {
+//        return Long.parseLong(exhibitItems.get(position).id);
+//    }
 
     public List<ExhibitItem> getExhibitItems() {return exhibitItems;}
 
