@@ -59,6 +59,7 @@ public class ExhibitItem {
             return exhibitItems;
     }
 
+    // TODO
     public static List<ExhibitItem> getSearchItems(Context context,
                                                    String path, String search) {
         List<ExhibitItem> searchItems = new ArrayList<>();

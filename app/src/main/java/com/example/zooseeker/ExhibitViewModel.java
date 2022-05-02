@@ -33,6 +33,6 @@ public class ExhibitViewModel extends AndroidViewModel {
 
     public void toggleAdded(ExhibitItem exhibitItem) {
         exhibitItem.added = !exhibitItem.added;
-        exhibitItemDao.update(exhibitItem); // TODO
+        exhibitItemDao.update(exhibitItem);
     }
 }

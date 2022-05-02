@@ -45,7 +45,7 @@ public class ExhibitDatabaseTest {
         String id = "gorillas";
         ExhibitItem item = dao.get(id);
         assertEquals("gorillas", item.id);
-        // assertEquals("exhibit", item.kind); TODO
+        assertEquals(VertexInfo.Kind.EXHIBIT, item.kind);
         assertEquals("Gorillas", item.name);
         assertEquals("gorillas, monkey, ape, mammal", item.tags);
         assertFalse(item.added);
