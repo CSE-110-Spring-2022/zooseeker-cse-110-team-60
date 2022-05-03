@@ -18,19 +18,18 @@ public class VertexInfo {
     public static enum Kind {
         // The SerializedName annotation tells GSON how to convert
         // from the strings in our JSON to this Enum.
-        @SerializedName("gate") GATE,
-        @SerializedName("exhibit") EXHIBIT,
+        @SerializedName("gate") GATE, @SerializedName("exhibit") EXHIBIT,
         @SerializedName("intersection") INTERSECTION
     }
 
-    public String id;
-    public Kind kind;
-    public String name;
+    public String       id;
+    public Kind         kind;
+    public String       name;
     public List<String> tags;
 
     @Override public String toString() {
         return "VertexInfo{" + "id=" + id + ", kind=" + kind + ", name=" +
-                name + ", tags=[" + tags + "]}";
+               name + ", tags=[" + tags + "]}";
     }
 
     public static List<VertexInfo> loadVertexInfoJSON(Context context,
@@ -40,11 +39,10 @@ public class VertexInfo {
             Reader      reader = new InputStreamReader(input);
 
             Gson gson = new Gson();
-            Type type    = new TypeToken<List<VertexInfo>>() {}.getType();
+            Type type = new TypeToken<List<VertexInfo>>() {}.getType();
 
             return gson.fromJson(reader, type);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
             return Collections.emptyList();
         }

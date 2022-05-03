@@ -13,7 +13,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class ExhibitListAdapter extends RecyclerView.Adapter<ExhibitListAdapter.ViewHolder> {
+public class ExhibitListAdapter
+        extends RecyclerView.Adapter<ExhibitListAdapter.ViewHolder> {
     private List<ExhibitItem>     exhibitItems = Collections.emptyList();
     private Consumer<ExhibitItem> onCheckBoxClicked;
 
@@ -23,17 +24,18 @@ public class ExhibitListAdapter extends RecyclerView.Adapter<ExhibitListAdapter.
         notifyDataSetChanged();
     }
 
-    public void setOnCheckBoxClickedHandler(Consumer<ExhibitItem> onCheckBoxClicked) {
+    public void setOnCheckBoxClickedHandler(
+            Consumer<ExhibitItem> onCheckBoxClicked) {
         this.onCheckBoxClicked = onCheckBoxClicked;
     }
 
-    @NonNull
-    @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-       View view = LayoutInflater
-               .from(parent.getContext())
-               .inflate(R.layout.exhibit_item, parent, false);
-       return new ViewHolder(view);
+    @NonNull @Override
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent,
+                                         int viewType) {
+        View view = LayoutInflater.from(parent.getContext())
+                                  .inflate(R.layout.exhibit_item, parent,
+                                           false);
+        return new ViewHolder(view);
     }
 
     @Override
@@ -42,15 +44,14 @@ public class ExhibitListAdapter extends RecyclerView.Adapter<ExhibitListAdapter.
     }
 
 
-    @Override
-    public int getItemCount() {
+    @Override public int getItemCount() {
         return exhibitItems.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        private ExhibitItem exhibitItem;
-        private final TextView textView;
-        private final CheckBox checkbox;
+        private       ExhibitItem exhibitItem;
+        private final TextView    textView;
+        private final CheckBox    checkbox;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
