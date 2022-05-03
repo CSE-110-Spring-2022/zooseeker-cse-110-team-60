@@ -5,9 +5,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -15,29 +13,22 @@ import android.widget.Button;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    public  RecyclerView     recyclerView;
+    public  RecyclerView         recyclerView;
     private ExhibitViewModel     viewModel;
-    private ExhibitListAdapter adapter;
+    private ExhibitListAdapter   adapter;
     private AutoCompleteTextView searchBar;
     private Button               searchBtn;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        /*List<ExhibitItem> list = ExhibitItem.loadJSON(this,
-                                                       "sample_node_info" +
-                                                            ".JSON");
-        Log.d("MainActivity", list.toString()); */
 
         viewModel = new ViewModelProvider(this).get(ExhibitViewModel.class);
 
         adapter = new ExhibitListAdapter();
         adapter.setHasStableIds(true);
         adapter.setOnCheckBoxClickedHandler(viewModel::toggleAdded);
-        viewModel.getExhibitItems().observe(this,
-                                            adapter::setExhibitListItems);
+        viewModel.getExhibitItems().observe(this, adapter::setExhibitListItems);
 
         recyclerView = findViewById(R.id.rvExhibits);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -51,10 +42,12 @@ public class MainActivity extends AppCompatActivity {
 
     void searchClicked(View view) {
         String search = searchBar.getText().toString();
-        List<ExhibitItem> searchLists = ExhibitItem.getSearchItems(this,
-                                                                   "sample_node_info" +
-                                                                   ".JSON",
-                                                                   search);
+        if (search.equals("")) {
+            Utilities.showAlert(this, "Please enter a valid name!");
+            return;
+        }
+        List<ExhibitItem> searchLists = ExhibitItem
+                .getSearchItems(search);
         adapter.setExhibitListItems(searchLists);
         searchBar.setText("");
     }
