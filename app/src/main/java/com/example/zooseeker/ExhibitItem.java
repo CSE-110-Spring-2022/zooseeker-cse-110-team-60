@@ -6,7 +6,6 @@ import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity(tableName = "exhibit_list_items") public class ExhibitItem {
@@ -42,21 +41,5 @@ import java.util.List;
             }
         }
         return ExhibitList.allExhibits;
-    }
-
-    // TODO
-    public static List<ExhibitItem> getSearchItems(String search) {
-        List<ExhibitItem> searchItems  = new ArrayList<>();
-        search = search.toLowerCase();
-        for (ExhibitItem item : ExhibitList.allExhibits) {
-            String[] nameA = item.name.split(" ");
-            for (String word : nameA) {
-                word = word.toLowerCase();
-                if (word.indexOf(search) == 0) {
-                    searchItems.add(item);
-                }
-            }
-        }
-        return searchItems;
     }
 }

@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -17,10 +18,14 @@ public class MainActivity extends AppCompatActivity {
     private ExhibitViewModel     viewModel;
     private ExhibitListAdapter   adapter;
     private AutoCompleteTextView searchBar;
-    private Button               searchBtn;
+    private Button   searchBtn;
+    private TextView numPlanned;
+
+    static MainActivity main;
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        main = this;
         setContentView(R.layout.activity_main);
 
         viewModel = new ViewModelProvider(this).get(ExhibitViewModel.class);
@@ -34,21 +39,30 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
-        this.searchBar = this.findViewById(R.id.searchBar);
-        this.searchBtn = this.findViewById(R.id.searchButton);
+        searchBar = findViewById(R.id.searchBar);
+        searchBtn = findViewById(R.id.searchButton);
+        numPlanned = findViewById(R.id.counter);
 
         searchBtn.setOnClickListener(this::searchClicked);
+        numPlanned.setText("Number of Planned Exhibits: " + ExhibitList.getNumChecked());
     }
 
     void searchClicked(View view) {
         String search = searchBar.getText().toString();
         if (search.equals("")) {
-            Utilities.showAlert(this, "Please enter a valid name!");
+            Utilities.showAlert(this, "Please enter a valid exhibit!");
             return;
         }
-        List<ExhibitItem> searchLists = ExhibitItem
-                .getSearchItems(search);
+        List<ExhibitItem> searchLists = ExhibitList.getSearchItems(search);
         adapter.setExhibitListItems(searchLists);
         searchBar.setText("");
+    }
+
+    static MainActivity getInstance() {
+        return main;
+    }
+
+    List<ExhibitItem> getExhibits() {
+        return viewModel.getAllExhibits();
     }
 }
