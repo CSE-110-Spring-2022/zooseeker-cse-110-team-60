@@ -17,6 +17,13 @@ public class ExhibitList {
         return getCheckedExhibits().size();
     }
 
+    public static void clearCheckedExhibits() {
+        List<ExhibitItem> checkedExhibits = getCheckedExhibits();
+        for (ExhibitItem item : checkedExhibits) {
+            item.added = false;
+        }
+    }
+
     public static List<ExhibitItem> getSearchItems(String search) {
         List<ExhibitItem> searchItems  = new ArrayList<>();
         search = search.toLowerCase();
