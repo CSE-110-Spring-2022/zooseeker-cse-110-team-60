@@ -1,10 +1,11 @@
-package com.example.zooseeker; //
+package com.example.zooseeker;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
@@ -14,14 +15,15 @@ import android.widget.TextView;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    public  RecyclerView         recyclerView;
-    private ExhibitViewModel     viewModel;
-    private ExhibitListAdapter   adapter;
-    private AutoCompleteTextView searchBar;
-    private Button   searchBtn;
-    private TextView numPlanned;
+    public  RecyclerView       recyclerView;
+    private ExhibitViewModel   viewModel;
+    private ExhibitListAdapter adapter;
 
-    static MainActivity main;
+    private AutoCompleteTextView searchBar;
+    private Button               searchBtn;
+    private TextView             numPlanned;
+
+    @SuppressLint("StaticFieldLeak") static MainActivity main;
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,7 +46,8 @@ public class MainActivity extends AppCompatActivity {
         numPlanned = findViewById(R.id.counter);
 
         searchBtn.setOnClickListener(this::searchClicked);
-        numPlanned.setText("Number of Planned Exhibits: " + ExhibitList.getNumChecked());
+        numPlanned.setText(
+                "Number of Planned Exhibits: " + ExhibitList.getNumChecked());
     }
 
     void searchClicked(View view) {

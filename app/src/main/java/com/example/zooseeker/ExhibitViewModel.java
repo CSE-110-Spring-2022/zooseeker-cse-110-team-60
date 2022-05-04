@@ -1,4 +1,4 @@
-package com.example.zooseeker; //
+package com.example.zooseeker;
 
 import android.app.Application;
 import android.content.Context;
@@ -43,6 +43,7 @@ public class ExhibitViewModel extends AndroidViewModel {
 
         MainActivity main       = MainActivity.getInstance();
         TextView     numPlanned = main.findViewById(R.id.counter);
-        numPlanned.setText("Number of Planned Exhibits: " + ExhibitList.getNumChecked());
+        numPlanned.setText(
+                "Number of Planned Exhibits: " + ExhibitList.getNumChecked());
     }
 }

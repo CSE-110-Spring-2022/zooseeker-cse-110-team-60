@@ -1,4 +1,4 @@
-package com.example.zooseeker; //
+package com.example.zooseeker;
 
 import android.view.LayoutInflater;
 import android.view.View;
