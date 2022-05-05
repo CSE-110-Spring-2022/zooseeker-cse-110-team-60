@@ -1,4 +1,4 @@
-package com.example.zooseeker; //
+package com.example.zooseeker;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
@@ -13,8 +13,8 @@ public interface ExhibitItemDao {
     @Insert
     List<Long> insertAll(List<ExhibitItem> exhibitItemList);
 
-    @Query("SELECT * FROM `exhibit_list_items` WHERE `id`=:id") ExhibitItem get(
-            String id);
+    @Query("SELECT * FROM `exhibit_list_items` WHERE `id`=:id")
+    ExhibitItem get(String id);
 
     @Query("SELECT * FROM `exhibit_list_items` ORDER BY `name`")
     List<ExhibitItem> getAll();

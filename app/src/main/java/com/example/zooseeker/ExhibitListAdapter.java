@@ -1,4 +1,4 @@
-package com.example.zooseeker; //
+package com.example.zooseeker;
 
 import android.annotation.SuppressLint;
 import android.view.LayoutInflater;

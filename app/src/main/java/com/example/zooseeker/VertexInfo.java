@@ -1,4 +1,4 @@
-package com.example.zooseeker; //
+package com.example.zooseeker;
 
 import android.content.Context;
 
@@ -33,8 +33,7 @@ public class VertexInfo {
     @NonNull
     @Override
     public String toString() {
-        return "VertexInfo{" + "id=" + id + ", kind=" + kind + ", name=" + name + ", " +
-               "tags=[" + tags + "]}";
+        return "VertexInfo{" + "id=" + id + ", kind=" + kind + ", name=" + name + ", " + "tags=[" + tags + "]}";
     }
 
     public static List<VertexInfo> loadVertexInfoJSON(Context context, String path) {
