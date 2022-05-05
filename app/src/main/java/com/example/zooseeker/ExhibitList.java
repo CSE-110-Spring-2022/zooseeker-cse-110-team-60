@@ -2,13 +2,10 @@ package com.example.zooseeker;
 
 import android.annotation.SuppressLint;
 
-import android.annotation.SuppressLint;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class ExhibitList {
-    public static List<ExhibitItem> allExhibits = new ArrayList<>();
     @SuppressLint("StaticFieldLeak")
     private final static MainActivity main = MainActivity.getInstance();
 
@@ -31,20 +28,23 @@ public class ExhibitList {
     }
 
     public static List<ExhibitItem> getSearchItems(String search) {
+        List<ExhibitItem> allExhibits = getAllExhibits();
         List<ExhibitItem> searchItems = new ArrayList<>();
         search = search.toLowerCase();
-        searchByName(searchItems, search);
-        searchAutoComplete(searchItems, search);
-        searchByCategories(searchItems, search);
+        searchByName(allExhibits, searchItems, search);
+        searchAutoComplete(allExhibits, searchItems, search);
+        searchByCategories(allExhibits, searchItems, search);
         searchItems = removeDuplicate(searchItems);
         return searchItems;
     }
 
     // Current problem: should "arctic fox" return exhibit "The Arctic Foxes"?
-    private static void searchByName(List<ExhibitItem> searchItems, String search) {
-        for (ExhibitItem item : ExhibitList.allExhibits) {
+    private static void searchByName(List<ExhibitItem> allExhibits,
+                                     List<ExhibitItem> searchItems, String search) {
+        for (ExhibitItem item : allExhibits) {
             String name = item.name;
-            if (name.indexOf(search) == 0) {
+//            if (name.indexOf(search) == 0) {
+            if (name.contains(search)) { // updated according to Piazza @504
                 searchItems.add(item);
             }
         }
@@ -53,12 +53,14 @@ public class ExhibitList {
     // Current problem: should "th" return exhibit "The Arctic Foxes"?
     // should "ar" return exhibit "The Arctic Foxes"?
     // should "Foxes" return exhibit "The Arctic Foxes"?
-    private static void searchAutoComplete(List<ExhibitItem> searchItems, String search) {
-        for (ExhibitItem item : ExhibitList.allExhibits) {
+    private static void searchAutoComplete(List<ExhibitItem> allExhibits,
+                                           List<ExhibitItem> searchItems, String search) {
+        for (ExhibitItem item : allExhibits) {
             String[] nameA = item.name.split(" ");
             for (String word : nameA) {
                 word = word.toLowerCase();
-                if (word.indexOf(search) == 0) {
+//                if (word.indexOf(search) == 0) {
+                if (word.contains(search)) { // updated according to Piazza @504
                     searchItems.add(item);
                 }
             }
@@ -67,11 +69,13 @@ public class ExhibitList {
 
     // Current question: "g" returns both Gorillas and Alligators because
     // Alligators have a "gator" tag that begins with g
-    private static void searchByCategories(List<ExhibitItem> searchItems, String search) {
-        for (ExhibitItem item : ExhibitList.allExhibits) {
+    private static void searchByCategories(List<ExhibitItem> allExhibits,
+                                           List<ExhibitItem> searchItems, String search) {
+        for (ExhibitItem item : allExhibits) {
             String[] categories = item.tags.split(", ");
             for (String word : categories) {
-                if (word.indexOf(search) == 0) {
+//                if (word.indexOf(search) == 0) {
+                if (word.contains(search)) { // updated according to Piazza @504
                     searchItems.add(item);
                 }
             }
