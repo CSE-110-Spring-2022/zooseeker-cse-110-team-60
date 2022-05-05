@@ -62,12 +62,45 @@
         app:layout_constraintVertical_bias="1.0" />
 
     <Button
-        android:id="@+id/clearExhibitsBtn"
-        android:layout_width="wrap_content"
+        android:id="@+id/showCheckedBtn"
+        android:visibility="visible"
+        android:layout_width="60dp"
         android:layout_height="45dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:text="@string/clear_all"
+        android:text="@string/show"
+        android:paddingStart="0dp"
+        android:paddingEnd="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/getDirectionsButton"
+        app:layout_constraintEnd_toStartOf="@+id/clearExhibitsBtn"
+        app:layout_constraintLeft_toRightOf="@+id/counter"
+        app:layout_constraintTop_toBottomOf="@+id/rvExhibits"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:id="@+id/returnBtn"
+        android:visibility="invisible"
+        android:layout_width="60dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/back"
+        android:paddingStart="0dp"
+        android:paddingEnd="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/getDirectionsButton"
+        app:layout_constraintEnd_toStartOf="@+id/clearExhibitsBtn"
+        app:layout_constraintLeft_toRightOf="@+id/counter"
+        app:layout_constraintTop_toBottomOf="@+id/rvExhibits"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:id="@+id/clearExhibitsBtn"
+        android:layout_width="65dp"
+        android:layout_height="45dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/clear"
+        android:paddingStart="0dp"
+        android:paddingEnd="0dp"
         app:layout_constraintBottom_toTopOf="@+id/getDirectionsButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/counter"

@@ -1,5 +1,6 @@
 package com.example.zooseeker;
 
+import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
 import android.util.Log;
@@ -37,6 +38,7 @@ public class ExhibitViewModel extends AndroidViewModel {
         exhibitItems = exhibitItemDao.getAllLive();
     }
 
+    @SuppressLint("SetTextI18n")
     public void toggleAdded(ExhibitItem exhibitItem) {
         exhibitItem.added = !exhibitItem.added;
         exhibitItemDao.update(exhibitItem);
@@ -44,7 +46,7 @@ public class ExhibitViewModel extends AndroidViewModel {
         MainActivity main       = MainActivity.getInstance();
         TextView     numPlanned = main.findViewById(R.id.counter);
         numPlanned.setText(
-                "Number of Planned Exhibits: " + ExhibitList.getNumChecked());
+                "Planned " + ExhibitList.getNumChecked() + " Exhibit(s)");
     }
 
     public void uncheckList(ExhibitItem exhibitItem) {

@@ -23,6 +23,8 @@ public class MainActivity extends AppCompatActivity {
     private Button               searchBtn;
     private TextView             numPlanned;
     private Button clearBtn;
+    private Button showCheckedBtn;
+    private Button returnToSearchBtn;
 
     @SuppressLint("StaticFieldLeak") static MainActivity main;
 
@@ -46,11 +48,15 @@ public class MainActivity extends AppCompatActivity {
         searchBtn = findViewById(R.id.searchButton);
         numPlanned = findViewById(R.id.counter);
         clearBtn = findViewById(R.id.clearExhibitsBtn);
+        showCheckedBtn = findViewById(R.id.showCheckedBtn);
+        returnToSearchBtn = findViewById(R.id.returnBtn);
 
         setNumPlanned();
 
         searchBtn.setOnClickListener(this::searchExhibit);
         clearBtn.setOnClickListener(this::uncheckList);
+        showCheckedBtn.setOnClickListener(this::showChecked);
+        returnToSearchBtn.setOnClickListener(this::returnToSearch);
     }
 
     private void searchExhibit(View view) {
@@ -69,6 +75,20 @@ public class MainActivity extends AppCompatActivity {
         setNumPlanned();
     }
 
+    private void showChecked(View view) {
+        List<ExhibitItem> checkedExhibits = ExhibitList.getCheckedExhibits();
+        adapter.setExhibitListItems(checkedExhibits);
+        showCheckedBtn.setVisibility(View.INVISIBLE);
+        returnToSearchBtn.setVisibility(View.VISIBLE);
+    }
+
+    private void returnToSearch(View view) {
+        List<ExhibitItem> allExhibits = ExhibitList.getAllExhibits();
+        adapter.setExhibitListItems(allExhibits);
+        returnToSearchBtn.setVisibility(View.INVISIBLE);
+        showCheckedBtn.setVisibility(View.VISIBLE);
+    }
+
     public static MainActivity getInstance() {
         return main;
     }
@@ -77,9 +97,9 @@ public class MainActivity extends AppCompatActivity {
         return viewModel.getAllExhibits();
     }
 
-    private void setNumPlanned() {
+    @SuppressLint("SetTextI18n") private void setNumPlanned() {
         numPlanned.setText(
-                "Number of Planned Exhibits: " + ExhibitList.getNumChecked());
+                "Planned " + ExhibitList.getNumChecked() + " Exhibit(s)");
     }
 
     public void uncheck() {
