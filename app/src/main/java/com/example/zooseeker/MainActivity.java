@@ -6,12 +6,16 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.TextView;
 
+import org.jgrapht.Graph;
+
 import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
     public  RecyclerView         recyclerView;
@@ -19,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
     private ExhibitListAdapter   adapter;
     private AutoCompleteTextView searchBar;
     private Button   searchBtn;
+    private Button   getDirectionsBtn;
     private TextView numPlanned;
 
     static MainActivity main;
@@ -41,9 +46,12 @@ public class MainActivity extends AppCompatActivity {
 
         searchBar = findViewById(R.id.searchBar);
         searchBtn = findViewById(R.id.searchButton);
+        getDirectionsBtn = findViewById(R.id.getDirectionsButton);
         numPlanned = findViewById(R.id.counter);
 
         searchBtn.setOnClickListener(this::searchClicked);
+        getDirectionsBtn.setOnClickListener(this::getDirectionsClicked);
+
         numPlanned.setText("Number of Planned Exhibits: " + ExhibitList.getNumChecked());
     }
 
@@ -56,6 +64,22 @@ public class MainActivity extends AppCompatActivity {
         List<ExhibitItem> searchLists = ExhibitList.getSearchItems(search);
         adapter.setExhibitListItems(searchLists);
         searchBar.setText("");
+    }
+
+    void getDirectionsClicked(View view) {
+        List<ExhibitItem> toVisit = ExhibitList.getCheckedExhibits();
+        Graph<String, IdentifiedWeightedEdge> g = ZooData.loadZooGraphJSON(this, "sample_zoo_graph.JSON");
+        Map<String, ZooData.VertexInfo> vInfo = ZooData.loadVertexInfoJSON(this,"sample_node_info.JSON");
+        Map<String, ZooData.EdgeInfo> eInfo = ZooData.loadEdgeInfoJSON(this,"sample_edge_info.JSON");
+
+        Log.d("toVisit", String.valueOf(toVisit.size()));
+
+        DirectionTracker dt = new DirectionTracker(g, vInfo, eInfo);
+        List<Direction> directions = dt.getDirections(toVisit);
+
+        for (int i = 0; i < directions.size(); i++) {
+            Log.d("direction " + String.valueOf(i), directions.get(i).toString());
+        }
     }
 
     static MainActivity getInstance() {
