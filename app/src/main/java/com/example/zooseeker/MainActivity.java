@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
@@ -14,14 +15,16 @@ import android.widget.TextView;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    public  RecyclerView         recyclerView;
-    private ExhibitViewModel     viewModel;
-    private ExhibitListAdapter   adapter;
-    private AutoCompleteTextView searchBar;
-    private Button   searchBtn;
-    private TextView numPlanned;
+    public  RecyclerView       recyclerView;
+    private ExhibitViewModel   viewModel;
+    private ExhibitListAdapter adapter;
 
-    static MainActivity main;
+    private AutoCompleteTextView searchBar;
+    private Button               searchBtn;
+    private TextView             numPlanned;
+    private Button clearBtn;
+
+    @SuppressLint("StaticFieldLeak") static MainActivity main;
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,12 +45,15 @@ public class MainActivity extends AppCompatActivity {
         searchBar = findViewById(R.id.searchBar);
         searchBtn = findViewById(R.id.searchButton);
         numPlanned = findViewById(R.id.counter);
+        clearBtn = findViewById(R.id.clearExhibitsBtn);
 
-        searchBtn.setOnClickListener(this::searchClicked);
-        numPlanned.setText("Number of Planned Exhibits: " + ExhibitList.getNumChecked());
+        setNumPlanned();
+
+        searchBtn.setOnClickListener(this::searchExhibit);
+        clearBtn.setOnClickListener(this::uncheckList);
     }
 
-    void searchClicked(View view) {
+    private void searchExhibit(View view) {
         String search = searchBar.getText().toString();
         if (search.equals("")) {
             Utilities.showAlert(this, "Please enter a valid exhibit!");
@@ -58,11 +64,28 @@ public class MainActivity extends AppCompatActivity {
         searchBar.setText("");
     }
 
-    static MainActivity getInstance() {
+    private void uncheckList(View view) {
+        uncheck();
+        setNumPlanned();
+    }
+
+    public static MainActivity getInstance() {
         return main;
     }
 
-    List<ExhibitItem> getExhibits() {
+    public List<ExhibitItem> getExhibits() {
         return viewModel.getAllExhibits();
+    }
+
+    private void setNumPlanned() {
+        numPlanned.setText(
+                "Number of Planned Exhibits: " + ExhibitList.getNumChecked());
+    }
+
+    public void uncheck() {
+        List<ExhibitItem> checkedExhibits = ExhibitList.getCheckedExhibits();
+        for (ExhibitItem item : checkedExhibits) {
+            viewModel.uncheckList(item);
+        }
     }
 }
