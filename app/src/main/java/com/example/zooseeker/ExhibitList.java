@@ -2,6 +2,8 @@ package com.example.zooseeker;
 
 import android.annotation.SuppressLint;
 
+import android.annotation.SuppressLint;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,7 +41,8 @@ public class ExhibitList {
     }
 
     // Current problem: should "arctic fox" return exhibit "The Arctic Foxes"?
-    private static void searchByName(List<ExhibitItem> searchItems, String search) {
+    private static void searchByName(List<ExhibitItem> searchItems,
+                                     String search) {
         for (ExhibitItem item : ExhibitList.allExhibits) {
             String name = item.name;
             if (name.indexOf(search) == 0) {
@@ -51,7 +54,8 @@ public class ExhibitList {
     // Current problem: should "th" return exhibit "The Arctic Foxes"?
     // should "ar" return exhibit "The Arctic Foxes"?
     // should "Foxes" return exhibit "The Arctic Foxes"?
-    private static void searchAutoComplete(List<ExhibitItem> searchItems, String search) {
+    private static void searchAutoComplete(List<ExhibitItem> searchItems,
+                                           String search) {
         for (ExhibitItem item : ExhibitList.allExhibits) {
             String[] nameA = item.name.split(" ");
             for (String word : nameA) {
@@ -76,7 +80,8 @@ public class ExhibitList {
         }
     }
 
-    private static List<ExhibitItem> removeDuplicate(List<ExhibitItem> searchItems) {
+    private static List<ExhibitItem> removeDuplicate(
+            List<ExhibitItem> searchItems) {
         List<ExhibitItem> noDuplicateSearch = new ArrayList<>();
         for (ExhibitItem item : searchItems) {
             if (!noDuplicateSearch.contains(item)) {
