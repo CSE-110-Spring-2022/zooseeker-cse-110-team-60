@@ -1,14 +1,21 @@
 package com.example.zooseeker;
 
+import android.annotation.SuppressLint;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class ExhibitList {
     public static List<ExhibitItem> allExhibits = new ArrayList<>();
+    @SuppressLint("StaticFieldLeak")
+    private final static MainActivity main = MainActivity.getInstance();
+
+    public static List<ExhibitItem> getAllExhibits() {
+        return main.getExhibits();
+    }
 
     public static List<ExhibitItem> getCheckedExhibits() {
-        MainActivity      main            = MainActivity.getInstance();
-        List<ExhibitItem> checkedExhibits = main.getExhibits();
+        List<ExhibitItem> checkedExhibits = getAllExhibits();
         checkedExhibits.removeIf(exhibit -> !exhibit.added);
         return checkedExhibits;
     }
@@ -18,10 +25,7 @@ public class ExhibitList {
     }
 
     public static void clearCheckedExhibits() {
-        List<ExhibitItem> checkedExhibits = getCheckedExhibits();
-        for (ExhibitItem item : checkedExhibits) {
-            item.added = false;
-        }
+        main.uncheck();
     }
 
     public static List<ExhibitItem> getSearchItems(String search) {

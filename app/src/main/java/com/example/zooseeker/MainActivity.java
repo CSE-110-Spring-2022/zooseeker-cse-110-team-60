@@ -22,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
     private AutoCompleteTextView searchBar;
     private Button               searchBtn;
     private TextView             numPlanned;
+    private Button clearBtn;
 
     @SuppressLint("StaticFieldLeak") static MainActivity main;
 
@@ -44,13 +45,15 @@ public class MainActivity extends AppCompatActivity {
         searchBar = findViewById(R.id.searchBar);
         searchBtn = findViewById(R.id.searchButton);
         numPlanned = findViewById(R.id.counter);
+        clearBtn = findViewById(R.id.clearExhibitsBtn);
 
-        searchBtn.setOnClickListener(this::searchClicked);
-        numPlanned.setText(
-                "Number of Planned Exhibits: " + ExhibitList.getNumChecked());
+        setNumPlanned();
+
+        searchBtn.setOnClickListener(this::searchExhibit);
+        clearBtn.setOnClickListener(this::uncheckList);
     }
 
-    void searchClicked(View view) {
+    private void searchExhibit(View view) {
         String search = searchBar.getText().toString();
         if (search.equals("")) {
             Utilities.showAlert(this, "Please enter a valid exhibit!");
@@ -61,11 +64,28 @@ public class MainActivity extends AppCompatActivity {
         searchBar.setText("");
     }
 
-    static MainActivity getInstance() {
+    private void uncheckList(View view) {
+        uncheck();
+        setNumPlanned();
+    }
+
+    public static MainActivity getInstance() {
         return main;
     }
 
-    List<ExhibitItem> getExhibits() {
+    public List<ExhibitItem> getExhibits() {
         return viewModel.getAllExhibits();
+    }
+
+    private void setNumPlanned() {
+        numPlanned.setText(
+                "Number of Planned Exhibits: " + ExhibitList.getNumChecked());
+    }
+
+    public void uncheck() {
+        List<ExhibitItem> checkedExhibits = ExhibitList.getCheckedExhibits();
+        for (ExhibitItem item : checkedExhibits) {
+            viewModel.uncheckList(item);
+        }
     }
 }
