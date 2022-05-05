@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"> <!-- -->
+    tools:context=".MainActivity">
 
     <AutoCompleteTextView
         android:id="@+id/searchBar"
@@ -14,11 +14,11 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:hint="@string/search_hint"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/rvExhibits"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@id/searchButton"
-        app:layout_constraintBottom_toTopOf="@id/rvExhibits"
-        app:layout_constraintHorizontal_bias="0.497" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/searchButton"
@@ -39,8 +39,8 @@
         android:id="@+id/rvExhibits"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="16dp"
         android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toTopOf="@+id/clearExhibitsBtn"
@@ -57,20 +57,20 @@
         android:text=""
         app:layout_constraintBottom_toTopOf="@id/getDirectionsButton"
         app:layout_constraintRight_toLeftOf="@+id/clearExhibitsBtn"
-        app:layout_constraintTop_toBottomOf="@id/rvExhibits"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rvExhibits"
         app:layout_constraintVertical_bias="1.0" />
 
     <Button
         android:id="@+id/showCheckedBtn"
-        android:visibility="visible"
         android:layout_width="60dp"
         android:layout_height="45dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:text="@string/show"
         android:paddingStart="0dp"
         android:paddingEnd="0dp"
+        android:text="@string/show"
+        android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/getDirectionsButton"
         app:layout_constraintEnd_toStartOf="@+id/clearExhibitsBtn"
         app:layout_constraintLeft_toRightOf="@+id/counter"
@@ -79,14 +79,14 @@
 
     <Button
         android:id="@+id/returnBtn"
-        android:visibility="invisible"
         android:layout_width="60dp"
         android:layout_height="45dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:text="@string/back"
         android:paddingStart="0dp"
         android:paddingEnd="0dp"
+        android:text="@string/back"
+        android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/getDirectionsButton"
         app:layout_constraintEnd_toStartOf="@+id/clearExhibitsBtn"
         app:layout_constraintLeft_toRightOf="@+id/counter"
@@ -98,9 +98,9 @@
         android:layout_width="65dp"
         android:layout_height="45dp"
         android:layout_marginEnd="16dp"
-        android:text="@string/clear"
         android:paddingStart="0dp"
         android:paddingEnd="0dp"
+        android:text="@string/clear"
         app:layout_constraintBottom_toTopOf="@+id/getDirectionsButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/counter"
@@ -111,8 +111,8 @@
         android:id="@+id/getDirectionsButton"
         android:layout_width="0dp"
         android:layout_height="66dp"
-        android:layout_marginTop="16dp"
         android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginBottom="16dp"
         android:text="@string/get_directions"

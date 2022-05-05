@@ -1,4 +1,4 @@
-package com.example.zooseeker; //
+package com.example.zooseeker;
 
 import android.content.Context;
 
@@ -26,21 +26,18 @@ public abstract class ExhibitDatabase extends RoomDatabase {
     }
 
     private static ExhibitDatabase makeDatabase(Context context) {
-        return Room.databaseBuilder(context, ExhibitDatabase.class,
-                                    "exhibit_list.db").allowMainThreadQueries()
-                   .addCallback(new Callback() {
-                       @Override
-                       public void onCreate(@NonNull SupportSQLiteDatabase db) {
-                           super.onCreate(db);
-                           Executors.newSingleThreadExecutor().execute(() -> {
-                               List<ExhibitItem> exhibits = ExhibitItem
-                                       .loadJSON(context,
-                                                 "sample_node_info.JSON");
-                               getSingleton(context).exhibitItemDao()
-                                                    .insertAll(exhibits);
-                           });
-                       }
-                   }).build();
+        return Room.databaseBuilder(context, ExhibitDatabase.class, "exhibit_list.db")
+                   .allowMainThreadQueries().addCallback(new Callback() {
+                    @Override
+                    public void onCreate(@NonNull SupportSQLiteDatabase db) {
+                        super.onCreate(db);
+                        Executors.newSingleThreadExecutor().execute(() -> {
+                            List<ExhibitItem> exhibits = ExhibitItem
+                                    .loadJSON(context, "sample_node_info.JSON");
+                            getSingleton(context).exhibitItemDao().insertAll(exhibits);
+                        });
+                    }
+                }).build();
     }
 
     @VisibleForTesting

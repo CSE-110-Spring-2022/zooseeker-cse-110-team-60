@@ -1,4 +1,4 @@
-package com.example.zooseeker; //
+package com.example.zooseeker;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
@@ -15,20 +15,22 @@ import android.widget.TextView;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    public  RecyclerView       recyclerView;
-    private ExhibitViewModel   viewModel;
+    public RecyclerView recyclerView;
+    private ExhibitViewModel viewModel;
     private ExhibitListAdapter adapter;
 
     private AutoCompleteTextView searchBar;
-    private Button               searchBtn;
-    private TextView             numPlanned;
+    private Button searchBtn;
+    private TextView numPlanned;
     private Button clearBtn;
     private Button showCheckedBtn;
     private Button returnToSearchBtn;
 
-    @SuppressLint("StaticFieldLeak") static MainActivity main;
+    @SuppressLint("StaticFieldLeak")
+    static MainActivity main;
 
-    @Override protected void onCreate(Bundle savedInstanceState) {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         main = this;
         setContentView(R.layout.activity_main);
@@ -97,9 +99,9 @@ public class MainActivity extends AppCompatActivity {
         return viewModel.getAllExhibits();
     }
 
-    @SuppressLint("SetTextI18n") private void setNumPlanned() {
-        numPlanned.setText(
-                "Planned " + ExhibitList.getNumChecked() + " Exhibit(s)");
+    @SuppressLint("SetTextI18n")
+    private void setNumPlanned() {
+        numPlanned.setText("Planned " + ExhibitList.getNumChecked() + " Exhibit(s)");
     }
 
     public void uncheck() {
