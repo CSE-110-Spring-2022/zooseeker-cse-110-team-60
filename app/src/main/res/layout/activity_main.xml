@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"> <!-- -->
 
     <AutoCompleteTextView
         android:id="@+id/searchBar"
@@ -35,16 +35,77 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvExhibits"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/clearExhibitsBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/searchBar" />
+
     <TextView
         android:id="@+id/counter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text=""
         android:layout_margin="16dp"
+        android:text=""
+        app:layout_constraintBottom_toTopOf="@id/getDirectionsButton"
+        app:layout_constraintRight_toLeftOf="@+id/clearExhibitsBtn"
         app:layout_constraintTop_toBottomOf="@id/rvExhibits"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/getDirectionsButton" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <Button
+        android:id="@+id/showCheckedBtn"
+        android:visibility="visible"
+        android:layout_width="60dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/show"
+        android:paddingStart="0dp"
+        android:paddingEnd="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/getDirectionsButton"
+        app:layout_constraintEnd_toStartOf="@+id/clearExhibitsBtn"
+        app:layout_constraintLeft_toRightOf="@+id/counter"
+        app:layout_constraintTop_toBottomOf="@+id/rvExhibits"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:id="@+id/returnBtn"
+        android:visibility="invisible"
+        android:layout_width="60dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/back"
+        android:paddingStart="0dp"
+        android:paddingEnd="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/getDirectionsButton"
+        app:layout_constraintEnd_toStartOf="@+id/clearExhibitsBtn"
+        app:layout_constraintLeft_toRightOf="@+id/counter"
+        app:layout_constraintTop_toBottomOf="@+id/rvExhibits"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:id="@+id/clearExhibitsBtn"
+        android:layout_width="65dp"
+        android:layout_height="45dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/clear"
+        android:paddingStart="0dp"
+        android:paddingEnd="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/getDirectionsButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/counter"
+        app:layout_constraintTop_toBottomOf="@+id/rvExhibits"
+        app:layout_constraintVertical_bias="0.0" />
 
     <Button
         android:id="@+id/getDirectionsButton"
@@ -61,17 +122,4 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvExhibits"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/getDirectionsButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/searchBar" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,14 +1,21 @@
-package com.example.zooseeker;
+package com.example.zooseeker; //
+
+import android.annotation.SuppressLint;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ExhibitList {
     public static List<ExhibitItem> allExhibits = new ArrayList<>();
+    @SuppressLint("StaticFieldLeak")
+    private final static MainActivity main = MainActivity.getInstance();
+
+    public static List<ExhibitItem> getAllExhibits() {
+        return main.getExhibits();
+    }
 
     public static List<ExhibitItem> getCheckedExhibits() {
-        MainActivity main = MainActivity.getInstance();
-        List<ExhibitItem> checkedExhibits = main.getExhibits();
+        List<ExhibitItem> checkedExhibits = getAllExhibits();
         checkedExhibits.removeIf(exhibit -> !exhibit.added);
         return checkedExhibits;
     }
@@ -17,8 +24,12 @@ public class ExhibitList {
         return getCheckedExhibits().size();
     }
 
+    public static void clearCheckedExhibits() {
+        main.uncheck();
+    }
+
     public static List<ExhibitItem> getSearchItems(String search) {
-        List<ExhibitItem> searchItems  = new ArrayList<>();
+        List<ExhibitItem> searchItems = new ArrayList<>();
         search = search.toLowerCase();
         searchByName(searchItems, search);
         searchAutoComplete(searchItems, search);
@@ -28,7 +39,8 @@ public class ExhibitList {
     }
 
     // Current problem: should "arctic fox" return exhibit "The Arctic Foxes"?
-    private static void searchByName(List<ExhibitItem> searchItems, String search) {
+    private static void searchByName(List<ExhibitItem> searchItems,
+                                     String search) {
         for (ExhibitItem item : ExhibitList.allExhibits) {
             String name = item.name;
             if (name.indexOf(search) == 0) {
@@ -40,7 +52,8 @@ public class ExhibitList {
     // Current problem: should "th" return exhibit "The Arctic Foxes"?
     // should "ar" return exhibit "The Arctic Foxes"?
     // should "Foxes" return exhibit "The Arctic Foxes"?
-    private static void searchAutoComplete(List<ExhibitItem> searchItems, String search) {
+    private static void searchAutoComplete(List<ExhibitItem> searchItems,
+                                           String search) {
         for (ExhibitItem item : ExhibitList.allExhibits) {
             String[] nameA = item.name.split(" ");
             for (String word : nameA) {
@@ -55,9 +68,9 @@ public class ExhibitList {
     // Current question: "g" returns both Gorillas and Alligators because
     // Alligators have a "gator" tag that begins with g
     private static void searchByCategories(List<ExhibitItem> searchItems,
-                                          String search) {
+                                           String search) {
         for (ExhibitItem item : ExhibitList.allExhibits) {
-            String [] categories = item.tags.split(", ");
+            String[] categories = item.tags.split(", ");
             for (String word : categories) {
                 if (word.indexOf(search) == 0) {
                     searchItems.add(item);
@@ -66,7 +79,8 @@ public class ExhibitList {
         }
     }
 
-    private static List<ExhibitItem> removeDuplicate(List<ExhibitItem> searchItems) {
+    private static List<ExhibitItem> removeDuplicate(
+            List<ExhibitItem> searchItems) {
         List<ExhibitItem> noDuplicateSearch = new ArrayList<>();
         for (ExhibitItem item : searchItems) {
             if (!noDuplicateSearch.contains(item)) {

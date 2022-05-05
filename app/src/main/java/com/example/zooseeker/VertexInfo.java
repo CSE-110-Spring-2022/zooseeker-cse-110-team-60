@@ -2,6 +2,8 @@ package com.example.zooseeker; //
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
+
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
@@ -15,10 +17,11 @@ import java.util.Collections;
 import java.util.List;
 
 public class VertexInfo {
-    public static enum Kind {
+    public enum Kind {
         // The SerializedName annotation tells GSON how to convert
         // from the strings in our JSON to this Enum.
-        @SerializedName("gate") GATE, @SerializedName("exhibit") EXHIBIT,
+        @SerializedName("gate") GATE,
+        @SerializedName("exhibit") EXHIBIT,
         @SerializedName("intersection") INTERSECTION
     }
 
@@ -27,7 +30,7 @@ public class VertexInfo {
     public String       name;
     public List<String> tags;
 
-    @Override public String toString() {
+    @NonNull @Override public String toString() {
         return "VertexInfo{" + "id=" + id + ", kind=" + kind + ", name=" +
                name + ", tags=[" + tags + "]}";
     }
