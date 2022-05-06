@@ -15,6 +15,7 @@ public class Direction {
 
     public String getStart() { return start; }
     public String getEnd() { return end; }
+    public List<String> getSteps() { return steps;}
 
     @Override
     public String toString() {

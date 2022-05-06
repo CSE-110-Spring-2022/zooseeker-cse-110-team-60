@@ -14,9 +14,12 @@ import java.util.List;
 import java.util.Map;
 
 public class DirectionTracker {
+
     Graph g;
     Map<String, ZooData.VertexInfo> vInfo;
     Map<String, ZooData.EdgeInfo> eInfo;
+
+    public static List<Direction> directions;
 
     public DirectionTracker(Graph g, Map<String, ZooData.VertexInfo> vInfo, Map<String, ZooData.EdgeInfo> eInfo) {
         this.g = g;
@@ -24,8 +27,8 @@ public class DirectionTracker {
         this.eInfo = eInfo;
     }
 
-    public List<Direction> getDirections(List<ExhibitItem> exhibitsToVisit) {
-        List<Direction> directions = new ArrayList<Direction>();
+    public void getDirections(List<ExhibitItem> exhibitsToVisit) {
+        ArrayList<Direction> directions = new ArrayList<Direction>();
 
         ExhibitItem gate = new ExhibitItem("entrance_exit_gate", VertexInfo.Kind.EXHIBIT, "Gate", "");
 
@@ -95,6 +98,7 @@ public class DirectionTracker {
 
         Log.d("END", "!!!!!!!!!!");
 
-        return directions;
+//        return directions;
+        DirectionTracker.directions = directions;
     }
 }

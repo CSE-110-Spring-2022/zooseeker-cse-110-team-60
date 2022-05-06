@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 
 import org.jgrapht.Graph;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -75,11 +77,15 @@ public class MainActivity extends AppCompatActivity {
         Log.d("toVisit", String.valueOf(toVisit.size()));
 
         DirectionTracker dt = new DirectionTracker(g, vInfo, eInfo);
-        List<Direction> directions = dt.getDirections(toVisit);
+        dt.getDirections(toVisit);
 
-        for (int i = 0; i < directions.size(); i++) {
-            Log.d("direction " + String.valueOf(i), directions.get(i).toString());
-        }
+//        for (int i = 0; i < directions.size(); i++) {
+//            Log.d("direction " + String.valueOf(i), directions.get(i).toString());
+//        }
+
+        Intent directionIntent = new Intent(this, DirectionActivity.class);
+//        directionIntent.putExtra("directions", directions);
+        startActivity(directionIntent);
     }
 
     static MainActivity getInstance() {
