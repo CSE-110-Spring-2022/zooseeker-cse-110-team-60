@@ -7,6 +7,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -57,6 +59,26 @@ public class MainActivity extends AppCompatActivity {
 
         setNumPlanned();
 
+        searchBar.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1,
+                                          int i2) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (charSequence != null) {
+                    if (charSequence.length() != 0) {
+                        displaySearch(String.valueOf(charSequence));
+                    }
+                    else {
+                        displayAll();
+                    }
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {}
+        });
         deleteSearchBtn.setOnClickListener(this::deleteSearch);
         searchBtn.setOnClickListener(this::searchExhibit);
         clearBtn.setOnClickListener(this::uncheckList);
@@ -126,17 +148,3 @@ public class MainActivity extends AppCompatActivity {
         adapter.setExhibitListItems(searchLists);
     }
 }
-
-/*
-addTextChangedListener(watcher: TextWatcher!)
-Adds a TextWatcher to the list of those whose methods are called whenever this TextView's text changes.
-
-getKeyListener()
-Gets the current KeyListener for the TextView.
-
-setKeyListener(input: KeyListener!)
-Sets the key listener to be used with this TextView.
-
-setOnEditorActionListener(l: TextView.OnEditorActionListener!)
-Set a special listener to be called when an action is performed on the text view.
- */
