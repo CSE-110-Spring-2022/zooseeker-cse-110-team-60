@@ -20,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
     private ExhibitListAdapter adapter;
 
     private AutoCompleteTextView searchBar;
+    private TextView deleteSearchBtn;
     private Button searchBtn;
     private TextView numPlanned;
     private Button clearBtn;
@@ -47,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
 
         searchBar = findViewById(R.id.searchBar);
+        deleteSearchBtn = findViewById(R.id.deleteBtn);
         searchBtn = findViewById(R.id.searchButton);
         numPlanned = findViewById(R.id.counter);
         clearBtn = findViewById(R.id.clearExhibitsBtn);
@@ -55,10 +57,16 @@ public class MainActivity extends AppCompatActivity {
 
         setNumPlanned();
 
+        deleteSearchBtn.setOnClickListener(this::deleteSearch);
         searchBtn.setOnClickListener(this::searchExhibit);
         clearBtn.setOnClickListener(this::uncheckList);
         showCheckedBtn.setOnClickListener(this::showChecked);
         returnToSearchBtn.setOnClickListener(this::returnToSearch);
+    }
+
+    private void deleteSearch(View view) {
+        searchBar.getText().clear();
+        displayAll();
     }
 
     private void searchExhibit(View view) {
@@ -67,9 +75,7 @@ public class MainActivity extends AppCompatActivity {
             Utilities.showAlert(this, "Please enter a valid exhibit!");
             return;
         }
-        List<ExhibitItem> searchLists = ExhibitList.getSearchItems(search);
-        adapter.setExhibitListItems(searchLists);
-        searchBar.setText("");
+        displaySearch(search);
     }
 
     private void uncheckList(View view) {
@@ -85,8 +91,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void returnToSearch(View view) {
-        List<ExhibitItem> allExhibits = ExhibitList.getAllExhibits();
-        adapter.setExhibitListItems(allExhibits);
+        displayAll();
         returnToSearchBtn.setVisibility(View.INVISIBLE);
         showCheckedBtn.setVisibility(View.VISIBLE);
     }
@@ -110,4 +115,28 @@ public class MainActivity extends AppCompatActivity {
             viewModel.uncheckList(item);
         }
     }
+
+    private void displayAll() {
+        List<ExhibitItem> allExhibits = ExhibitList.getAllExhibits();
+        adapter.setExhibitListItems(allExhibits);
+    }
+
+    private void displaySearch(String search) {
+        List<ExhibitItem> searchLists = ExhibitList.getSearchItems(search);
+        adapter.setExhibitListItems(searchLists);
+    }
 }
+
+/*
+addTextChangedListener(watcher: TextWatcher!)
+Adds a TextWatcher to the list of those whose methods are called whenever this TextView's text changes.
+
+getKeyListener()
+Gets the current KeyListener for the TextView.
+
+setKeyListener(input: KeyListener!)
+Sets the key listener to be used with this TextView.
+
+setOnEditorActionListener(l: TextView.OnEditorActionListener!)
+Set a special listener to be called when an action is performed on the text view.
+ */
