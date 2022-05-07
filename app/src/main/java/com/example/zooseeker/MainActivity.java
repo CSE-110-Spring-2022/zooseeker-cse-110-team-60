@@ -70,6 +70,12 @@ public class MainActivity extends AppCompatActivity {
 
     void getDirectionsClicked(View view) {
         List<ExhibitItem> toVisit = ExhibitList.getCheckedExhibits();
+
+        if (toVisit.size() == 0) {
+            Utilities.showAlert(this, "Select Exhibit(s) Before Continuing!");
+            return;
+        }
+
         Graph<String, IdentifiedWeightedEdge> g = ZooData.loadZooGraphJSON(this, "sample_zoo_graph.JSON");
         Map<String, ZooData.VertexInfo> vInfo = ZooData.loadVertexInfoJSON(this,"sample_node_info.JSON");
         Map<String, ZooData.EdgeInfo> eInfo = ZooData.loadEdgeInfoJSON(this,"sample_edge_info.JSON");

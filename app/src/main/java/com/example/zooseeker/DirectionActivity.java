@@ -39,7 +39,7 @@ public class DirectionActivity extends AppCompatActivity {
 
     void nextClicked(View view) {
         if (this.i == DirectionTracker.directions.size()) {
-            Log.d("directions", "done");
+            Utilities.showAlert(this, "No More Directions!");
             return;
         }
 
@@ -49,7 +49,10 @@ public class DirectionActivity extends AppCompatActivity {
     }
 
     void previousClicked(View view) {
-        if (this.i == 0) return;
+        if (this.i == 0) {
+            Utilities.showAlert(this, "This is the First Direction!");
+            return;
+        }
 
         this.i--;
         setDirection(i);
