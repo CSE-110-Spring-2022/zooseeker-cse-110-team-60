@@ -1,14 +1,13 @@
 package com.example.zooseeker;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import java.util.ArrayList;
+import androidx.appcompat.app.AppCompatActivity;
+
 import java.util.List;
 
 public class DirectionActivity extends AppCompatActivity {
@@ -38,7 +37,7 @@ public class DirectionActivity extends AppCompatActivity {
     }
 
     void nextClicked(View view) {
-        if (this.i == DirectionTracker.directions.size()) {
+        if (this.i == DirectionTracker.directions.size() - 1) {
             Utilities.showAlert(this, "No More Directions!");
             return;
         }
