@@ -7,10 +7,7 @@ import androidx.annotation.VisibleForTesting;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
-import androidx.room.TypeConverters;
 import androidx.sqlite.db.SupportSQLiteDatabase;
-
-import com.google.gson.Gson;
 
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -30,21 +27,20 @@ public abstract class ExhibitDatabase extends RoomDatabase {
 
     private static ExhibitDatabase makeDatabase(Context context) {
         return Room.databaseBuilder(context, ExhibitDatabase.class,
-                                    "exhibit_list.db")
-                .allowMainThreadQueries()
-                .addCallback(new Callback() {
-                    @Override
-                    public void onCreate(@NonNull SupportSQLiteDatabase db) {
-                        super.onCreate(db);
-                        Executors.newSingleThreadExecutor().execute(() -> {
-                            List<ExhibitItem> exhibits =
-                                    ExhibitItem.loadJSON(context,
-                                                         "sample_node_info.JSON");
-                            getSingleton(context).exhibitItemDao().insertAll(exhibits);
-                        });
-                    }
-                })
-                .build();
+                                    "exhibit_list.db").allowMainThreadQueries()
+                   .addCallback(new Callback() {
+                       @Override
+                       public void onCreate(@NonNull SupportSQLiteDatabase db) {
+                           super.onCreate(db);
+                           Executors.newSingleThreadExecutor().execute(() -> {
+                               List<ExhibitItem> exhibits = ExhibitItem
+                                       .loadJSON(context,
+                                                 "sample_node_info.JSON");
+                               getSingleton(context).exhibitItemDao()
+                                                    .insertAll(exhibits);
+                           });
+                       }
+                   }).build();
     }
 
     @VisibleForTesting

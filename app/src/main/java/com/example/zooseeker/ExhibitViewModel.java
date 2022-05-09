@@ -2,7 +2,7 @@ package com.example.zooseeker;
 
 import android.app.Application;
 import android.content.Context;
-import android.view.View;
+import android.util.Log;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -22,6 +22,10 @@ public class ExhibitViewModel extends AndroidViewModel {
         exhibitItemDao = db.exhibitItemDao();
     }
 
+    public List<ExhibitItem> getAllExhibits() {
+        return exhibitItemDao.getAll();
+    }
+
     public LiveData<List<ExhibitItem>> getExhibitItems() {
         if (exhibitItems == null) {
             loadUsers();
@@ -36,13 +40,9 @@ public class ExhibitViewModel extends AndroidViewModel {
     public void toggleAdded(ExhibitItem exhibitItem) {
         exhibitItem.added = !exhibitItem.added;
         exhibitItemDao.update(exhibitItem);
-        /*if (exhibitItem.added) {
-            ExhibitItem.count++;
-        }
-        else {
-            ExhibitItem.count--;
-        }
-        TextView counter = MainActivity.findViewById(R.id.counter);
-        counter.setText("Number of Planned Exhibits" + ExhibitItem.count);*/
+
+        MainActivity main       = MainActivity.getInstance();
+        TextView     numPlanned = main.findViewById(R.id.counter);
+        numPlanned.setText("Number of Planned Exhibits: " + ExhibitList.getNumChecked());
     }
 }

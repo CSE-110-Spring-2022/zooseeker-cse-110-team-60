@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -13,52 +13,92 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.TextView;
 
-import java.util.List;
+import org.jgrapht.Graph;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
-    public  RecyclerView     recyclerView;
+    public  RecyclerView         recyclerView;
     private ExhibitViewModel     viewModel;
-    private ExhibitListAdapter adapter;
+    private ExhibitListAdapter   adapter;
     private AutoCompleteTextView searchBar;
-    private Button               searchBtn;
+    private Button   searchBtn;
+    private Button   getDirectionsBtn;
+    private TextView numPlanned;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    static MainActivity main;
+
+    @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        main = this;
         setContentView(R.layout.activity_main);
-
-        /*List<ExhibitItem> list = ExhibitItem.loadJSON(this,
-                                                       "sample_node_info" +
-                                                            ".JSON");
-        Log.d("MainActivity", list.toString()); */
 
         viewModel = new ViewModelProvider(this).get(ExhibitViewModel.class);
 
         adapter = new ExhibitListAdapter();
         adapter.setHasStableIds(true);
         adapter.setOnCheckBoxClickedHandler(viewModel::toggleAdded);
-        viewModel.getExhibitItems().observe(this,
-                                            adapter::setExhibitListItems);
+        viewModel.getExhibitItems().observe(this, adapter::setExhibitListItems);
+
         recyclerView = findViewById(R.id.rvExhibits);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
-        this.searchBar = this.findViewById(R.id.searchBar);
-        this.searchBtn = this.findViewById(R.id.searchButton);
+        searchBar = findViewById(R.id.searchBar);
+        searchBtn = findViewById(R.id.searchButton);
+        getDirectionsBtn = findViewById(R.id.getDirectionsButton);
+        numPlanned = findViewById(R.id.counter);
 
         searchBtn.setOnClickListener(this::searchClicked);
+        getDirectionsBtn.setOnClickListener(this::getDirectionsClicked);
+
+        numPlanned.setText("Number of Planned Exhibits: " + ExhibitList.getNumChecked());
     }
 
     void searchClicked(View view) {
         String search = searchBar.getText().toString();
-        List<ExhibitItem> searchLists = ExhibitItem.getSearchItems(this,
-                                                                   "sample_node_info" +
-                                                                   ".JSON",
-                                                                   search);
+        if (search.equals("")) {
+            Utilities.showAlert(this, "Please enter a valid exhibit!");
+            return;
+        }
+        List<ExhibitItem> searchLists = ExhibitList.getSearchItems(search);
         adapter.setExhibitListItems(searchLists);
         searchBar.setText("");
+    }
+
+    void getDirectionsClicked(View view) {
+        List<ExhibitItem> toVisit = ExhibitList.getCheckedExhibits();
+
+        if (toVisit.size() == 0) {
+            Utilities.showAlert(this, "Select Exhibit(s) Before Continuing!");
+            return;
+        }
+
+        Graph<String, IdentifiedWeightedEdge> g = ZooData.loadZooGraphJSON(this, "sample_zoo_graph.JSON");
+        Map<String, ZooData.VertexInfo> vInfo = ZooData.loadVertexInfoJSON(this,"sample_node_info.JSON");
+        Map<String, ZooData.EdgeInfo> eInfo = ZooData.loadEdgeInfoJSON(this,"sample_edge_info.JSON");
+
+        Log.d("toVisit", String.valueOf(toVisit.size()));
+
+        DirectionTracker dt = new DirectionTracker(g, vInfo, eInfo);
+        dt.getDirections(toVisit);
+
+//        for (int i = 0; i < directions.size(); i++) {
+//            Log.d("direction " + String.valueOf(i), directions.get(i).toString());
+//        }
+
+        Intent directionIntent = new Intent(this, DirectionActivity.class);
+//        directionIntent.putExtra("directions", directions);
+        startActivity(directionIntent);
+    }
+
+    static MainActivity getInstance() {
+        return main;
+    }
+
+    List<ExhibitItem> getExhibits() {
+        return viewModel.getAllExhibits();
     }
 }
