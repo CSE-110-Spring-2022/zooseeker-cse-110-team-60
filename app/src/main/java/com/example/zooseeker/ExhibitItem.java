@@ -40,6 +40,7 @@ public class ExhibitItem {
 
     public static List<ExhibitItem> loadJSON(Context context, String path) {
         List<ExhibitItem> allExhibits = new ArrayList<>();
+
         List<VertexInfo> vertexInfos = VertexInfo.loadVertexInfoJSON(context, path);
         for (VertexInfo item : vertexInfos) {
             if (item.kind == VertexInfo.Kind.EXHIBIT) {
@@ -47,6 +48,7 @@ public class ExhibitItem {
                         , String
                         .join(", ", item.tags));
                 allExhibits.add(exhibitItem);
+
             }
         }
         return allExhibits;
