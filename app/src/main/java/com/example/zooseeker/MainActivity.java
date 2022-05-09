@@ -30,8 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private AutoCompleteTextView searchBar;
 
     private Button searchBtn;
-    private Button   searchBtn;
-    private Button   getDirectionsBtn;
+    private Button  getDirectionsBtn;
     private TextView numPlanned;
     private Button clearBtn;
     private Button showCheckedBtn;
@@ -71,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
         clearBtn.setOnClickListener(this::uncheckList);
         showCheckedBtn.setOnClickListener(this::showChecked);
         returnToSearchBtn.setOnClickListener(this::returnToSearch);
-        searchBtn.setOnClickListener(this::searchClicked);
+        //searchBtn.setOnClickListener(this::searchClicked);
         getDirectionsBtn.setOnClickListener(this::getDirectionsClicked);
 
         numPlanned.setText("Number of Planned Exhibits: " + ExhibitList.getNumChecked());
@@ -109,6 +108,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public static MainActivity getInstance() {
+        return main;
+    }
+
     void getDirectionsClicked(View view) {
         List<ExhibitItem> toVisit = ExhibitList.getCheckedExhibits();
 
@@ -133,10 +135,6 @@ public class MainActivity extends AppCompatActivity {
         Intent directionIntent = new Intent(this, DirectionActivity.class);
 //        directionIntent.putExtra("directions", directions);
         startActivity(directionIntent);
-    }
-
-    static MainActivity getInstance() {
-        return main;
     }
 
     public List<ExhibitItem> getExhibits() {
