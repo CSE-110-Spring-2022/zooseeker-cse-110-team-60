@@ -8,8 +8,10 @@ import androidx.room.Update;
 
 import java.util.List;
 
-@Dao public interface ExhibitItemDao {
-    @Insert List<Long> insertAll(List<ExhibitItem> exhibitItemList);
+@Dao
+public interface ExhibitItemDao {
+    @Insert
+    List<Long> insertAll(List<ExhibitItem> exhibitItemList);
 
     @Query("SELECT * FROM `exhibit_list_items` WHERE `id`=:id")
     ExhibitItem get(String id); // TODO
@@ -20,7 +22,6 @@ import java.util.List;
     @Query("SELECT * FROM `exhibit_list_items` ORDER BY `name`")
     LiveData<List<ExhibitItem>> getAllLive();
 
-    @Update int update(ExhibitItem exhibitItem);
+    @Update
+    int update(ExhibitItem exhibitItem);
 }
-
-

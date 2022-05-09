@@ -5,7 +5,10 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+
+import android.annotation.SuppressLint;
 import android.content.Intent;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -20,17 +23,25 @@ import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
-    public  RecyclerView         recyclerView;
-    private ExhibitViewModel     viewModel;
-    private ExhibitListAdapter   adapter;
+    public RecyclerView recyclerView;
+    private ExhibitViewModel viewModel;
+    private ExhibitListAdapter adapter;
+
     private AutoCompleteTextView searchBar;
+
+    private Button searchBtn;
     private Button   searchBtn;
     private Button   getDirectionsBtn;
     private TextView numPlanned;
+    private Button clearBtn;
+    private Button showCheckedBtn;
+    private Button returnToSearchBtn;
 
+    @SuppressLint("StaticFieldLeak")
     static MainActivity main;
 
-    @Override protected void onCreate(Bundle savedInstanceState) {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         main = this;
         setContentView(R.layout.activity_main);
@@ -50,14 +61,23 @@ public class MainActivity extends AppCompatActivity {
         searchBtn = findViewById(R.id.searchButton);
         getDirectionsBtn = findViewById(R.id.getDirectionsButton);
         numPlanned = findViewById(R.id.counter);
+        clearBtn = findViewById(R.id.clearExhibitsBtn);
+        showCheckedBtn = findViewById(R.id.showCheckedBtn);
+        returnToSearchBtn = findViewById(R.id.returnBtn);
 
+        setNumPlanned();
+
+        searchBtn.setOnClickListener(this::searchExhibit);
+        clearBtn.setOnClickListener(this::uncheckList);
+        showCheckedBtn.setOnClickListener(this::showChecked);
+        returnToSearchBtn.setOnClickListener(this::returnToSearch);
         searchBtn.setOnClickListener(this::searchClicked);
         getDirectionsBtn.setOnClickListener(this::getDirectionsClicked);
 
         numPlanned.setText("Number of Planned Exhibits: " + ExhibitList.getNumChecked());
     }
 
-    void searchClicked(View view) {
+    private void searchExhibit(View view) {
         String search = searchBar.getText().toString();
         if (search.equals("")) {
             Utilities.showAlert(this, "Please enter a valid exhibit!");
@@ -68,6 +88,27 @@ public class MainActivity extends AppCompatActivity {
         searchBar.setText("");
     }
 
+
+    private void uncheckList(View view) {
+        uncheck();
+        setNumPlanned();
+    }
+
+    private void showChecked(View view) {
+        List<ExhibitItem> checkedExhibits = ExhibitList.getCheckedExhibits();
+        adapter.setExhibitListItems(checkedExhibits);
+        showCheckedBtn.setVisibility(View.INVISIBLE);
+        returnToSearchBtn.setVisibility(View.VISIBLE);
+    }
+
+    private void returnToSearch(View view) {
+        List<ExhibitItem> allExhibits = ExhibitList.getAllExhibits();
+        adapter.setExhibitListItems(allExhibits);
+        returnToSearchBtn.setVisibility(View.INVISIBLE);
+        showCheckedBtn.setVisibility(View.VISIBLE);
+    }
+
+    public static MainActivity getInstance() {
     void getDirectionsClicked(View view) {
         List<ExhibitItem> toVisit = ExhibitList.getCheckedExhibits();
 
@@ -98,7 +139,19 @@ public class MainActivity extends AppCompatActivity {
         return main;
     }
 
-    List<ExhibitItem> getExhibits() {
+    public List<ExhibitItem> getExhibits() {
         return viewModel.getAllExhibits();
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void setNumPlanned() {
+        numPlanned.setText("Planned " + ExhibitList.getNumChecked() + " Exhibit(s)");
+    }
+
+    public void uncheck() {
+        List<ExhibitItem> checkedExhibits = ExhibitList.getCheckedExhibits();
+        for (ExhibitItem item : checkedExhibits) {
+            viewModel.uncheckList(item);
+        }
     }
 }
