@@ -12,12 +12,27 @@
         android:layout_height="66dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="32dp"
         android:hint="@string/search_hint"
+        android:inputType="text"
+        android:singleLine="true"
         app:layout_constraintBottom_toTopOf="@id/rvExhibits"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@id/searchButton"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/deleteBtn"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:background="@android:drawable/ic_menu_close_clear_cancel"
+        android:backgroundTint="@color/black"
+        android:clickable="true"
+        android:gravity="center"
+        app:layout_constraintBottom_toTopOf="@id/rvExhibits"
+        app:layout_constraintLeft_toRightOf="@+id/searchBar"
+        app:layout_constraintRight_toLeftOf="@+id/searchButton"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button

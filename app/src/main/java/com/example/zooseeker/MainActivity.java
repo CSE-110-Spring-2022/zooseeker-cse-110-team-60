@@ -10,6 +10,8 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
@@ -28,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private ExhibitListAdapter adapter;
 
     private AutoCompleteTextView searchBar;
-
+    private TextView deleteSearchBtn;
     private Button searchBtn;
     private Button  getDirectionsBtn;
     private TextView numPlanned;
@@ -57,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
 
         searchBar = findViewById(R.id.searchBar);
+        deleteSearchBtn = findViewById(R.id.deleteBtn);
         searchBtn = findViewById(R.id.searchButton);
         getDirectionsBtn = findViewById(R.id.getDirectionsButton);
         numPlanned = findViewById(R.id.counter);
@@ -66,6 +69,27 @@ public class MainActivity extends AppCompatActivity {
 
         setNumPlanned();
 
+        searchBar.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1,
+                                          int i2) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (charSequence != null) {
+                    if (charSequence.length() != 0) {
+                        displaySearch(String.valueOf(charSequence));
+                    }
+                    else {
+                        displayAll();
+                    }
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {}
+        });
+        deleteSearchBtn.setOnClickListener(this::deleteSearch);
         searchBtn.setOnClickListener(this::searchExhibit);
         clearBtn.setOnClickListener(this::uncheckList);
         showCheckedBtn.setOnClickListener(this::showChecked);
@@ -76,15 +100,18 @@ public class MainActivity extends AppCompatActivity {
         numPlanned.setText("Number of Planned Exhibits: " + ExhibitList.getNumChecked());
     }
 
+    private void deleteSearch(View view) {
+        searchBar.getText().clear();
+        displayAll();
+    }
+
     private void searchExhibit(View view) {
         String search = searchBar.getText().toString();
         if (search.equals("")) {
             Utilities.showAlert(this, "Please enter a valid exhibit!");
             return;
         }
-        List<ExhibitItem> searchLists = ExhibitList.getSearchItems(search);
-        adapter.setExhibitListItems(searchLists);
-        searchBar.setText("");
+        displaySearch(search);
     }
 
 
@@ -101,8 +128,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void returnToSearch(View view) {
-        List<ExhibitItem> allExhibits = ExhibitList.getAllExhibits();
-        adapter.setExhibitListItems(allExhibits);
+        displayAll();
         returnToSearchBtn.setVisibility(View.INVISIBLE);
         showCheckedBtn.setVisibility(View.VISIBLE);
     }
@@ -151,5 +177,15 @@ public class MainActivity extends AppCompatActivity {
         for (ExhibitItem item : checkedExhibits) {
             viewModel.uncheckList(item);
         }
+    }
+
+    private void displayAll() {
+        List<ExhibitItem> allExhibits = ExhibitList.getAllExhibits();
+        adapter.setExhibitListItems(allExhibits);
+    }
+
+    private void displaySearch(String search) {
+        List<ExhibitItem> searchLists = ExhibitList.getSearchItems(search);
+        adapter.setExhibitListItems(searchLists);
     }
 }

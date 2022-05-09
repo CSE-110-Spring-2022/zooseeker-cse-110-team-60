@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity(tableName = "exhibit_list_items")
@@ -38,15 +39,18 @@ public class ExhibitItem {
     }
 
     public static List<ExhibitItem> loadJSON(Context context, String path) {
+        List<ExhibitItem> allExhibits = new ArrayList<>();
+
         List<VertexInfo> vertexInfos = VertexInfo.loadVertexInfoJSON(context, path);
         for (VertexInfo item : vertexInfos) {
             if (item.kind == VertexInfo.Kind.EXHIBIT) {
                 ExhibitItem exhibitItem = new ExhibitItem(item.id, item.kind, item.name
                         , String
                         .join(", ", item.tags));
-                ExhibitList.allExhibits.add(exhibitItem);
+                allExhibits.add(exhibitItem);
+
             }
         }
-        return ExhibitList.allExhibits;
+        return allExhibits;
     }
 }
