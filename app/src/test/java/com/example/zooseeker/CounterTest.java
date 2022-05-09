@@ -54,24 +54,23 @@ public class CounterTest {
     @Test
     public void counterUp() {
         // Create a mock list of exhibits to be inserted into a list.
-        List<ExhibitItem> items = new ArrayList<>();
-        items.add(ex1);
-        items.add(ex2);
-        items.add(ex3);
-        dao.insertAll(items);
-        ExhibitList testExhibitList = new ExhibitList();
-        testExhibitList.allExhibits = dao.getAll();
+        List<ExhibitItem> mockItems = new ArrayList<>();
+        mockItems.add(ex1);
+        mockItems.add(ex2);
+        mockItems.add(ex3);
+        dao.insertAll(mockItems);
+        List<ExhibitItem> items = dao.getAll();
         // Verify that none of the exhibits are added
-        for (ExhibitItem item : testExhibitList.allExhibits) {
+        for (ExhibitItem item : items) {
             assertFalse(item.added);
         }
         // Set the added parameter of all exhibits to true and update database
-        for (ExhibitItem item : testExhibitList.allExhibits) {
+        for (ExhibitItem item : items) {
             item.added = true;
             dao.update(item);
         }
         // Test counterUp() by checking getNumChecked() returns that all exhibits are checked
-        for (ExhibitItem item : testExhibitList.allExhibits) {
+        for (ExhibitItem item : items) {
             assertTrue(item.added);
         }
     }
@@ -79,31 +78,30 @@ public class CounterTest {
     @Test
     public void counterDown() {
         // Create a mock list of exhibits to be inserted into a list.
-        List<ExhibitItem> items = new ArrayList<>();
-        items.add(ex1);
-        items.add(ex2);
-        items.add(ex3);
-        dao.insertAll(items);
-        ExhibitList testExhibitList = new ExhibitList();
-        testExhibitList.allExhibits = dao.getAll();
+        List<ExhibitItem> mockItems = new ArrayList<>();
+        mockItems.add(ex1);
+        mockItems.add(ex2);
+        mockItems.add(ex3);
+        dao.insertAll(mockItems);
+        List<ExhibitItem> items = dao.getAll();
         // Verify that none of the exhibits are added
-        for (ExhibitItem item : testExhibitList.allExhibits) {
+        for (ExhibitItem item : items) {
             assertFalse(item.added);
         }
         // Set the added parameter of all exhibits to true and update database
-        for (ExhibitItem item : testExhibitList.allExhibits) {
+        for (ExhibitItem item : items) {
             item.added = true;
             dao.update(item);
         }
         // Test counterUp() by checking getNumChecked() returns that all exhibits are checked
-        for (ExhibitItem item : testExhibitList.allExhibits) {
+        for (ExhibitItem item : items) {
             assertTrue(item.added);
         }
         // Set one exhibit to false and update database
-        testExhibitList.allExhibits.get(0).added = false;
-        dao.update(testExhibitList.allExhibits.get(0));
+        items.get(0).added = false;
+        dao.update(items.get(0));
         // Test counterDown() by that one exhibit is un-checked
-        assertFalse(testExhibitList.allExhibits.get(0).added);
+        assertFalse(items.get(0).added);
     }
 
 }
