@@ -94,10 +94,7 @@ public class MainActivity extends AppCompatActivity {
         clearBtn.setOnClickListener(this::uncheckList);
         showCheckedBtn.setOnClickListener(this::showChecked);
         returnToSearchBtn.setOnClickListener(this::returnToSearch);
-        //searchBtn.setOnClickListener(this::searchClicked);
         getDirectionsBtn.setOnClickListener(this::getDirectionsClicked);
-
-        numPlanned.setText("Number of Planned Exhibits: " + ExhibitList.getNumChecked());
     }
 
     private void deleteSearch(View view) {
@@ -149,17 +146,10 @@ public class MainActivity extends AppCompatActivity {
         Map<String, ZooData.VertexInfo> vInfo = ZooData.loadVertexInfoJSON(this,"sample_node_info.JSON");
         Map<String, ZooData.EdgeInfo> eInfo = ZooData.loadEdgeInfoJSON(this,"sample_edge_info.JSON");
 
-        Log.d("toVisit", String.valueOf(toVisit.size()));
-
         DirectionTracker dt = new DirectionTracker(g, vInfo, eInfo);
         dt.getDirections(toVisit);
 
-//        for (int i = 0; i < directions.size(); i++) {
-//            Log.d("direction " + String.valueOf(i), directions.get(i).toString());
-//        }
-
         Intent directionIntent = new Intent(this, DirectionActivity.class);
-//        directionIntent.putExtra("directions", directions);
         startActivity(directionIntent);
     }
 

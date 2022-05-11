@@ -18,12 +18,20 @@ public class ExhibitListAdapter extends RecyclerView.Adapter<ExhibitListAdapter.
     private List<ExhibitItem> exhibitItems = Collections.emptyList();
     private Consumer<ExhibitItem> onCheckBoxClicked;
 
+    /*
+     *   Name:       setExhibitListItems
+     *   Behavior:   Given a list of ExhibitItems to load in the recyclerView, update the list of
+     *               ExhibitItems in the adapter that will be loaded into the view.
+     *   @param      List<ExhibitItem>  newExhibitItems     the new list of exhibit items
+     *   @return
+     */
     @SuppressLint("NotifyDataSetChanged")
     public void setExhibitListItems(List<ExhibitItem> newExhibitItems) {
         this.exhibitItems.clear();
         this.exhibitItems = newExhibitItems;
         notifyDataSetChanged();
     }
+
 
     public void setOnCheckBoxClickedHandler(Consumer<ExhibitItem> onCheckBoxClicked) {
         this.onCheckBoxClicked = onCheckBoxClicked;

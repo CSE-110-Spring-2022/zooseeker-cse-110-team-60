@@ -30,23 +30,38 @@ public class DirectionActivity extends AppCompatActivity {
         exitButton = findViewById(R.id.exit_btn);
         i = 0;
 
-        setDirection(i);
+        setDirection();
 
         nextButton.setOnClickListener(this::nextClicked);
         previousButton.setOnClickListener(this::previousClicked);
     }
 
+    /*
+    *   Name:       nextClicked
+    *   Behavior:   When the next button is clicked, if the current direction is the last one,
+    *               display a message notifying there are no more directions. Otherwise, increment the
+    *               index of the current direction i and set the direction.
+    *   @param      View     view       the view being called from
+    *   @return
+     */
     void nextClicked(View view) {
         if (this.i == DirectionTracker.directions.size() - 1) {
             Utilities.showAlert(this, "No More Directions!");
             return;
         }
 
-        Log.d("directions", "next");
         this.i++;
-        setDirection(i);
+        setDirection();
     }
 
+    /*
+     *   Name:       previousClicked
+     *   Behavior:   When the previous button is clicked, if the current direction is the first one,
+     *               display a message notifying the user this is the case. Otherwise, decrement the
+     *               index of the current direction i and set the direction.
+     *   @param      View     view       the view being called from
+     *   @return
+     */
     void previousClicked(View view) {
         if (this.i == 0) {
             Utilities.showAlert(this, "This is the First Direction!");
@@ -54,11 +69,17 @@ public class DirectionActivity extends AppCompatActivity {
         }
 
         this.i--;
-        setDirection(i);
+        setDirection();
     }
 
-    void setDirection(int i) {
-        header.setText(DirectionTracker.directions.get(i).getStart() + " to " + DirectionTracker.directions.get(i).getEnd());
+    /*
+     *   Name:       setDirection
+     *   Behavior:   Update the header and body to reflect the details of the current direction.
+     *   @param      View     view       the view being called from
+     *   @return
+     */
+    void setDirection() {
+        header.setText(DirectionTracker.directions.get(this.i).getStart() + " to " + DirectionTracker.directions.get(this.i).getEnd());
 
         String directionsString = "";
         List<String> steps = DirectionTracker.directions.get(i).getSteps();
