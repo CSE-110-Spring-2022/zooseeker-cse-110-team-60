@@ -12,7 +12,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -20,7 +19,6 @@ import android.widget.TextView;
 
 import org.jgrapht.Graph;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -54,18 +52,18 @@ public class MainActivity extends AppCompatActivity {
         adapter.setOnCheckBoxClickedHandler(viewModel::toggleAdded);
         viewModel.getExhibitItems().observe(this, adapter::setExhibitListItems);
 
-        recyclerView = findViewById(R.id.rvExhibits);
+        recyclerView = findViewById(R.id.main_exhibits_recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
-        searchBar = findViewById(R.id.searchBar);
-        deleteSearchBtn = findViewById(R.id.deleteBtn);
-        searchBtn = findViewById(R.id.searchButton);
-        getDirectionsBtn = findViewById(R.id.getDirectionsButton);
+        searchBar = findViewById(R.id.main_search_textView);
+        deleteSearchBtn = findViewById(R.id.main_delete_button);
+        searchBtn = findViewById(R.id.main_search_button);
+        getDirectionsBtn = findViewById(R.id.main_getDirections_button);
         numPlanned = findViewById(R.id.counter);
-        clearBtn = findViewById(R.id.clearExhibitsBtn);
+        clearBtn = findViewById(R.id.main_clear_button);
         showCheckedBtn = findViewById(R.id.showCheckedBtn);
-        returnToSearchBtn = findViewById(R.id.returnBtn);
+        returnToSearchBtn = findViewById(R.id.main_show_and_back_button);
 
         setNumPlanned();
 

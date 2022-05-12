@@ -1,15 +1,10 @@
 package com.example.zooseeker;
 
-import static org.jgrapht.alg.shortestpath.DijkstraShortestPath.findPathBetween;
-
-import android.util.Log;
-
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 

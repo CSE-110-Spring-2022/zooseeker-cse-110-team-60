@@ -37,37 +37,37 @@ public class PreviousOnFirstExhibitAlertTest {
     @Test
     public void previousOnFirstExhibitAlertTest() {
         ViewInteraction materialCheckBox = onView(
-                allOf(withId(R.id.added),
+                allOf(withId(R.id.exhibit_item_checkBox),
                         childAtPosition(
                                 childAtPosition(
-                                        withId(R.id.rvExhibits),
+                                        withId(R.id.main_exhibits_recyclerView),
                                         1),
                                 0),
                         isDisplayed()));
         materialCheckBox.perform(click());
 
         ViewInteraction materialCheckBox2 = onView(
-                allOf(withId(R.id.added),
+                allOf(withId(R.id.exhibit_item_checkBox),
                         childAtPosition(
                                 childAtPosition(
-                                        withId(R.id.rvExhibits),
+                                        withId(R.id.main_exhibits_recyclerView),
                                         2),
                                 0),
                         isDisplayed()));
         materialCheckBox2.perform(click());
 
         ViewInteraction materialCheckBox3 = onView(
-                allOf(withId(R.id.added),
+                allOf(withId(R.id.exhibit_item_checkBox),
                         childAtPosition(
                                 childAtPosition(
-                                        withId(R.id.rvExhibits),
+                                        withId(R.id.main_exhibits_recyclerView),
                                         3),
                                 0),
                         isDisplayed()));
         materialCheckBox3.perform(click());
 
         ViewInteraction materialButton = onView(
-                allOf(withId(R.id.getDirectionsButton), withText("Get Directions"),
+                allOf(withId(R.id.main_getDirections_button), withText("Get Directions"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
@@ -77,7 +77,7 @@ public class PreviousOnFirstExhibitAlertTest {
         materialButton.perform(click());
 
         ViewInteraction materialButton2 = onView(
-                allOf(withId(R.id.previous_btn), withText("Previous"),
+                allOf(withId(R.id.direction_previous_button), withText("Previous"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),

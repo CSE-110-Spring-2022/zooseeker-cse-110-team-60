@@ -1,7 +1,6 @@
 package com.example.zooseeker;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -23,11 +22,11 @@ public class DirectionActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_direction);
 
-        header = findViewById(R.id.header_txt);
-        body = findViewById(R.id.body_txt);
-        nextButton = findViewById(R.id.next_btn);
-        previousButton = findViewById(R.id.previous_btn);
-        exitButton = findViewById(R.id.exit_btn);
+        header = findViewById(R.id.direction_header_textView);
+        body = findViewById(R.id.direction_body_textView);
+        nextButton = findViewById(R.id.direction_next_button);
+        previousButton = findViewById(R.id.direction_previous_button);
+        exitButton = findViewById(R.id.direction_exit_button);
         i = 0;
 
         setDirection();
