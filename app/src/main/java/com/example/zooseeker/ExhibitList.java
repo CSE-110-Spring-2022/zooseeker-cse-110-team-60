@@ -74,8 +74,7 @@ public class ExhibitList {
             String[] nameA = item.name.split(" ");
             for (String word : nameA) {
                 word = word.toLowerCase();
-//                if (word.indexOf(search) == 0) {
-                if (word.contains(search)) { // updated according to Piazza @504
+                if (word.contains(search)) {
                     searchItems.add(item);
                 }
             }
