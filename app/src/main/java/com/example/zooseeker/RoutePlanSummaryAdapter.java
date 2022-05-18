@@ -1,3 +1,7 @@
+/**
+ * Adapter for using RecyclerView with Directions
+ */
+
 package com.example.zooseeker;
 
 import android.view.LayoutInflater;

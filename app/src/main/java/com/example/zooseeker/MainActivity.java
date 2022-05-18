@@ -1,14 +1,7 @@
 package com.example.zooseeker;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-
 import android.annotation.SuppressLint;
 import android.content.Intent;
-
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -18,9 +11,13 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import org.jgrapht.Graph;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -157,10 +154,11 @@ public class MainActivity extends AppCompatActivity {
 //        for (int i = 0; i < directions.size(); i++) {
 //            Log.d("direction " + String.valueOf(i), directions.get(i).toString());
 //        }
-
-        Intent directionIntent = new Intent(this, DirectionActivity.class);
+        Intent summaryIntent = new Intent(this, RoutePlanSummaryActivity.class);
+        startActivity(summaryIntent);
+        //Intent directionIntent = new Intent(this, DirectionActivity.class);
 //        directionIntent.putExtra("directions", directions);
-        startActivity(directionIntent);
+        //startActivity(directionIntent);
     }
 
     public List<ExhibitItem> getExhibits() {

@@ -1,4 +1,11 @@
+/**
+ * Displays a summary of the planned route in the following format:
+ *  A to B (X meters)
+ *  B to C (Y meters)
+ */
+
 package com.example.zooseeker;
+
 
 import android.os.Bundle;
 
@@ -22,7 +29,6 @@ public class RoutePlanSummaryActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
-        // NEED TO PASS DIRECTIONS INTO HERE FROM MAIN
-        adapter.setDirectionItems();
+        adapter.setDirectionItems(DirectionTracker.directions);
     }
 }
