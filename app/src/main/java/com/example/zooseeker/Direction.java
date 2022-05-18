@@ -25,4 +25,10 @@ public class Direction {
                 ", steps=" + steps +
                 '}';
     }
+
+    // toString version for summary
+    // **Still need to implement '(distance in meters)' after listing step
+    public String toSummaryString() {
+        return start + " to " + end + " (n meters)";
+    }
 }
