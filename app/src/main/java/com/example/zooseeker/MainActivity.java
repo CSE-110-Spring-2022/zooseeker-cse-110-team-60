@@ -120,6 +120,7 @@ public class MainActivity extends AppCompatActivity {
         update = true;
         uncheck();
         setNumPlanned();
+        displayAll();
     }
 
     private void showChecked(View view) {
@@ -130,6 +131,8 @@ public class MainActivity extends AppCompatActivity {
         returnToSearchBtn.setVisibility(View.VISIBLE);
     }
 
+    // after "clear" showing the entire list, if the search bar is not empty, checking any exhibit,
+    // "show" and then "back" return all search items following the string in the search bar
     private void returnToSearch(View view) {
         update = true;
         displaySearch();
