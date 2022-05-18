@@ -30,11 +30,13 @@ public class MainActivity extends AppCompatActivity {
     private AutoCompleteTextView searchBar;
     private TextView deleteSearchBtn;
     private Button searchBtn;
-    private Button  getDirectionsBtn;
     private TextView numPlanned;
     private Button clearBtn;
     private Button showCheckedBtn;
     private Button returnToSearchBtn;
+    private Button  getDirectionsBtn;
+
+    public static boolean update = true;
 
     @SuppressLint("StaticFieldLeak")
     static MainActivity main;
@@ -59,11 +61,11 @@ public class MainActivity extends AppCompatActivity {
         searchBar = findViewById(R.id.main_search_textView);
         deleteSearchBtn = findViewById(R.id.main_delete_button);
         searchBtn = findViewById(R.id.main_search_button);
-        getDirectionsBtn = findViewById(R.id.main_getDirections_button);
         numPlanned = findViewById(R.id.counter);
         clearBtn = findViewById(R.id.main_clear_button);
         showCheckedBtn = findViewById(R.id.showCheckedBtn);
         returnToSearchBtn = findViewById(R.id.main_show_and_back_button);
+        getDirectionsBtn = findViewById(R.id.main_getDirections_button);
 
         setNumPlanned();
 
@@ -76,9 +78,11 @@ public class MainActivity extends AppCompatActivity {
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if (charSequence != null) {
                     if (charSequence.length() != 0) {
+                        update = true;
                         displaySearch(String.valueOf(charSequence));
                     }
                     else {
+                        update = true;
                         displayAll();
                     }
                 }
@@ -89,18 +93,20 @@ public class MainActivity extends AppCompatActivity {
         });
         deleteSearchBtn.setOnClickListener(this::deleteSearch);
         searchBtn.setOnClickListener(this::searchExhibit);
-        clearBtn.setOnClickListener(this::uncheckList);
         showCheckedBtn.setOnClickListener(this::showChecked);
         returnToSearchBtn.setOnClickListener(this::returnToSearch);
+        clearBtn.setOnClickListener(this::uncheckList);
         getDirectionsBtn.setOnClickListener(this::getDirectionsClicked);
     }
 
     private void deleteSearch(View view) {
+        update = true;
         searchBar.getText().clear();
         displayAll();
     }
 
     private void searchExhibit(View view) {
+        update = true;
         String search = searchBar.getText().toString();
         if (search.equals("")) {
             Utilities.showAlert(this, "Please enter a valid exhibit!");
@@ -111,11 +117,13 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void uncheckList(View view) {
+        update = true;
         uncheck();
         setNumPlanned();
     }
 
     private void showChecked(View view) {
+        update = true;
         List<ExhibitItem> checkedExhibits = ExhibitList.getCheckedExhibits();
         adapter.setExhibitListItems(checkedExhibits);
         showCheckedBtn.setVisibility(View.INVISIBLE);
@@ -123,7 +131,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void returnToSearch(View view) {
-        displayAll();
+        update = true;
+        displaySearch();
         returnToSearchBtn.setVisibility(View.INVISIBLE);
         showCheckedBtn.setVisibility(View.VISIBLE);
     }
@@ -165,11 +174,22 @@ public class MainActivity extends AppCompatActivity {
         for (ExhibitItem item : checkedExhibits) {
             viewModel.uncheckList(item);
         }
+        setNumPlanned();
     }
 
     private void displayAll() {
         List<ExhibitItem> allExhibits = ExhibitList.getAllExhibits();
         adapter.setExhibitListItems(allExhibits);
+    }
+
+    public void displaySearch() {
+        String search = searchBar.getText().toString();
+        if (search.equals("")) {
+            displayAll();
+        }
+        else {
+            displaySearch(search);
+        }
     }
 
     private void displaySearch(String search) {

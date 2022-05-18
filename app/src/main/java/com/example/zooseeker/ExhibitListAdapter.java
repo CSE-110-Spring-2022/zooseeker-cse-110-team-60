@@ -20,11 +20,12 @@ public class ExhibitListAdapter extends RecyclerView.Adapter<ExhibitListAdapter.
 
     @SuppressLint("NotifyDataSetChanged")
     public void setExhibitListItems(List<ExhibitItem> newExhibitItems) {
-        this.exhibitItems.clear();
-        this.exhibitItems = newExhibitItems;
-        notifyDataSetChanged();
+        if (MainActivity.update) {
+            this.exhibitItems.clear();
+            this.exhibitItems = newExhibitItems;
+            notifyDataSetChanged();
+        }
     }
-
 
     public void setOnCheckBoxClickedHandler(Consumer<ExhibitItem> onCheckBoxClicked) {
         this.onCheckBoxClicked = onCheckBoxClicked;

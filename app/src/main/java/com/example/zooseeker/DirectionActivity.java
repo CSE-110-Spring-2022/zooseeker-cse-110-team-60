@@ -1,10 +1,13 @@
 package com.example.zooseeker;
 
+import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.List;
@@ -33,6 +36,7 @@ public class DirectionActivity extends AppCompatActivity {
 
         nextButton.setOnClickListener(this::nextClicked);
         previousButton.setOnClickListener(this::previousClicked);
+        exitButton.setOnClickListener(this::exitClicked);
     }
 
     /*
@@ -69,6 +73,36 @@ public class DirectionActivity extends AppCompatActivity {
 
         this.i--;
         setDirection();
+    }
+
+    /**
+     * Name:     exitClicked
+     * Behavior: When the exit button is clicked, a popup alert is displayed to confirm.
+     *           If "yes" is clicked, exit current path, remove all selected, and return to search.
+     *           Else, stay on directions.
+     *
+     * @param    view the view being called from
+     */
+    void exitClicked(View view) {
+        DialogInterface.OnClickListener dialog = (dialogInterface, i) -> {
+            switch(i) {
+                // "Yes" button clicked
+                case DialogInterface.BUTTON_POSITIVE:
+                    ExhibitList.clearCheckedExhibits();
+                    finish();
+                    break;
+
+                // "No" button clicked
+                case DialogInterface.BUTTON_NEGATIVE:
+                    break;
+            }
+        };
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Are you sure to exit your current path?")
+                .setPositiveButton("Yes", dialog)
+                .setNegativeButton("No", dialog)
+                .show();
     }
 
     /*
