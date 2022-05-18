@@ -18,12 +18,12 @@ public class Direction {
     public List<String> getSteps() { return steps;}
 
 
-
-    // Credit: https://stackoverflow.com/questions/17076030/how-can-i-find-int-values-within-a-string
+    // Credit : https://stackoverflow.com/questions/10263634/find-int-in-string
     public int getDistance() {
         int dist = 0;
         for (String s : steps) {
             String clean = s.replaceAll("\\D+","");
+            clean = clean.substring(1);
             dist += Integer.parseInt(clean);
         }
         return dist;
@@ -38,9 +38,6 @@ public class Direction {
     }
 
 
-
-    // toString version for summary
-    // **Still need to implement '(distance in meters)' after listing step
     public String toSummaryString() {
         return String.format("%s to %s (%d meters)",
                 start,
