@@ -1,3 +1,12 @@
+/*
+*   File Name:
+*   Class Name:
+*   Description:
+*   Fields:
+*   Public Functions:
+*   Private Functions:
+ */
+
 package com.example.zooseeker;
 
 import java.util.List;
