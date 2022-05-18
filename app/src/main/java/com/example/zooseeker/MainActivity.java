@@ -156,9 +156,7 @@ public class MainActivity extends AppCompatActivity {
 //        }
         Intent summaryIntent = new Intent(this, RoutePlanSummaryActivity.class);
         startActivity(summaryIntent);
-        //Intent directionIntent = new Intent(this, DirectionActivity.class);
-//        directionIntent.putExtra("directions", directions);
-        //startActivity(directionIntent);
+
     }
 
     public List<ExhibitItem> getExhibits() {

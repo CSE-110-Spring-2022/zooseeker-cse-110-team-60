@@ -7,7 +7,9 @@
 package com.example.zooseeker;
 
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -30,5 +32,14 @@ public class RoutePlanSummaryActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
 
         adapter.setDirectionItems(DirectionTracker.directions);
+    }
+
+    public void onBackClicked(View view) {
+        finish();
+    }
+
+    public void onGoClicked(View view) {
+        Intent directionIntent = new Intent(this, DirectionActivity.class);
+        startActivity(directionIntent);
     }
 }
