@@ -1,6 +1,5 @@
 package com.example.zooseeker;
 
-import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
@@ -88,7 +87,6 @@ public class DirectionActivity extends AppCompatActivity {
             switch(i) {
                 // "Yes" button clicked
                 case DialogInterface.BUTTON_POSITIVE:
-                    ExhibitList.clearCheckedExhibits();
                     finish();
                     break;
 
