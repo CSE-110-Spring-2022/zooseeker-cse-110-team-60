@@ -1,5 +1,6 @@
 package com.example.zooseeker;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -7,11 +8,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -23,6 +29,8 @@ import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
+    private final PermissionChecker permissionChecker = new PermissionChecker(this);
+
     public RecyclerView recyclerView;
     private ExhibitViewModel viewModel;
     private ExhibitListAdapter adapter;
@@ -41,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     @SuppressLint("StaticFieldLeak")
     static MainActivity main;
 
+    @SuppressLint("MissingPermission")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,6 +77,20 @@ public class MainActivity extends AppCompatActivity {
         getDirectionsBtn = findViewById(R.id.main_getDirections_button);
 
         setNumPlanned();
+
+        if (permissionChecker.ensurePermissions()) return;
+
+
+        String provider = LocationManager.GPS_PROVIDER;
+        LocationManager locationManager =
+                (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        LocationListener locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(@NonNull Location location) {
+                // TODO
+            }
+        };
+        locationManager.requestLocationUpdates(provider, 0, 0f, locationListener);
 
         searchBar.addTextChangedListener(new TextWatcher() {
             @Override
