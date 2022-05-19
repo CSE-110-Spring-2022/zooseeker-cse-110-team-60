@@ -45,6 +45,8 @@ public class ExhibitViewModel extends AndroidViewModel {
         MainActivity main = MainActivity.getInstance();
         TextView numPlanned = main.findViewById(R.id.counter);
         numPlanned.setText("Planned " + ExhibitList.getNumChecked() + " Exhibit(s)");
+
+        MainActivity.update = false;
     }
 
     public void uncheckList(ExhibitItem exhibitItem) {

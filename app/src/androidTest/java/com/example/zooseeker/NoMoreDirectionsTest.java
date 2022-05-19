@@ -37,37 +37,37 @@ public class NoMoreDirectionsTest {
     @Test
     public void noMoreDirectionsTest() {
         ViewInteraction materialCheckBox = onView(
-                allOf(withId(R.id.added),
+                allOf(withId(R.id.exhibit_item_checkBox),
                         childAtPosition(
                                 childAtPosition(
-                                        withId(R.id.rvExhibits),
+                                        withId(R.id.main_exhibits_recyclerView),
                                         0),
                                 0),
                         isDisplayed()));
         materialCheckBox.perform(click());
 
         ViewInteraction materialCheckBox2 = onView(
-                allOf(withId(R.id.added),
+                allOf(withId(R.id.exhibit_item_checkBox),
                         childAtPosition(
                                 childAtPosition(
-                                        withId(R.id.rvExhibits),
+                                        withId(R.id.main_exhibits_recyclerView),
                                         2),
                                 0),
                         isDisplayed()));
         materialCheckBox2.perform(click());
 
         ViewInteraction materialCheckBox3 = onView(
-                allOf(withId(R.id.added),
+                allOf(withId(R.id.exhibit_item_checkBox),
                         childAtPosition(
                                 childAtPosition(
-                                        withId(R.id.rvExhibits),
+                                        withId(R.id.main_exhibits_recyclerView),
                                         3),
                                 0),
                         isDisplayed()));
         materialCheckBox3.perform(click());
 
         ViewInteraction materialButton = onView(
-                allOf(withId(R.id.getDirectionsButton), withText("Get Directions"),
+                allOf(withId(R.id.main_getDirections_button), withText("Get Directions"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
@@ -77,7 +77,7 @@ public class NoMoreDirectionsTest {
         materialButton.perform(click());
 
         ViewInteraction materialButton2 = onView(
-                allOf(withId(R.id.next_btn), withText("Next"),
+                allOf(withId(R.id.direction_next_button), withText("Next"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
@@ -87,7 +87,7 @@ public class NoMoreDirectionsTest {
         materialButton2.perform(click());
 
         ViewInteraction materialButton3 = onView(
-                allOf(withId(R.id.next_btn), withText("Next"),
+                allOf(withId(R.id.direction_next_button), withText("Next"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
@@ -97,7 +97,7 @@ public class NoMoreDirectionsTest {
         materialButton3.perform(click());
 
         ViewInteraction materialButton4 = onView(
-                allOf(withId(R.id.next_btn), withText("Next"),
+                allOf(withId(R.id.direction_next_button), withText("Next"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
@@ -107,7 +107,7 @@ public class NoMoreDirectionsTest {
         materialButton4.perform(click());
 
         ViewInteraction materialButton5 = onView(
-                allOf(withId(R.id.next_btn), withText("Next"),
+                allOf(withId(R.id.direction_next_button), withText("Next"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),

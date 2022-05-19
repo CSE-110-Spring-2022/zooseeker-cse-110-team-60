@@ -5,12 +5,10 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import android.content.Context;
-import android.util.Log;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 
 import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
 
 
@@ -25,8 +23,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @RunWith(AndroidJUnit4.class)
@@ -82,8 +78,8 @@ public class SearchTest {
         scenario.onActivity(activity -> {
             RecyclerView recyclerView = activity.recyclerView;
             AutoCompleteTextView searchBar =
-                    activity.findViewById(R.id.searchBar);
-            Button searchButton = activity.findViewById(R.id.searchButton);
+                    activity.findViewById(R.id.main_search_textView);
+            Button searchButton = activity.findViewById(R.id.main_search_button);
 
             searchBar.setText("HELLO");
             searchButton.performClick();
