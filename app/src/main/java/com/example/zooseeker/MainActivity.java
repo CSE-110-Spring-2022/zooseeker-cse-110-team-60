@@ -1,23 +1,21 @@
 package com.example.zooseeker;
 
-import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-
+import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -25,11 +23,13 @@ import android.widget.TextView;
 
 import org.jgrapht.Graph;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
     private final PermissionChecker permissionChecker = new PermissionChecker(this);
+    String[] requiredPermissions = new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
 
     public RecyclerView recyclerView;
     private ExhibitViewModel viewModel;
@@ -56,70 +56,86 @@ public class MainActivity extends AppCompatActivity {
         main = this;
         setContentView(R.layout.activity_main);
 
-        viewModel = new ViewModelProvider(this).get(ExhibitViewModel.class);
+        /* viewModel, adapter, recyclerView Setup */
+        {
+            viewModel = new ViewModelProvider(this).get(ExhibitViewModel.class);
 
-        adapter = new ExhibitListAdapter();
-        adapter.setHasStableIds(true);
-        adapter.setOnCheckBoxClickedHandler(viewModel::toggleAdded);
-        viewModel.getExhibitItems().observe(this, adapter::setExhibitListItems);
+            adapter = new ExhibitListAdapter();
+            adapter.setHasStableIds(true);
+            adapter.setOnCheckBoxClickedHandler(viewModel::toggleAdded);
+            viewModel.getExhibitItems().observe(this, adapter::setExhibitListItems);
 
-        recyclerView = findViewById(R.id.main_exhibits_recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(adapter);
+            recyclerView = findViewById(R.id.main_exhibits_recyclerView);
+            recyclerView.setLayoutManager(new LinearLayoutManager(this));
+            recyclerView.setAdapter(adapter);
+        }
 
-        searchBar = findViewById(R.id.main_search_textView);
-        deleteSearchBtn = findViewById(R.id.main_delete_button);
-        searchBtn = findViewById(R.id.main_search_button);
-        numPlanned = findViewById(R.id.counter);
-        clearBtn = findViewById(R.id.main_clear_button);
-        showCheckedBtn = findViewById(R.id.showCheckedBtn);
-        returnToSearchBtn = findViewById(R.id.main_show_and_back_button);
-        getDirectionsBtn = findViewById(R.id.main_getDirections_button);
+        /* findViewById Setup */
+        {
+            searchBar = findViewById(R.id.main_search_textView);
+            deleteSearchBtn = findViewById(R.id.main_delete_button);
+            searchBtn = findViewById(R.id.main_search_button);
+            numPlanned = findViewById(R.id.counter);
+            clearBtn = findViewById(R.id.main_clear_button);
+            showCheckedBtn = findViewById(R.id.showCheckedBtn);
+            returnToSearchBtn = findViewById(R.id.main_show_and_back_button);
+            getDirectionsBtn = findViewById(R.id.main_getDirections_button);
+        }
 
         setNumPlanned();
 
-        if (permissionChecker.ensurePermissions()) return;
+        /* Permissions Setup */
+        {
+            boolean hasNoLocationPerms = Arrays.stream(requiredPermissions)
+                                           .map(perm -> ContextCompat.checkSelfPermission(this, perm))
+                                           .allMatch(status -> status == PackageManager.PERMISSION_DENIED);
 
-
-        String provider = LocationManager.GPS_PROVIDER;
-        LocationManager locationManager =
-                (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-        LocationListener locationListener = new LocationListener() {
-            @Override
-            public void onLocationChanged(@NonNull Location location) {
-                // TODO
+            if (hasNoLocationPerms) {
+                permissionChecker.requestPermissionLauncher.launch(requiredPermissions);
             }
-        };
-        locationManager.requestLocationUpdates(provider, 0, 0f, locationListener);
+        }
 
-        searchBar.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1,
-                                          int i2) {}
+    /* Views Setup */
+        {
+            searchBar.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
 
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (charSequence != null) {
-                    if (charSequence.length() != 0) {
-                        update = true;
-                        displaySearch(String.valueOf(charSequence));
-                    }
-                    else {
-                        update = true;
-                        displayAll();
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    if (charSequence != null) {
+                        if (charSequence.length() != 0) {
+                            update = true;
+                            displaySearch(String.valueOf(charSequence));
+                        }
+                        else {
+                            update = true;
+                            displayAll();
+                        }
                     }
                 }
-            }
 
-            @Override
-            public void afterTextChanged(Editable editable) {}
-        });
-        deleteSearchBtn.setOnClickListener(this::deleteSearch);
-        searchBtn.setOnClickListener(this::searchExhibit);
-        showCheckedBtn.setOnClickListener(this::showChecked);
-        returnToSearchBtn.setOnClickListener(this::returnToSearch);
-        clearBtn.setOnClickListener(this::uncheckList);
-        getDirectionsBtn.setOnClickListener(this::getDirectionsClicked);
+                @Override
+                public void afterTextChanged(Editable editable) {}
+            });
+            deleteSearchBtn.setOnClickListener(this::deleteSearch);
+            searchBtn.setOnClickListener(this::searchExhibit);
+            showCheckedBtn.setOnClickListener(this::showChecked);
+            returnToSearchBtn.setOnClickListener(this::returnToSearch);
+            clearBtn.setOnClickListener(this::uncheckList);
+            getDirectionsBtn.setOnClickListener(this::getDirectionsClicked);
+        }
+
+//        String provider = LocationManager.GPS_PROVIDER;
+//        LocationManager locationManager =
+//                (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+//        LocationListener locationListener = new LocationListener() {
+//            @Override
+//            public void onLocationChanged(@NonNull Location location) {
+//                // TODO
+//            }
+//        };
+//        locationManager.requestLocationUpdates(provider, 0, 0f, locationListener);
     }
 
     private void deleteSearch(View view) {

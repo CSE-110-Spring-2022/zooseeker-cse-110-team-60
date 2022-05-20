@@ -1,42 +1,52 @@
 package com.example.zooseeker;
 
 import android.Manifest;
-import android.content.pm.PackageManager;
-import android.util.Log;
+import android.content.DialogInterface;
 
 import androidx.activity.ComponentActivity;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.core.content.ContextCompat;
-
-import java.util.Arrays;
+import androidx.appcompat.app.AlertDialog;
 
 public class PermissionChecker {
     private ComponentActivity activity;
     final ActivityResultLauncher<String[]> requestPermissionLauncher;
 
+    /**
+     * Requests permissions through pop-ups.
+     * Note that Android 11 and above will stop showing pop-ups
+     * after user taps Deny twice for a specific permission during app's lifetime of installation on a device.
+     *
+     * If precise location access granted, recreate activity for change to take effect.
+     * Else, an alert for enabling precise location is shown, and app quites after.
+     *
+     * @param activity  activity
+     */
     public PermissionChecker(ComponentActivity activity) {
         this.activity = activity;
+
         requestPermissionLauncher =
-                activity.registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(),
-                                                   perms -> perms.forEach((perm, isGranted) ->
-                                                   Log.i("Permissions", String.format("Permission %s granted: %s", perm,
-                                                                                                                                                                                 isGranted))));
-    }
+                activity.registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), result -> {
+            Boolean fineLocationGranted =
+                    result.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false);
 
-    boolean ensurePermissions() {
-        String[] requiredPermissions = new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
+             // precise location access granted
+            if (fineLocationGranted != null && fineLocationGranted) {
+                activity.recreate();
+            }
+            // only approximate location access granted or no access granted
+            else {
+                DialogInterface.OnClickListener dialog = (dialogInterface, i) -> {
+                    if (i == DialogInterface.BUTTON_POSITIVE) {
+                        activity.finish(); // TODO: downgrade to not use location
+                        System.exit(0);
+                    }
+                };
 
-        boolean hasNoLocationPerms = Arrays.stream(requiredPermissions)
-                                       .map(perm -> ContextCompat.checkSelfPermission(activity, perm))
-                                       .allMatch(status -> status == PackageManager.PERMISSION_DENIED);
-
-        if (hasNoLocationPerms) {
-            requestPermissionLauncher.launch(requiredPermissions);
-            // Note: the activity will be restarted when permission change!
-            // This entire method will be re-run, but we won't get stuck here.
-            return true;
-        }
-        return false;
+                AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+                builder.setMessage("Please go to System Settings to enable Precise Location for ZooSeeker.")
+                       .setPositiveButton("Ok", dialog).show();
+            }
+        });
     }
 }
