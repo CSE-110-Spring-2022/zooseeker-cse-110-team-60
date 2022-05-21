@@ -1,6 +1,5 @@
 package com.example.zooseeker;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
@@ -9,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.DialogInterface;
 import android.content.Intent;
 
 import android.content.pm.PackageManager;
@@ -107,6 +105,10 @@ public class MainActivity extends AppCompatActivity {
                         if (charSequence.length() != 0) {
                             update = true;
                             displaySearch(String.valueOf(charSequence));
+                            if (returnToSearchBtn.getVisibility() == View.VISIBLE) {
+                                returnToSearchBtn.setVisibility(View.INVISIBLE);
+                                showCheckedBtn.setVisibility(View.VISIBLE);
+                            }
                         }
                         else {
                             update = true;

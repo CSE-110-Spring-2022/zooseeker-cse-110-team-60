@@ -45,7 +45,7 @@ public class PermissionChecker {
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(activity);
                 builder.setMessage("Please go to System Settings to enable Precise Location for ZooSeeker.")
-                       .setPositiveButton("Ok", dialog).show();
+                       .setPositiveButton("Ok", dialog).show();  // TODO: only allow this time prompts this too
             }
         });
     }

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class ExhibitList {
     @SuppressLint("StaticFieldLeak")
@@ -52,6 +53,7 @@ public class ExhibitList {
                                      List<ExhibitItem> searchItems, String search) {
         for (ExhibitItem item : allExhibits) {
             String name = item.name;
+            name = name.toLowerCase();
             if (name.contains(search)) {
                 searchItems.add(item);
             }

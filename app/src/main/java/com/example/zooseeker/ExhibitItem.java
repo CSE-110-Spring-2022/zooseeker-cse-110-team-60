@@ -1,6 +1,7 @@
 package com.example.zooseeker;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
@@ -40,7 +41,6 @@ public class ExhibitItem {
 
     public static List<ExhibitItem> loadJSON(Context context, String path) {
         List<ExhibitItem> allExhibits = new ArrayList<>();
-
         List<VertexInfo> vertexInfos = VertexInfo.loadVertexInfoJSON(context, path);
         for (VertexInfo item : vertexInfos) {
             if (item.kind == VertexInfo.Kind.EXHIBIT) {
