@@ -33,6 +33,8 @@ public class PermissionChecker {
              // precise location access granted
             if (fineLocationGranted != null && fineLocationGranted) {
                 activity.recreate();
+                MainActivity main = MainActivity.getInstance();
+                main.gpsTracker = new GPSTracker(activity);
             }
             // only approximate location access granted or no access granted
             else {
@@ -45,7 +47,7 @@ public class PermissionChecker {
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(activity);
                 builder.setMessage("Please go to System Settings to enable Precise Location for ZooSeeker.")
-                       .setPositiveButton("Ok", dialog).show();  // TODO: only allow this time prompts this too
+                       .setPositiveButton("Ok", dialog).show();  // TODO: check what happens if clicking "only allow this time"
             }
         });
     }

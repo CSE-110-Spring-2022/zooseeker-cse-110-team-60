@@ -1,5 +1,6 @@
 package com.example.zooseeker;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
@@ -8,12 +9,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 
 import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -27,7 +33,9 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
     private final PermissionChecker permissionChecker = new PermissionChecker(this);
-    String[] requiredPermissions = new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
+    private static final String[] requiredPermissions = new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
+    public static Location lastKnownLocation;
+    public GPSTracker gpsTracker;
 
     public RecyclerView recyclerView;
     private ExhibitViewModel viewModel;
@@ -82,18 +90,18 @@ public class MainActivity extends AppCompatActivity {
 
         setNumPlanned();
 
-        /* Permissions Setup */
+        /* Location Permissions Setup */
         {
             boolean hasNoLocationPerms = Arrays.stream(requiredPermissions)
-                                           .map(perm -> ContextCompat.checkSelfPermission(this, perm))
-                                           .allMatch(status -> status == PackageManager.PERMISSION_DENIED);
+                                               .map(perm -> ContextCompat.checkSelfPermission(this, perm))
+                                               .allMatch(status -> status == PackageManager.PERMISSION_DENIED);
 
             if (hasNoLocationPerms) {
                 permissionChecker.requestPermissionLauncher.launch(requiredPermissions);
             }
         }
 
-    /* Views Setup */
+        /* Views Setup */
         {
             searchBar.addTextChangedListener(new TextWatcher() {
                 @Override
@@ -127,17 +135,6 @@ public class MainActivity extends AppCompatActivity {
             clearBtn.setOnClickListener(this::uncheckList);
             getDirectionsBtn.setOnClickListener(this::getDirectionsClicked);
         }
-
-//        String provider = LocationManager.GPS_PROVIDER;
-//        LocationManager locationManager =
-//                (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-//        LocationListener locationListener = new LocationListener() {
-//            @Override
-//            public void onLocationChanged(@NonNull Location location) {
-//                // TODO
-//            }
-//        };
-//        locationManager.requestLocationUpdates(provider, 0, 0f, locationListener);
     }
 
     private void deleteSearch(View view) {
