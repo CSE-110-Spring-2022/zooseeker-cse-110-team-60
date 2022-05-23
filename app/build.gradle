@@ -31,9 +31,11 @@ android {
             includeAndroidResources = true
         }
     }
+    namespace 'com.example.zooseeker'
 }
 
 dependencies {
+    implementation 'androidx.test:core:1.4.0'
     androidTestImplementation 'androidx.test:rules:1.4.1-alpha06'
 
     def gson_version = "2.9.0"

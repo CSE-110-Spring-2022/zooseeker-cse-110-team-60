@@ -17,10 +17,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.TextView;
 
-import org.jgrapht.Graph;
-
 import java.util.List;
-import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
     public RecyclerView recyclerView;
@@ -99,6 +96,15 @@ public class MainActivity extends AppCompatActivity {
         getDirectionsBtn.setOnClickListener(this::getDirectionsClicked);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        update = true;
+        setNumPlanned();
+        displayAll();
+
+    }
+
     private void deleteSearch(View view) {
         update = true;
         searchBar.getText().clear();
@@ -152,12 +158,9 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        Graph<String, IdentifiedWeightedEdge> g = ZooData.loadZooGraphJSON(this, "sample_zoo_graph.JSON");
-        Map<String, ZooData.VertexInfo> vInfo = ZooData.loadVertexInfoJSON(this,"sample_node_info.JSON");
-        Map<String, ZooData.EdgeInfo> eInfo = ZooData.loadEdgeInfoJSON(this,"sample_edge_info.JSON");
-
-        DirectionTracker dt = new DirectionTracker(g, vInfo, eInfo);
-        dt.getDirections(toVisit);
+        DirectionTracker.loadGraphData(this,"sample_node_info.JSON", "sample_edge_info.JSON", "sample_zoo_graph.JSON");
+        DirectionTracker.loadDatabaseAndDaoByContext(this);
+        DirectionTracker.initDirections("entrance_exit_gate", toVisit);
 
         Intent directionIntent = new Intent(this, DirectionActivity.class);
         startActivity(directionIntent);
