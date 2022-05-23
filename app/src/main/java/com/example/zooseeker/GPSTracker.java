@@ -81,7 +81,7 @@ public class GPSTracker implements LocationListener {
 //
 //        {
 //            for (Node exhibit : exhibits) {
-//                double distance = Utilities.dist(latitude, longitude, item.latitude,
+//                double distance = Utilities.getVincentyDistance(latitude, longitude, item.latitude,
 //                item.longitude);
 //                if (distance < closestDistance) {
 //                    closestDistance = distance;
@@ -120,8 +120,9 @@ public class GPSTracker implements LocationListener {
         String closestExhibit = "";
 
         for (Node node : nodes) {
-            double distance = Utilities.dist(latitude, longitude, node.latitude,
-                                             node.longitude);
+            double distance = Utilities.getVincentyDistance(latitude, longitude,
+                                                            node.latitude,
+                                                            node.longitude);
             if (distance < closestDistance) {
                 closestDistance = distance;
                 closestExhibit = node.id;
