@@ -27,8 +27,8 @@ import java.util.List;
 
 @RunWith(AndroidJUnit4.class)
 public class SearchTest {
-    ExhibitDatabase testDb;
-    ExhibitItemDao todoListItemDao;
+    NodeDatabase testDb;
+    NodeDao todoListItemDao;
 
     private static void forceLayout(RecyclerView recyclerView) {
         recyclerView.measure(View.MeasureSpec.UNSPECIFIED,
@@ -39,14 +39,14 @@ public class SearchTest {
     @Before
     public void resetDatabase() {
         Context context = ApplicationProvider.getApplicationContext();
-        testDb = Room.inMemoryDatabaseBuilder(context, ExhibitDatabase.class)
+        testDb = Room.inMemoryDatabaseBuilder(context, NodeDatabase.class)
                      .allowMainThreadQueries()
                      .build();
-        ExhibitDatabase.injectTestDatabase(testDb);
+        NodeDatabase.injectTestDatabase(testDb);
 
-        List<ExhibitItem>
-                todos = ExhibitItem.loadJSON(context, "sample_node_info.JSON");
-        todoListItemDao = testDb.exhibitItemDao();
+        List<Node>
+                todos = Node.loadJSON(context, "sample_node_info.JSON");
+        todoListItemDao = testDb.nodeDao();
         todoListItemDao.insertAll(todos);
     }
 
@@ -61,6 +61,7 @@ public class SearchTest {
             RecyclerView recyclerView = activity.recyclerView;
 
             RecyclerView.ViewHolder firstVH = recyclerView.findViewHolderForAdapterPosition(0);
+            assert firstVH != null;
             TextView exhibit =
                     firstVH.itemView.findViewById(R.id.exhibit_item_text);
             assertNotNull(firstVH);

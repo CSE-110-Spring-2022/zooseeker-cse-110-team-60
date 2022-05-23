@@ -1,6 +1,5 @@
 package com.example.zooseeker;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
@@ -9,17 +8,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
 
 import android.content.pm.PackageManager;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -33,8 +27,10 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
     private final PermissionChecker permissionChecker = new PermissionChecker(this);
-    private static final String[] requiredPermissions = new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
-    public static Location lastKnownLocation;
+    private static final String[] requiredPermissions =
+            new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
+                         Manifest.permission.ACCESS_COARSE_LOCATION};
+
     public GPSTracker gpsTracker;
 
     public RecyclerView recyclerView;
@@ -42,13 +38,13 @@ public class MainActivity extends AppCompatActivity {
     private ExhibitListAdapter adapter;
 
     private AutoCompleteTextView searchBar;
-    private TextView deleteSearchBtn;
+    private TextView deleteBtn;
     private Button searchBtn;
     private TextView numPlanned;
     private Button clearBtn;
-    private Button showCheckedBtn;
-    private Button returnToSearchBtn;
-    private Button  getDirectionsBtn;
+    private Button showBtn;
+    private Button returnBtn;
+    private Button directionsBtn;
 
     public static boolean update = true;
 
@@ -68,8 +64,8 @@ public class MainActivity extends AppCompatActivity {
 
             adapter = new ExhibitListAdapter();
             adapter.setHasStableIds(true);
-            adapter.setOnCheckBoxClickedHandler(viewModel::toggleAdded);
-            viewModel.getExhibitItems().observe(this, adapter::setExhibitListItems);
+            adapter.setOnCheckBoxClickedHandler(viewModel::toggleCheckbox);
+            viewModel.getAllExhibitsLive().observe(this, adapter::setExhibitList);
 
             recyclerView = findViewById(R.id.main_exhibits_recyclerView);
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -79,13 +75,13 @@ public class MainActivity extends AppCompatActivity {
         /* findViewById Setup */
         {
             searchBar = findViewById(R.id.main_search_textView);
-            deleteSearchBtn = findViewById(R.id.main_delete_button);
+            deleteBtn = findViewById(R.id.main_delete_button);
             searchBtn = findViewById(R.id.main_search_button);
             numPlanned = findViewById(R.id.counter);
             clearBtn = findViewById(R.id.main_clear_button);
-            showCheckedBtn = findViewById(R.id.showCheckedBtn);
-            returnToSearchBtn = findViewById(R.id.main_show_and_back_button);
-            getDirectionsBtn = findViewById(R.id.main_getDirections_button);
+            showBtn = findViewById(R.id.showCheckedBtn);
+            returnBtn = findViewById(R.id.main_show_and_back_button);
+            directionsBtn = findViewById(R.id.main_getDirections_button);
         }
 
         setNumPlanned();
@@ -105,22 +101,24 @@ public class MainActivity extends AppCompatActivity {
         {
             searchBar.addTextChangedListener(new TextWatcher() {
                 @Override
-                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1,
+                                              int i2) {}
 
                 @Override
-                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                public void onTextChanged(CharSequence charSequence, int i, int i1,
+                                          int i2) {
                     if (charSequence != null) {
                         if (charSequence.length() != 0) {
                             update = true;
-                            displaySearch(String.valueOf(charSequence));
-                            if (returnToSearchBtn.getVisibility() == View.VISIBLE) {
-                                returnToSearchBtn.setVisibility(View.INVISIBLE);
-                                showCheckedBtn.setVisibility(View.VISIBLE);
+                            displaySearchedExhibits(String.valueOf(charSequence));
+                            if (returnBtn.getVisibility() == View.VISIBLE) {
+                                returnBtn.setVisibility(View.INVISIBLE);
+                                showBtn.setVisibility(View.VISIBLE);
                             }
                         }
                         else {
                             update = true;
-                            displayAll();
+                            displayAllExhibits();
                         }
                     }
                 }
@@ -128,80 +126,85 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void afterTextChanged(Editable editable) {}
             });
-            deleteSearchBtn.setOnClickListener(this::deleteSearch);
-            searchBtn.setOnClickListener(this::searchExhibit);
-            showCheckedBtn.setOnClickListener(this::showChecked);
-            returnToSearchBtn.setOnClickListener(this::returnToSearch);
-            clearBtn.setOnClickListener(this::uncheckList);
-            getDirectionsBtn.setOnClickListener(this::getDirectionsClicked);
+            deleteBtn.setOnClickListener(this::deleteClicked);
+            searchBtn.setOnClickListener(this::searchClicked);
+            showBtn.setOnClickListener(this::showClicked);
+            returnBtn.setOnClickListener(this::returnClicked);
+            clearBtn.setOnClickListener(this::clearClicked);
+            directionsBtn.setOnClickListener(this::getDirectionsClicked);
         }
     }
 
-    private void deleteSearch(View view) {
+    private void deleteClicked(View view) {
         update = true;
         searchBar.getText().clear();
-        displayAll();
+        displayAllExhibits();
     }
 
-    private void searchExhibit(View view) {
+    private void searchClicked(View view) {
         update = true;
         String search = searchBar.getText().toString();
         if (search.equals("")) {
-            Utilities.showAlert(this, "Please enter a valid exhibit!");
+            Utilities.showAlert(this, "Please enter a valid exhibit!", "Ok", "Cancel");
             return;
         }
-        displaySearch(search);
+        displaySearchedExhibits(search);
     }
 
-
-    private void uncheckList(View view) {
+    private void showClicked(View view) {
         update = true;
-        uncheck();
+        List<Node> checkedExhibits = ExhibitList.getCheckedExhibits();
+        adapter.setExhibitList(checkedExhibits);
+        showBtn.setVisibility(View.INVISIBLE);
+        returnBtn.setVisibility(View.VISIBLE);
+    }
+
+    private void returnClicked(View view) {
+        update = true;
+        displaySearchedExhibits();
+        returnBtn.setVisibility(View.INVISIBLE);
+        showBtn.setVisibility(View.VISIBLE);
+    }
+
+    private void clearClicked(View view) {
+        update = true;
+        uncheckExhibits();
         setNumPlanned();
-        displayAll();
+        displayAllExhibits();
     }
 
-    private void showChecked(View view) {
-        update = true;
-        List<ExhibitItem> checkedExhibits = ExhibitList.getCheckedExhibits();
-        adapter.setExhibitListItems(checkedExhibits);
-        showCheckedBtn.setVisibility(View.INVISIBLE);
-        returnToSearchBtn.setVisibility(View.VISIBLE);
-    }
+    private void getDirectionsClicked(View view) {
+        List<Node> exhibitToVisit = ExhibitList.getCheckedExhibits();
 
-    // after "clear" showing the entire list, if the search bar is not empty, checking any exhibit,
-    // "show" and then "back" return all search items following the string in the search bar
-    private void returnToSearch(View view) {
-        update = true;
-        displaySearch();
-        returnToSearchBtn.setVisibility(View.INVISIBLE);
-        showCheckedBtn.setVisibility(View.VISIBLE);
+        if (exhibitToVisit.size() == 0) {
+            Utilities.showAlert(this, "Select Exhibit(s) Before Continuing!", "Ok",
+                                "Cancel");
+            return;
+        }
+
+        Graph<String, IdentifiedWeightedEdge> g = ZooData.loadZooGraphJSON(this,
+                                                                           "sample_zoo_graph.JSON");
+        Map<String, ZooData.VertexInfo> vInfo = ZooData.loadVertexInfoJSON(this,
+                                                                           "sample_node_info.JSON");
+        Map<String, ZooData.EdgeInfo> eInfo = ZooData.loadEdgeInfoJSON(this,
+                                                                       "sample_edge_info.JSON");
+
+        DirectionTracker dt = new DirectionTracker(g, vInfo, eInfo);
+        dt.getDirections(exhibitToVisit);
+
+        Intent directionIntent = new Intent(this, DirectionActivity.class);
+        startActivity(directionIntent);
     }
 
     public static MainActivity getInstance() {
         return main;
     }
 
-    void getDirectionsClicked(View view) {
-        List<ExhibitItem> toVisit = ExhibitList.getCheckedExhibits();
-
-        if (toVisit.size() == 0) {
-            Utilities.showAlert(this, "Select Exhibit(s) Before Continuing!");
-            return;
-        }
-
-        Graph<String, IdentifiedWeightedEdge> g = ZooData.loadZooGraphJSON(this, "sample_zoo_graph.JSON");
-        Map<String, ZooData.VertexInfo> vInfo = ZooData.loadVertexInfoJSON(this,"sample_node_info.JSON");
-        Map<String, ZooData.EdgeInfo> eInfo = ZooData.loadEdgeInfoJSON(this,"sample_edge_info.JSON");
-
-        DirectionTracker dt = new DirectionTracker(g, vInfo, eInfo);
-        dt.getDirections(toVisit);
-
-        Intent directionIntent = new Intent(this, DirectionActivity.class);
-        startActivity(directionIntent);
+    public List<Node> getAllNodes() {
+        return viewModel.getAllNodes();
     }
 
-    public List<ExhibitItem> getExhibits() {
+    public List<Node> getAllExhibits() {
         return viewModel.getAllExhibits();
     }
 
@@ -210,31 +213,31 @@ public class MainActivity extends AppCompatActivity {
         numPlanned.setText("Planned " + ExhibitList.getNumChecked() + " Exhibit(s)");
     }
 
-    public void uncheck() {
-        List<ExhibitItem> checkedExhibits = ExhibitList.getCheckedExhibits();
-        for (ExhibitItem item : checkedExhibits) {
-            viewModel.uncheckList(item);
+    private void uncheckExhibits() {
+        List<Node> checkedExhibits = ExhibitList.getCheckedExhibits();
+        for (Node item : checkedExhibits) {
+            viewModel.uncheckExhibit(item);
         }
         setNumPlanned();
     }
 
-    private void displayAll() {
-        List<ExhibitItem> allExhibits = ExhibitList.getAllExhibits();
-        adapter.setExhibitListItems(allExhibits);
+    private void displayAllExhibits() {
+        List<Node> allExhibits = ExhibitList.getAllExhibits();
+        adapter.setExhibitList(allExhibits);
     }
 
-    public void displaySearch() {
+    private void displaySearchedExhibits() {
         String search = searchBar.getText().toString();
         if (search.equals("")) {
-            displayAll();
+            displayAllExhibits();
         }
         else {
-            displaySearch(search);
+            displaySearchedExhibits(search);
         }
     }
 
-    private void displaySearch(String search) {
-        List<ExhibitItem> searchLists = ExhibitList.getSearchItems(search);
-        adapter.setExhibitListItems(searchLists);
+    private void displaySearchedExhibits(String search) {
+        List<Node> searchLists = ExhibitList.getSearchItems(search);
+        adapter.setExhibitList(searchLists);
     }
 }

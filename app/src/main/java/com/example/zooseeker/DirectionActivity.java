@@ -14,9 +14,9 @@ import java.util.List;
 public class DirectionActivity extends AppCompatActivity {
     public TextView header;
     public TextView body;
-    public Button   nextButton;
+    public Button nextButton;
     public Button previousButton;
-    public Button   exitButton;
+    public Button exitButton;
     public int i;
 
     @Override
@@ -39,16 +39,18 @@ public class DirectionActivity extends AppCompatActivity {
     }
 
     /*
-    *   Name:       nextClicked
-    *   Behavior:   When the next button is clicked, if the current direction is the last one,
-    *               display a message notifying there are no more directions. Otherwise, increment the
-    *               index of the current direction i and set the direction.
-    *   @param      View     view       the view being called from
-    *   @return
+     *   Name:       nextClicked
+     *   Behavior:   When the next button is clicked, if the current direction is the
+     * last one,
+     *               display a message notifying there are no more directions.
+     * Otherwise, increment the
+     *               index of the current direction i and set the direction.
+     *   @param      View     view       the view being called from
+     *   @return
      */
     void nextClicked(View view) {
         if (this.i == DirectionTracker.directions.size() - 1) {
-            Utilities.showAlert(this, "No More Directions!");
+            Utilities.showAlert(this, "No More Directions!", "Ok", "Cancel");
             return;
         }
 
@@ -58,15 +60,17 @@ public class DirectionActivity extends AppCompatActivity {
 
     /*
      *   Name:       previousClicked
-     *   Behavior:   When the previous button is clicked, if the current direction is the first one,
-     *               display a message notifying the user this is the case. Otherwise, decrement the
+     *   Behavior:   When the previous button is clicked, if the current direction is
+     * the first one,
+     *               display a message notifying the user this is the case. Otherwise,
+     * decrement the
      *               index of the current direction i and set the direction.
      *   @param      View     view       the view being called from
      *   @return
      */
     void previousClicked(View view) {
         if (this.i == 0) {
-            Utilities.showAlert(this, "This is the First Direction!");
+            Utilities.showAlert(this, "This is the First Direction!", "Ok", "Cancel");
             return;
         }
 
@@ -77,14 +81,14 @@ public class DirectionActivity extends AppCompatActivity {
     /**
      * Name:     exitClicked
      * Behavior: When the exit button is clicked, a popup alert is displayed to confirm.
-     *           If "yes" is clicked, exit current path, remove all selected, and return to search.
-     *           Else, stay on directions.
+     * If "yes" is clicked, exit current path, remove all selected, and return to search.
+     * Else, stay on directions.
      *
-     * @param    view the view being called from
+     * @param view the view being called from
      */
     void exitClicked(View view) {
         DialogInterface.OnClickListener dialog = (dialogInterface, i) -> {
-            switch(i) {
+            switch (i) {
                 // "Yes" button clicked
                 case DialogInterface.BUTTON_POSITIVE:
                     finish();
@@ -98,19 +102,20 @@ public class DirectionActivity extends AppCompatActivity {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Are you sure to exit your current path?")
-                .setPositiveButton("Yes", dialog)
-                .setNegativeButton("No", dialog)
-                .show();
+               .setPositiveButton("Yes", dialog).setNegativeButton("No", dialog).show();
     }
 
     /*
      *   Name:       setDirection
-     *   Behavior:   Update the header and body to reflect the details of the current direction.
+     *   Behavior:   Update the header and body to reflect the details of the current
+     * direction.
      *   @param      View     view       the view being called from
      *   @return
      */
     void setDirection() {
-        header.setText(DirectionTracker.directions.get(this.i).getStart() + " to " + DirectionTracker.directions.get(this.i).getEnd());
+        header.setText(DirectionTracker.directions.get(this.i)
+                                                  .getStart() + " to " + DirectionTracker.directions.get(this.i)
+                                                                                                    .getEnd());
 
         String directionsString = "";
         List<String> steps = DirectionTracker.directions.get(i).getSteps();

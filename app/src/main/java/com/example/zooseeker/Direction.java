@@ -1,10 +1,10 @@
 /*
-*   File Name:
-*   Class Name:
-*   Description:
-*   Fields:
-*   Public Functions:
-*   Private Functions:
+ *   File Name:
+ *   Class Name:
+ *   Description:
+ *   Fields:
+ *   Public Functions:
+ *   Private Functions:
  */
 
 package com.example.zooseeker;
@@ -22,16 +22,15 @@ public class Direction {
         this.steps = steps;
     }
 
-    public String getStart() { return start; }
-    public String getEnd() { return end; }
-    public List<String> getSteps() { return steps;}
+    public String getStart() {return start;}
+
+    public String getEnd() {return end;}
+
+    public List<String> getSteps() {return steps;}
 
     @Override
     public String toString() {
-        return "Direction{" +
-                "start='" + start + '\'' +
-                ", end='" + end + '\'' +
-                ", steps=" + steps +
-                '}';
+        return "Direction{" + "start='" + start + '\'' + ", end='" + end + '\'' + ", " +
+               "steps=" + steps + '}';
     }
 }

@@ -27,14 +27,19 @@ public class VertexInfo {
     }
 
     public String id;
+    public String parent_id;
     public Kind kind;
     public String name;
     public List<String> tags;
+    public String lat;
+    public String lng;
+
+    public static List<VertexInfo> vertexInfos;
 
     @NonNull
     @Override
     public String toString() {
-        return "VertexInfo{" + "id=" + id + ", kind=" + kind + ", name=" + name + ", " + "tags=[" + tags + "]}";
+        return "VertexInfo{" + "id=" + id + ", parent_id=" + parent_id + ", kind=" + kind + ", name=" + name + ", " + "tags=[" + tags + "], lat=" + lat + ", lng=" + lng + "}";
     }
 
     public static List<VertexInfo> loadVertexInfoJSON(Context context, String path) {
@@ -50,5 +55,14 @@ public class VertexInfo {
             e.printStackTrace();
             return Collections.emptyList();
         }
+    }
+
+    public static VertexInfo findByParentId(String parentId) {
+        for (VertexInfo vertexInfo : vertexInfos) {
+            if (vertexInfo.id.equals(parentId)) {
+                return vertexInfo;
+            }
+        }
+        return new VertexInfo();
     }
 }

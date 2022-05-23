@@ -15,12 +15,13 @@ public class PermissionChecker {
     /**
      * Requests permissions through pop-ups.
      * Note that Android 11 and above will stop showing pop-ups
-     * after user taps Deny twice for a specific permission during app's lifetime of installation on a device.
+     * after user taps Deny twice for a specific permission during app's lifetime of
+     * installation on a device.
      *
      * If precise location access granted, recreate activity for change to take effect.
      * Else, an alert for enabling precise location is shown, and app quites after.
      *
-     * @param activity  activity
+     * @param activity activity
      */
     public PermissionChecker(ComponentActivity activity) {
         this.activity = activity;
@@ -30,24 +31,26 @@ public class PermissionChecker {
             Boolean fineLocationGranted =
                     result.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false);
 
-             // precise location access granted
+            // precise location access granted
             if (fineLocationGranted != null && fineLocationGranted) {
-                activity.recreate();
+                this.activity.recreate();
                 MainActivity main = MainActivity.getInstance();
-                main.gpsTracker = new GPSTracker(activity);
+                main.gpsTracker = new GPSTracker(this.activity, this.activity); //TODO: call in DirectionActivity.java
             }
             // only approximate location access granted or no access granted
             else {
                 DialogInterface.OnClickListener dialog = (dialogInterface, i) -> {
                     if (i == DialogInterface.BUTTON_POSITIVE) {
-                        activity.finish(); // TODO: downgrade to not use location
+                        this.activity.finish(); // TODO: downgrade
                         System.exit(0);
                     }
                 };
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-                builder.setMessage("Please go to System Settings to enable Precise Location for ZooSeeker.")
-                       .setPositiveButton("Ok", dialog).show();  // TODO: check what happens if clicking "only allow this time"
+                AlertDialog.Builder builder = new AlertDialog.Builder(this.activity);
+                builder.setMessage("Please go to System Settings to enable Precise " +
+                                   "Location for ZooSeeker.")
+                       .setPositiveButton("Ok", dialog)
+                       .show();  // TODO: check what happens if clicking "only allow this time"
             }
         });
     }
