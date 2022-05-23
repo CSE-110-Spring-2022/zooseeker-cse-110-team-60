@@ -24,7 +24,7 @@ public class DirectionTracker {
 
     public static int index;
     public static List<ExhibitItem> currentExhibitsOrder;
-    private static List<String> routePlanSummary;
+    private static List<String> routePlanSummary; //
 
     private static ExhibitItemDao dao;
 
