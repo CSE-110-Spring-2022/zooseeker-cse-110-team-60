@@ -38,7 +38,7 @@ public class SearchbarCategoryTest {
     @Test
     public void searchbarCategoryTest() {
         ViewInteraction materialAutoCompleteTextView = onView(
-                allOf(withId(R.id.searchBar),
+                allOf(withId(R.id.main_search_textView),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
@@ -48,7 +48,7 @@ public class SearchbarCategoryTest {
         materialAutoCompleteTextView.perform(click());
 
         ViewInteraction materialAutoCompleteTextView2 = onView(
-                allOf(withId(R.id.searchBar),
+                allOf(withId(R.id.main_search_textView),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
@@ -59,7 +59,7 @@ public class SearchbarCategoryTest {
 
         ViewInteraction textView = onView(
                 allOf(withId(R.id.exhibit_item_text), withText("Alligators"),
-                        withParent(withParent(withId(R.id.rvExhibits))),
+                        withParent(withParent(withId(R.id.main_exhibits_recyclerView))),
                         isDisplayed()));
         textView.check(matches(withText("Alligators")));
     }

@@ -7,7 +7,7 @@
     tools:context=".DirectionActivity">
 
     <TextView
-        android:id="@+id/header_txt"
+        android:id="@+id/direction_header_textView"
         android:layout_width="0dp"
         android:layout_height="64dp"
         android:layout_marginStart="8dp"
@@ -19,7 +19,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/body_txt"
+        android:id="@+id/direction_body_textView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
@@ -31,10 +31,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/header_txt" />
+        app:layout_constraintTop_toBottomOf="@+id/direction_header_textView" />
 
     <Button
-        android:id="@+id/previous_btn"
+        android:id="@+id/direction_previous_button"
         android:layout_width="100dp"
         android:layout_height="72dp"
         android:layout_marginStart="8dp"
@@ -42,12 +42,12 @@
         android:text="Previous"
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/exit_btn"
-        app:layout_constraintStart_toStartOf="@+id/body_txt"
-        app:layout_constraintTop_toBottomOf="@+id/body_txt" />
+        app:layout_constraintEnd_toStartOf="@+id/direction_exit_button"
+        app:layout_constraintStart_toStartOf="@+id/direction_body_textView"
+        app:layout_constraintTop_toBottomOf="@+id/direction_body_textView" />
 
     <Button
-        android:id="@+id/next_btn"
+        android:id="@+id/direction_next_button"
         android:layout_width="100dp"
         android:layout_height="72dp"
         android:layout_marginStart="8dp"
@@ -55,13 +55,13 @@
         android:text="Next"
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/body_txt"
-        app:layout_constraintStart_toEndOf="@+id/exit_btn"
-        app:layout_constraintTop_toBottomOf="@+id/body_txt"
+        app:layout_constraintEnd_toEndOf="@+id/direction_body_textView"
+        app:layout_constraintStart_toEndOf="@+id/direction_exit_button"
+        app:layout_constraintTop_toBottomOf="@+id/direction_body_textView"
         app:layout_constraintVertical_bias="0.517" />
 
     <Button
-        android:id="@+id/exit_btn"
+        android:id="@+id/direction_exit_button"
         android:layout_width="100dp"
         android:layout_height="72dp"
         android:layout_marginStart="8dp"
@@ -69,8 +69,8 @@
         android:text="Exit"
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/next_btn"
+        app:layout_constraintEnd_toStartOf="@+id/direction_next_button"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/previous_btn"
-        app:layout_constraintTop_toBottomOf="@+id/body_txt" />
+        app:layout_constraintStart_toEndOf="@+id/direction_previous_button"
+        app:layout_constraintTop_toBottomOf="@+id/direction_body_textView" />
 </androidx.constraintlayout.widget.ConstraintLayout>

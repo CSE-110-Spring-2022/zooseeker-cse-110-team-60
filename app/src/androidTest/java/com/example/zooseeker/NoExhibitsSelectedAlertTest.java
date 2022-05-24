@@ -37,7 +37,7 @@ public class NoExhibitsSelectedAlertTest {
     @Test
     public void noExhibitsSelectedAlertTest() {
         ViewInteraction materialButton = onView(
-                allOf(withId(R.id.getDirectionsButton), withText("Get Directions"),
+                allOf(withId(R.id.main_getDirections_button), withText("Get Directions"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),

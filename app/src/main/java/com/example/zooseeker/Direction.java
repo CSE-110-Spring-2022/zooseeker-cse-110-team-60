@@ -1,3 +1,12 @@
+/*
+*   File Name:
+*   Class Name:
+*   Description:
+*   Fields:
+*   Public Functions:
+*   Private Functions:
+ */
+
 package com.example.zooseeker;
 
 import java.util.List;
@@ -6,26 +15,23 @@ public class Direction {
     private String start;
     private String end;
     private List<String> steps;
+//    private List<String> briefSteps
+    private double distance;
 
-    public Direction(String start, String end, List<String> steps) {
+    // private List<String> vertexIds;
+
+    public Direction(String start, String end, List<String> steps, double distance) {
         this.start = start;
         this.end = end;
         this.steps = steps;
+        this.distance = distance;
     }
 
     public String getStart() { return start; }
     public String getEnd() { return end; }
     public List<String> getSteps() { return steps;}
-    // Credit : https://stackoverflow.com/questions/10263634/find-int-in-string
-    public int getDistance() {
-        int dist = 0;
-        for (String s : steps) {
-            String clean = s.replaceAll("\\D+","");
-            clean = clean.substring(1);
-            dist += Integer.parseInt(clean);
-        }
-        return dist;
-    }
+    public double getDistance() { return distance; }
+
     @Override
     public String toString() {
         return "Direction{" +
@@ -33,14 +39,5 @@ public class Direction {
                 ", end='" + end + '\'' +
                 ", steps=" + steps +
                 '}';
-    }
-
-
-    public String toSummaryString() {
-        return String.format("%s to %s (%d meters)",
-                start,
-                end,
-                getDistance()
-        );
     }
 }

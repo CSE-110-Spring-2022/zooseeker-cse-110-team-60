@@ -3,6 +3,7 @@ package com.example.zooseeker;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
@@ -15,27 +16,27 @@ import android.view.ViewGroup;
 import android.view.ViewParent;
 
 import androidx.test.espresso.ViewInteraction;
+import androidx.test.ext.junit.rules.ActivityScenarioRule;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
-import androidx.test.rule.ActivityTestRule;
-import androidx.test.runner.AndroidJUnit4;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
-import org.hamcrest.core.IsInstanceOf;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class NoMoreDirectionsTest {
+public class ExitBtnTest {
 
     @Rule
-    public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
+    public ActivityScenarioRule<MainActivity> mActivityScenarioRule =
+            new ActivityScenarioRule<>(MainActivity.class);
 
     @Test
-    public void noMoreDirectionsTest() {
+    public void testExitDirections() {
         ViewInteraction materialCheckBox = onView(
                 allOf(withId(R.id.exhibit_item_checkBox),
                         childAtPosition(
@@ -51,7 +52,7 @@ public class NoMoreDirectionsTest {
                         childAtPosition(
                                 childAtPosition(
                                         withId(R.id.main_exhibits_recyclerView),
-                                        2),
+                                        1),
                                 0),
                         isDisplayed()));
         materialCheckBox2.perform(click());
@@ -66,62 +67,75 @@ public class NoMoreDirectionsTest {
                         isDisplayed()));
         materialCheckBox3.perform(click());
 
+        ViewInteraction materialCheckBox4 = onView(
+                allOf(withId(R.id.exhibit_item_checkBox),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(R.id.main_exhibits_recyclerView),
+                                        4),
+                                0),
+                        isDisplayed()));
+        materialCheckBox4.perform(click());
+
         ViewInteraction materialButton = onView(
                 allOf(withId(R.id.main_getDirections_button), withText("Get Directions"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                3),
+                                8),
                         isDisplayed()));
         materialButton.perform(click());
 
         ViewInteraction materialButton2 = onView(
-                allOf(withId(R.id.direction_next_button), withText("Next"),
+                allOf(withId(R.id.direction_exit_button), withText("Exit"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                3),
+                                4),
                         isDisplayed()));
         materialButton2.perform(click());
 
+        ViewInteraction textView = onView(
+                allOf(withId(android.R.id.message), withText("Are you sure to exit your current path?"),
+                        withParent(withParent(withId(androidx.appcompat.R.id.scrollView))),
+                        isDisplayed()));
+        textView.check(matches(withText("Are you sure to exit your current path?")));
+
         ViewInteraction materialButton3 = onView(
-                allOf(withId(R.id.direction_next_button), withText("Next"),
+                allOf(withId(android.R.id.button2), withText("No"),
                         childAtPosition(
                                 childAtPosition(
-                                        withId(android.R.id.content),
+                                        withId(androidx.appcompat.R.id.buttonPanel),
                                         0),
-                                3),
+                                2)));
+        materialButton3.perform(scrollTo(), click());
+
+        ViewInteraction textView2 = onView(
+                allOf(withId(R.id.direction_header_textView), withText("Gate to Alligators"),
+                        withParent(withParent(withId(android.R.id.content))),
                         isDisplayed()));
-        materialButton3.perform(click());
+        textView2.check(matches(withText("Gate to Alligators")));
 
         ViewInteraction materialButton4 = onView(
-                allOf(withId(R.id.direction_next_button), withText("Next"),
+                allOf(withId(R.id.direction_exit_button), withText("Exit"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                3),
+                                4),
                         isDisplayed()));
         materialButton4.perform(click());
 
         ViewInteraction materialButton5 = onView(
-                allOf(withId(R.id.direction_next_button), withText("Next"),
+                allOf(withId(android.R.id.button1), withText("Yes"),
                         childAtPosition(
                                 childAtPosition(
-                                        withId(android.R.id.content),
+                                        withId(androidx.appcompat.R.id.buttonPanel),
                                         0),
-                                3),
-                        isDisplayed()));
-        materialButton5.perform(click());
-
-        ViewInteraction textView = onView(
-                allOf(IsInstanceOf.<View>instanceOf(android.widget.TextView.class), withText("Alert!"),
-                        withParent(allOf(IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
-                                withParent(IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class)))),
-                        isDisplayed()));
-        textView.check(matches(isDisplayed()));
+                                3)));
+        materialButton5.perform(scrollTo(), click());
     }
 
     private static Matcher<View> childAtPosition(
