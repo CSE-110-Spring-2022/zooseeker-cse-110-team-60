@@ -16,8 +16,6 @@ public class Direction {
     public String getStart() { return start; }
     public String getEnd() { return end; }
     public List<String> getSteps() { return steps;}
-
-
     // Credit : https://stackoverflow.com/questions/10263634/find-int-in-string
     public int getDistance() {
         int dist = 0;
