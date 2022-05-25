@@ -68,6 +68,11 @@ public class Node {
                             Double.parseDouble(VertexInfo.findByParentId(vertexInfo.group_id).lng);
                 }
                 else {
+
+                    if (vertexInfo.group_id != null && (vertexInfo.lat == null || vertexInfo.lng == null)) {
+                        throw new RuntimeException("Nodes must have a lat/long unless they are grouped.");
+                    }
+
                     latitude = Double.parseDouble(vertexInfo.lat);
                     longitude = Double.parseDouble(vertexInfo.lng);
                 }
@@ -79,7 +84,7 @@ public class Node {
                 nodes.add(exhibit);
             }
 
-            else if (vertexInfo.kind == VertexInfo.Kind.INTERSECTION || vertexInfo.kind == VertexInfo.Kind.GATE) {
+            else {
                 Node node = new Node(vertexInfo.id, parentId, vertexInfo.kind,
                                      vertexInfo.name, String.join(", ",
                                                                   vertexInfo.tags),
@@ -88,6 +93,7 @@ public class Node {
                 nodes.add(node);
             }
         }
+
         return nodes;
     }
 }

@@ -22,6 +22,12 @@ public interface NodeDao {
     @Query("SELECT * FROM `node_list` WHERE `kind`='EXHIBIT' ORDER BY `name`")
     List<Node> getAllExhibits();
 
+    @Query("SELECT * FROM `node_list` WHERE `kind`='GROUP' ORDER BY `name`")
+    List<Node> getAllExhibitGroups();
+
+    @Query("SELECT * FROM `node_list` WHERE `kind`='INTERSECTION' ORDER BY `name`")
+    List<Node> getAllIntersections();
+
     @Query("SELECT * FROM `node_list` ORDER BY `name`")
     LiveData<List<Node>> getAllLive();
 
