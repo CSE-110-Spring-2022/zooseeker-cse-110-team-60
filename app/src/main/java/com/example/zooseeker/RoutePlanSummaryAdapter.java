@@ -16,9 +16,9 @@ import java.util.Collections;
 import java.util.List;
 
 public class RoutePlanSummaryAdapter extends RecyclerView.Adapter<RoutePlanSummaryAdapter.ViewHolder> {
-    private List<Direction> directionItems = Collections.emptyList();
+    private List<String> directionItems = Collections.emptyList();
 
-    public void setDirectionItems(List<Direction> newDirections) {
+    public void setDirectionItems(List<String> newDirections) {
         this.directionItems.clear();
         this.directionItems = newDirections;
         notifyDataSetChanged();
@@ -44,20 +44,18 @@ public class RoutePlanSummaryAdapter extends RecyclerView.Adapter<RoutePlanSumma
         return directionItems.size();
     }
 
+    // ViewHolder for serving directions to RecyclerView
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView textView;
-        private Direction direction;
+        private DirectionTracker direction;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             this.textView = itemView.findViewById(R.id.summary_item_text);
         }
 
-        public Direction getDirection() { return direction; }
-
-        public void setDirection(Direction direction) {
-            this.direction = direction;
-            this.textView.setText(direction.toSummaryString());
+        public void setDirection(String direction) {
+            this.textView.setText(direction);
         }
 
     }

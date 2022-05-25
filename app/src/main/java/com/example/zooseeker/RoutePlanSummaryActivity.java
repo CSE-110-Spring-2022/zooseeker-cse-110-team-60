@@ -31,7 +31,7 @@ public class RoutePlanSummaryActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
-        adapter.setDirectionItems(DirectionTracker.directions);
+        adapter.setDirectionItems(DirectionTracker.getRoutePlanSummary());
     }
 
     public void onBackClicked(View view) {
