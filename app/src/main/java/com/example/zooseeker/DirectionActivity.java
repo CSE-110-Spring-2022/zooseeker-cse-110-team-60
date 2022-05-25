@@ -36,6 +36,8 @@ public class DirectionActivity extends AppCompatActivity {
         nextButton.setOnClickListener(this::nextClicked);
         previousButton.setOnClickListener(this::previousClicked);
         exitButton.setOnClickListener(this::exitClicked);
+
+        DirectionTracker.loadDatabaseAndDaoByContext(this);
     }
 
     /*
@@ -49,12 +51,13 @@ public class DirectionActivity extends AppCompatActivity {
      *   @return
      */
     void nextClicked(View view) {
-        if (this.i == DirectionTracker.directions.size() - 1) {
+        if (DirectionTracker.index == DirectionTracker.currentExhibitsOrder.size()) {
             Utilities.showAlert(this, "No More Directions!", "Ok", "Cancel");
             return;
         }
 
-        this.i++;
+        DirectionTracker.next();
+        // if current location == current index, next again
         setDirection();
     }
 
@@ -69,12 +72,12 @@ public class DirectionActivity extends AppCompatActivity {
      *   @return
      */
     void previousClicked(View view) {
-        if (this.i == 0) {
+        if (DirectionTracker.index == 0) {
             Utilities.showAlert(this, "This is the First Direction!", "Ok", "Cancel");
             return;
         }
 
-        this.i--;
+        DirectionTracker.previous();
         setDirection();
     }
 
@@ -103,6 +106,9 @@ public class DirectionActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Are you sure to exit your current path?")
                .setPositiveButton("Yes", dialog).setNegativeButton("No", dialog).show();
+
+//        DirectionTracker.redirect("arctic_foxes");
+//        setDirection();
     }
 
     /*
@@ -113,12 +119,18 @@ public class DirectionActivity extends AppCompatActivity {
      *   @return
      */
     void setDirection() {
-        header.setText(DirectionTracker.directions.get(this.i)
-                                                  .getStart() + " to " + DirectionTracker.directions.get(this.i)
-                                                                                                    .getEnd());
+//        String currentLocationId = getCurrentLocationId();
+//        Direction currentDirection = getDirection(currentLocationId);
+
+        String currentNodeId;
+        if (DirectionTracker.index == 0) currentNodeId = "entrance_exit_gate";
+        else currentNodeId = DirectionTracker.currentExhibitsOrder.get(DirectionTracker.index - 1).id;
+        Direction currentDirection = DirectionTracker.getDirection(currentNodeId);
+
+        header.setText(currentDirection.getStart() + " to " + currentDirection.getEnd() + " (" + currentDirection.getDistance() + "m)");
 
         String directionsString = "";
-        List<String> steps = DirectionTracker.directions.get(i).getSteps();
+        List<String> steps = currentDirection.getSteps();
         for (int j = 0; j < steps.size(); ++j) {
             directionsString += steps.get(j) + "\n";
         }

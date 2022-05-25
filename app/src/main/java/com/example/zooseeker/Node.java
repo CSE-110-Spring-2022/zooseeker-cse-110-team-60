@@ -55,20 +55,22 @@ public class Node {
                 double latitude;
                 double longitude;
 
-                if (vertexInfo.parent_id != null && vertexInfo.lat == null && vertexInfo.lng == null) {
+                if (vertexInfo.group_id != null && vertexInfo.lat == null && vertexInfo.lng == null) {
                     latitude =
-                            Double.parseDouble(VertexInfo.findByParentId(vertexInfo.parent_id).lat);
+                            Double.parseDouble(VertexInfo.findByParentId(vertexInfo.group_id).lat);
                     longitude =
-                            Double.parseDouble(VertexInfo.findByParentId(vertexInfo.parent_id).lng);
+                            Double.parseDouble(VertexInfo.findByParentId(vertexInfo.group_id).lng);
                 }
                 else {
-                    latitude = Double.parseDouble(Objects.requireNonNull(vertexInfo.lat));
-                    longitude = Double.parseDouble(Objects.requireNonNull(vertexInfo.lng));
+                    latitude = Double.parseDouble(vertexInfo.lat);
+                    longitude = Double.parseDouble(vertexInfo.lng);
                 }
 
                 Node exhibit = new Node(vertexInfo.id, vertexInfo.kind, vertexInfo.name, String.join(
                         ", ", vertexInfo.tags), latitude, longitude);
                 nodes.add(exhibit);
+
+Log.d("ASSETS", exhibit.toString());
             }
 
             else if (vertexInfo.kind == VertexInfo.Kind.INTERSECTION || vertexInfo.kind == VertexInfo.Kind.GATE) {

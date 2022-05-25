@@ -21,7 +21,7 @@
             android:name=".DirectionActivity"
             android:exported="false" />
         <activity
-            android:name=".ExhibitItem"
+            android:name=".Node"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

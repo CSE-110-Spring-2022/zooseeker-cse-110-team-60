@@ -27,7 +27,7 @@ public class VertexInfo {
     }
 
     public String id;
-    public String parent_id;
+    public String group_id;
     public Kind kind;
     public String name;
     public List<String> tags;
@@ -39,7 +39,7 @@ public class VertexInfo {
     @NonNull
     @Override
     public String toString() {
-        return "VertexInfo{" + "id=" + id + ", parent_id=" + parent_id + ", kind=" + kind + ", name=" + name + ", " + "tags=[" + tags + "], lat=" + lat + ", lng=" + lng + "}";
+        return "VertexInfo{" + "id=" + id + ", parent_id=" + group_id + ", kind=" + kind + ", name=" + name + ", " + "tags=[" + tags + "], lat=" + lat + ", lng=" + lng + "}";
     }
 
     public static List<VertexInfo> loadVertexInfoJSON(Context context, String path) {
