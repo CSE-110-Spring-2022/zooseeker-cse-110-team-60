@@ -28,8 +28,9 @@ public class Node {
     public double latitude;
     public double longitude;
 
-    public Node(@NonNull String id, @NonNull String parentId, @NonNull VertexInfo.Kind kind, @NonNull String name
-            , @NonNull String tags, double latitude, double longitude) {
+    public Node(@NonNull String id, @NonNull String parentId,
+                @NonNull VertexInfo.Kind kind, @NonNull String name,
+                @NonNull String tags, double latitude, double longitude) {
         this.id = id;
         this.parentId = parentId;
         this.kind = kind;
@@ -43,9 +44,8 @@ public class Node {
     @NonNull
     @Override
     public String toString() {
-        return "Node{" + "id=" + id + ", parentId=" + parentId + ", kind=" + kind + ", name=" + name +
-               ", tags=[" + tags + "], added=" + added + ", latitude=" + latitude + ", " +
-               "longitude" + longitude + "}";
+        return "Node{" + "id=" + id + ", parentId=" + parentId + ", kind=" + kind + ", " +
+               "name=" + name + ", tags=[" + tags + "], added=" + added + ", latitude=" + latitude + ", " + "longitude" + longitude + "}";
     }
 
     public static List<Node> loadJSON(Context context, String path) {
@@ -54,33 +54,37 @@ public class Node {
 
         for (VertexInfo vertexInfo : VertexInfo.vertexInfos) {
 
+            String parentId = "";
+
             if (vertexInfo.kind == VertexInfo.Kind.EXHIBIT) {
-                String parent_id;
                 double latitude;
                 double longitude;
 
                 if (vertexInfo.group_id != null && vertexInfo.lat == null && vertexInfo.lng == null) {
-                    parent_id = vertexInfo.group_id;
+                    parentId = vertexInfo.group_id;
                     latitude =
                             Double.parseDouble(VertexInfo.findByParentId(vertexInfo.group_id).lat);
                     longitude =
                             Double.parseDouble(VertexInfo.findByParentId(vertexInfo.group_id).lng);
                 }
                 else {
-                    parent_id = "";
                     latitude = Double.parseDouble(vertexInfo.lat);
                     longitude = Double.parseDouble(vertexInfo.lng);
                 }
 
-                Node exhibit = new Node(vertexInfo.id, parent_id, vertexInfo.kind, vertexInfo.name, String.join(
-                        ", ", vertexInfo.tags), latitude, longitude);
+                Node exhibit = new Node(vertexInfo.id, parentId, vertexInfo.kind,
+                                        vertexInfo.name, String.join(", ",
+                                                                     vertexInfo.tags),
+                                        latitude, longitude);
                 nodes.add(exhibit);
             }
 
             else if (vertexInfo.kind == VertexInfo.Kind.INTERSECTION || vertexInfo.kind == VertexInfo.Kind.GATE) {
-                Node node = new Node(vertexInfo.id, "", vertexInfo.kind, vertexInfo.name, String.join(
-                        ", ", vertexInfo.tags), Double.parseDouble(vertexInfo.lat),
-                                            Double.parseDouble(vertexInfo.lng));
+                Node node = new Node(vertexInfo.id, parentId, vertexInfo.kind,
+                                     vertexInfo.name, String.join(", ",
+                                                                  vertexInfo.tags),
+                                     Double.parseDouble(vertexInfo.lat),
+                                     Double.parseDouble(vertexInfo.lng));
                 nodes.add(node);
             }
         }

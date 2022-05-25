@@ -26,9 +26,10 @@ public class CounterTest {
     private NodeDatabase db;
 
     // Three mock ExhibitItems used for Testing
-    Node ex1 = new Node("gorillas", VertexInfo.Kind.EXHIBIT, "Gorillas", "gorilla, monkey, ape, mammal", 50, 60);
-    Node ex2 = new Node("gators", VertexInfo.Kind.EXHIBIT, "Alligators", "alligator, reptile, gator", 55, 65);
-    Node ex3 = new Node("lions", VertexInfo.Kind.EXHIBIT, "Lions", "lion, cat, mammal, africa", 70, 78);
+    Node ex1 = new Node("gorillas", "", VertexInfo.Kind.EXHIBIT, "Gorillas", "gorilla, monkey, ape, mammal", 50, 60);
+    Node ex2 = new Node("gators", "", VertexInfo.Kind.EXHIBIT, "Alligators", "alligator, reptile, gator", 55, 65);
+    Node ex3 = new Node("lions", "mammal", VertexInfo.Kind.EXHIBIT, "Lions", "lion, cat, mammal, africa", 70, 78);
+    Node ex4 = new Node("intersection1", "", VertexInfo.Kind.INTERSECTION, "Intersection 1", "", 55, 88);
 
 
     @Before
@@ -52,8 +53,9 @@ public class CounterTest {
         mockItems.add(ex1);
         mockItems.add(ex2);
         mockItems.add(ex3);
+        mockItems.add(ex4);
         dao.insertAll(mockItems);
-        List<Node> items = dao.getAll();
+        List<Node> items = dao.getAllExhibits();
         // Verify that none of the exhibits are added
         for (Node item : items) {
             assertFalse(item.added);
@@ -76,8 +78,9 @@ public class CounterTest {
         mockItems.add(ex1);
         mockItems.add(ex2);
         mockItems.add(ex3);
+        mockItems.add(ex4);
         dao.insertAll(mockItems);
-        List<Node> items = dao.getAll();
+        List<Node> items = dao.getAllExhibits();
         // Verify that none of the exhibits are added
         for (Node item : items) {
             assertFalse(item.added);

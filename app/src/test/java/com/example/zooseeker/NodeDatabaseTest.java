@@ -26,10 +26,10 @@ public class NodeDatabaseTest {
     private NodeDatabase db;
 
     // Three mock ExhibitItems used for Testing
-    Node ex1 = new Node("gorillas", VertexInfo.Kind.EXHIBIT, "Gorillas", "gorilla, monkey, ape, mammal", 30, 60);
-    Node ex2 = new Node("gators", VertexInfo.Kind.EXHIBIT, "Alligators", "alligator, reptile, gator", 40, 70);
-    Node ex3 = new Node("lions", VertexInfo.Kind.EXHIBIT, "Lions", "lion, cat, mammal, africa", 50, 80);
-    Node ex4 = new Node("intersection1", VertexInfo.Kind.INTERSECTION, "Intersection 1", "", 55, 88);
+    Node ex1 = new Node("gorillas", "monkey", VertexInfo.Kind.EXHIBIT, "Gorillas", "gorilla, monkey, ape, mammal", 30, 60);
+    Node ex2 = new Node("gators", "", VertexInfo.Kind.EXHIBIT, "Alligators", "alligator, reptile, gator", 40, 70);
+    Node ex3 = new Node("lions", "mammal", VertexInfo.Kind.EXHIBIT, "Lions", "lion, cat, mammal, africa", 50, 80);
+    Node ex4 = new Node("intersection1", "", VertexInfo.Kind.INTERSECTION, "Intersection 1", "", 55, 88);
 
     @Before
     public void createDb() {
@@ -70,6 +70,7 @@ public class NodeDatabaseTest {
         String id1 = "gorillas";
         Node item1 = dao.get(id1);
         assertEquals(id1, item1.id);
+        assertEquals("monkey", item1.parentId);
         assertEquals(VertexInfo.Kind.EXHIBIT, item1.kind);
         assertEquals("Gorillas", item1.name);
         assertEquals("gorilla, monkey, ape, mammal", item1.tags);
@@ -80,6 +81,7 @@ public class NodeDatabaseTest {
         String id2 = "intersection1";
         Node item2 = dao.get(id2);
         assertEquals(id2, item2.id);
+        assertEquals("", item2.parentId);
         assertEquals(VertexInfo.Kind.INTERSECTION, item2.kind);
         assertEquals("Intersection 1", item2.name);
         assertEquals("", item2.tags);
@@ -128,7 +130,7 @@ public class NodeDatabaseTest {
     @Test
     public void update() {
         // Create a mock exhibit and insert it as a list into the database
-        Node ex1 = new Node("gorillas", VertexInfo.Kind.EXHIBIT, "Gorillas", "gorillas, monkey, ape, mammal", 60, 70);
+        Node ex1 = new Node("gorillas", "mammal", VertexInfo.Kind.EXHIBIT, "Gorillas", "gorillas, monkey, ape, mammal", 60, 70);
         List<Node> items = new ArrayList<>();
         items.add(ex1);
         dao.insertAll(items);
