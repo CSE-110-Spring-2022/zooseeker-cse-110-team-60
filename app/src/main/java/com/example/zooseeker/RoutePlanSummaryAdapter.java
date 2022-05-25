@@ -24,6 +24,8 @@ public class RoutePlanSummaryAdapter extends RecyclerView.Adapter<RoutePlanSumma
         notifyDataSetChanged();
     }
 
+    public List<String> getDirectionItems(){ return this.directionItems; }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
