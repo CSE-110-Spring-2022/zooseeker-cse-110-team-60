@@ -1,19 +1,13 @@
 package com.example.zooseeker;
 
 import android.content.Context;
-import android.util.Log;
-
-import androidx.room.Room;
-import androidx.test.core.app.ApplicationProvider;
 
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 public class DirectionTracker {
@@ -40,8 +34,8 @@ public class DirectionTracker {
      *           location and going to the closest exhibit left to visit repeatedly, build up the
      *           route plan summary accordingly.
      *
-     * @param     String             startNodeId         id of the node closest to the user
-     * @param     List<ExhibitItem>  exhibitsToVisit     the list of exhibits to be visited
+     * @param     startNodeId         id of the node closest to the user
+     * @param     exhibitsToVisit     the list of exhibits to be visited
      */
     static void initDirections(String startNodeId, List<ExhibitItem> exhibitsToVisit) {
         index = 0;
@@ -71,7 +65,7 @@ public class DirectionTracker {
      * Behavior: Given the user's current location, return a direction object to the next exhibit
      *           to be visited.
      *
-     * @param     String     startNodeId     the node the user is closest to
+     * @param     startNodeId     the node the user is closest to
      * @return    Direction                  a direction object to the next exhibit to be visited
      */
     static Direction getDirection(String startNodeId) {
@@ -135,7 +129,7 @@ public class DirectionTracker {
      * Name:     getNextClosestExhibitToVisit
      * Behavior: Given the node closest to the user's location and a list of exhibits to visit,
      *           return the exhibit left to visit closest to the user.
-     * @param    String         currentNodeId       id of the node closest to the user's location
+     * @param    currentNodeId       id of the node closest to the user's location
      * @return   ExhibitItem    closest             closest exhibit to the user
      */
     static ExhibitItem getNextClosestExhibitToVisit(String currentNodeId, List<ExhibitItem> exhibitsToVisit) {
