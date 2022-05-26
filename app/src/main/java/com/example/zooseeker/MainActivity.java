@@ -14,6 +14,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -135,13 +136,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-//        update = true;
-//        setNumPlanned();
-//        displayAllExhibits();
-//    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        update = true;
+        setNumPlanned();
+        displayAllExhibits();
+    }
 
     private void deleteClicked(View view) {
         update = true;
@@ -182,6 +183,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getDirectionsClicked(View view) {
+
         List<Node> toVisit = ExhibitList.getCheckedExhibits();
 
         if (toVisit.size() == 0) {

@@ -79,7 +79,7 @@ public class Node {
                 nodes.add(exhibit);
             }
 
-            else if (vertexInfo.kind == VertexInfo.Kind.INTERSECTION || vertexInfo.kind == VertexInfo.Kind.GATE) {
+            else if (vertexInfo.kind == VertexInfo.Kind.INTERSECTION || vertexInfo.kind == VertexInfo.Kind.GATE || vertexInfo.kind == VertexInfo.Kind.GROUP) {
                 Node node = new Node(vertexInfo.id, parentId, vertexInfo.kind,
                                      vertexInfo.name, String.join(", ",
                                                                   vertexInfo.tags),
@@ -87,6 +87,7 @@ public class Node {
                                      Double.parseDouble(vertexInfo.lng));
                 nodes.add(node);
             }
+
         }
         return nodes;
     }

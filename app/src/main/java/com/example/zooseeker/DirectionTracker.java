@@ -3,17 +3,12 @@ package com.example.zooseeker;
 import android.content.Context;
 import android.util.Log;
 
-import androidx.room.Room;
-import androidx.test.core.app.ApplicationProvider;
-
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 public class DirectionTracker {
@@ -23,7 +18,7 @@ public class DirectionTracker {
     private static Map<String, ZooData.EdgeInfo> eInfo;
 
     public static int index;
-    public static List<Node> currentExhibitsOrder;
+    public static List<String> currentExhibitIdsOrder;
     private static List<String> routePlanSummary;
 
     private static NodeDao dao;
@@ -36,35 +31,34 @@ public class DirectionTracker {
 
     /**
      * Name:     initDirections
-     * Behavior: recalculate the order of exhibits to be visited by starting from the user's
+     * Behavior: calculate the order of exhibits to be visited by starting from the user's
      *           location and going to the closest exhibit left to visit repeatedly, build up the
      *           route plan summary accordingly.
      *
-     * @param     startNodeId             startNodeId         id of the node closest to the user
-     * @param     List<Node>  exhibitsToVisit     the list of exhibits to be visited
+     * _ @param     String      startNodeId         id of the node closest to the user
+     * _ @param     List<Node>  exhibitsToVisit     the list of exhibits to be visited
      */
     static void initDirections(String startNodeId, List<Node> exhibitsToVisit) {
         index = 0;
-        currentExhibitsOrder = new ArrayList<Node>();
-        String previousId = startNodeId;
+        currentExhibitIdsOrder = new ArrayList<String>();
         routePlanSummary = new ArrayList<String>();
+        String previousId = startNodeId;
 
         while (!exhibitsToVisit.isEmpty()) {
-            Node nextExhibit = getNextClosestExhibitToVisit(previousId, exhibitsToVisit);
-            exhibitsToVisit.remove(nextExhibit);
-            String nextId = nextExhibit.id;
+            Node exhibitToRemove = getNextClosestExhibitToVisit(previousId, exhibitsToVisit);
+            exhibitsToVisit.remove(exhibitToRemove);
+            Node nextNode = getParentNodeIfExists(exhibitToRemove);
+            String nextId = nextNode.id;
             double distance = getDistanceBetweenNodes(previousId, nextId);
-            currentExhibitsOrder.add(nextExhibit);
-            routePlanSummary.add(vInfo.get(previousId).name + " to " + nextExhibit.name + " (" + distance + "m)");
+            currentExhibitIdsOrder.add(exhibitToRemove.id);
+            routePlanSummary.add(vInfo.get(previousId).name + " to " + nextNode.name + " (" + distance + " feet)");
             previousId = nextId;
         }
 
         ZooData.VertexInfo gate = DirectionTracker.vInfo.get(DirectionTracker.getGateId());
         double distance = getDistanceBetweenNodes(previousId, gate.id);
-        routePlanSummary.add(vInfo.get(previousId).name + " to " + gate.name + " (" + distance + "m)");
+        routePlanSummary.add(vInfo.get(previousId).name + " to " + gate.name + " (" + distance + " feet)");
     }
-
-    static List<String> getRoutePlanSummary() { return routePlanSummary; }
 
     /**
      * Name:     getDirection
@@ -78,9 +72,12 @@ public class DirectionTracker {
         String startNodeName = vInfo.get(startNodeId).name;
         String nextNodeId;
         String nextNodeName;
-        if (index < currentExhibitsOrder.size()) {
-            nextNodeId = currentExhibitsOrder.get(index).id;
-            nextNodeName = currentExhibitsOrder.get(index).name;
+        if (index < currentExhibitIdsOrder.size()) {
+            String nextExhibitId = currentExhibitIdsOrder.get(index);
+            Node nextExhibit = dao.get(nextExhibitId);
+            Node nextNode = getParentNodeIfExists(nextExhibit);
+            nextNodeId = nextNode.id;
+            nextNodeName = nextNode.name;
         } else {
             nextNodeId = getGateId();
             nextNodeName = vInfo.get(getGateId()).name;
@@ -91,7 +88,7 @@ public class DirectionTracker {
         ArrayList<String> detailedSteps = new ArrayList<String>();
         int i = 1;
         for (IdentifiedWeightedEdge e : path.getEdgeList()) {
-            detailedSteps.add(String.format("  %d. Walk %.0f meters along %s from '%s' to '%s'.\n",
+            detailedSteps.add(String.format("  %d. Walk %.0f feet along %s from '%s' to '%s'.\n",
                                             i,
                                             g.getEdgeWeight(e),
                                             eInfo.get(e.getId()).street,
@@ -111,10 +108,10 @@ public class DirectionTracker {
      *           increment index.
      */
     static void next() {
-        Node exhibitToRemove = currentExhibitsOrder.get(index);
+        String exhibitToRemoveId = currentExhibitIdsOrder.get(index);
+        Node exhibitToRemove = dao.get(exhibitToRemoveId);
         exhibitToRemove.added = false;
         dao.update(exhibitToRemove);
-        Node exhibitRemoved = dao.get(exhibitToRemove.id);
         ++index;
     }
 
@@ -124,10 +121,10 @@ public class DirectionTracker {
      *           exhibits to visi.
      */
     static void previous() {
-        Node exhibitToAdd = currentExhibitsOrder.get(index - 1);
+        String exhibitToAddId = currentExhibitIdsOrder.get(index - 1);
+        Node exhibitToAdd = dao.get(exhibitToAddId);
         exhibitToAdd.added = true;
         dao.update(exhibitToAdd);
-        Node exhibitAdded = dao.get(exhibitToAdd.id);
         --index;
     }
 
@@ -139,19 +136,29 @@ public class DirectionTracker {
      * @return   closest             closest exhibit to the user
      */
     static Node getNextClosestExhibitToVisit(String currentNodeId, List<Node> exhibitsToVisit) {
-        Node closest = exhibitsToVisit.get(0);
-        GraphPath<String, IdentifiedWeightedEdge> shortestPath = DijkstraShortestPath.findPathBetween(g, currentNodeId, exhibitsToVisit.get(0).id);
+        Node closestExhibit = exhibitsToVisit.get(0);
+        Node closestNode = getParentNodeIfExists(closestExhibit);
+        GraphPath<String, IdentifiedWeightedEdge> shortestPath = DijkstraShortestPath.findPathBetween(g, currentNodeId, closestNode.id);
 
         for (int i = 1; i < exhibitsToVisit.size(); ++i) {
             Node currentExhibit = exhibitsToVisit.get(i);
-            GraphPath<String, IdentifiedWeightedEdge> currentPath = DijkstraShortestPath.findPathBetween(g,currentNodeId, exhibitsToVisit.get(i).id);
+            Node currentNode = getParentNodeIfExists(currentExhibit);
+            GraphPath<String, IdentifiedWeightedEdge> currentPath = DijkstraShortestPath.findPathBetween(g,currentNodeId, currentNode.id);
             if (currentPath.getWeight() < shortestPath.getWeight()) {
-                closest = currentExhibit;
+                closestExhibit = currentExhibit;
+                closestNode = currentNode;
                 shortestPath = currentPath;
             }
         }
 
-        return closest;
+        return closestExhibit;
+    }
+
+    static Node getParentNodeIfExists(Node node) {
+        if (node.parentId.equals("")) return node;
+        else {
+            return dao.get(node.parentId);
+        }
     }
 
     static double getDistanceBetweenNodes(String startId, String endId) {
@@ -173,4 +180,6 @@ public class DirectionTracker {
     static void setDao(NodeDao dataAccessObject) { dao = dataAccessObject; }
 
     static NodeDao getDao() { return dao; }
+
+    static List<String> getRoutePlanSummary() { return routePlanSummary; }
 }

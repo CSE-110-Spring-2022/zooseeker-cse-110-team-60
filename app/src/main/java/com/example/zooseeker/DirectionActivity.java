@@ -51,7 +51,7 @@ public class DirectionActivity extends AppCompatActivity {
      *   @return
      */
     void nextClicked(View view) {
-        if (DirectionTracker.index == DirectionTracker.currentExhibitsOrder.size()) {
+        if (DirectionTracker.index == DirectionTracker.currentExhibitIdsOrder.size()) {
             Utilities.showAlert(this, "No More Directions!", "Ok", "Cancel");
             return;
         }
@@ -124,10 +124,13 @@ public class DirectionActivity extends AppCompatActivity {
 
         String currentNodeId;
         if (DirectionTracker.index == 0) currentNodeId = "entrance_exit_gate";
-        else currentNodeId = DirectionTracker.currentExhibitsOrder.get(DirectionTracker.index - 1).id;
+        else {
+            String currentExhibitId = DirectionTracker.currentExhibitIdsOrder.get(DirectionTracker.index - 1);
+            currentNodeId = DirectionTracker.getParentNodeIfExists(DirectionTracker.getDao().get(currentExhibitId)).id;
+        }
         Direction currentDirection = DirectionTracker.getDirection(currentNodeId);
 
-        header.setText(currentDirection.getStart() + " to " + currentDirection.getEnd() + " (" + currentDirection.getDistance() + "m)");
+        header.setText(currentDirection.getStart() + " to " + currentDirection.getEnd() + " (" + currentDirection.getDistance() + " feet)");
 
         String directionsString = "";
         List<String> steps = currentDirection.getSteps();

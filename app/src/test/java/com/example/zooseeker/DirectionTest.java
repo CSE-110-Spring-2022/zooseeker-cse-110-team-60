@@ -21,7 +21,7 @@ public class DirectionTest {
 
     @Before
     public void createGraph() {
-        DirectionTracker.loadGraphData(ApplicationProvider.getApplicationContext(), "sample_node_info.JSON", "sample_edge_info.JSON", "sample_zoo_graph.JSON");
+        DirectionTracker.loadGraphData(ApplicationProvider.getApplicationContext(), "test_vertex_info.JSON", "test_edge_info.JSON", "test_zoo_graph_info.JSON");
         DirectionTracker.loadDatabaseAndDaoByContext(ApplicationProvider.getApplicationContext());
 
         Context context = ApplicationProvider.getApplicationContext();
@@ -30,7 +30,7 @@ public class DirectionTest {
                                      .build();
         NodeDatabase.injectTestDatabase(testDb);
 
-        List<Node> todos = Node.loadJSON(context, "sample_node_info.JSON");
+        List<Node> todos = Node.loadJSON(context, "test_vertex_info.JSON");
         dao = testDb.nodeDao();
         dao.insertAll(todos);
 
@@ -46,19 +46,19 @@ public class DirectionTest {
     @Test
     public void initDirectionsTest() {
         List<String> expectedSummary = new ArrayList<>();
-        expectedSummary.add("Entrance and Exit Gate to Alligators (110.0m)");
-        expectedSummary.add("Alligators to Lions (200.0m)");
-        expectedSummary.add("Lions to Gorillas (200.0m)");
-        expectedSummary.add("Gorillas to Entrance and Exit Gate (210.0m)");
+        expectedSummary.add("Entrance and Exit Gate to Alligators (110.0 feet)");
+        expectedSummary.add("Alligators to Lions (200.0 feet)");
+        expectedSummary.add("Lions to Gorillas (200.0 feet)");
+        expectedSummary.add("Gorillas to Entrance and Exit Gate (210.0 feet)");
         assertEquals(expectedSummary, DirectionTracker.getRoutePlanSummary());
 
         Node gators = dao.get("gators");
         Node lions = dao.get("lions");
         Node gorillas = dao.get("gorillas");
 
-        assertEquals(gators.id, DirectionTracker.currentExhibitsOrder.get(0).id);
-        assertEquals(lions.id, DirectionTracker.currentExhibitsOrder.get(1).id);
-        assertEquals(gorillas.id, DirectionTracker.currentExhibitsOrder.get(2).id);
+        assertEquals(gators.id, DirectionTracker.currentExhibitIdsOrder.get(0));
+        assertEquals(lions.id, DirectionTracker.currentExhibitIdsOrder.get(1));
+        assertEquals(gorillas.id, DirectionTracker.currentExhibitIdsOrder.get(2));
     }
 
     @Test
