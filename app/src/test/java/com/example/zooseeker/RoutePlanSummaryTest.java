@@ -17,32 +17,30 @@ import java.util.List;
 
 @RunWith(AndroidJUnit4.class)
 public class RoutePlanSummaryTest {
-    ExhibitItemDao dao;
+    NodeDao dao;
 
     @Before
     public void setup() {
-        DirectionTracker.loadGraphData(ApplicationProvider.getApplicationContext(), "sample_node_info.JSON", "sample_edge_info.JSON", "sample_zoo_graph.JSON");
+        DirectionTracker.loadGraphData(ApplicationProvider.getApplicationContext(), "test_vertex_info.JSON", "test_edge_info.JSON", "test_zoo_graph_info.JSON");
         DirectionTracker.loadDatabaseAndDaoByContext(ApplicationProvider.getApplicationContext());
 
         Context context = ApplicationProvider.getApplicationContext();
-        ExhibitDatabase testDb = Room.inMemoryDatabaseBuilder(context, ExhibitDatabase.class)
+        NodeDatabase testDb = Room.inMemoryDatabaseBuilder(context, NodeDatabase.class)
                 .allowMainThreadQueries()
                 .build();
-        ExhibitDatabase.injectTestDatabase(testDb);
+        NodeDatabase.injectTestDatabase(testDb);
 
-        List<ExhibitItem> todos = ExhibitItem.loadJSON(context, "sample_node_info.JSON");
-        dao = testDb.exhibitItemDao();
+        List<Node> todos = Node.loadJSON(context, "test_vertex_info.JSON");
+        dao = testDb.nodeDao();
         dao.insertAll(todos);
 
         DirectionTracker.setDao(dao);
 
-        List<ExhibitItem> toVisit = new ArrayList<ExhibitItem>();
+        List<Node> toVisit = new ArrayList<Node>();
         toVisit.add(dao.get("gorillas"));
         toVisit.add(dao.get("lions"));
         toVisit.add(dao.get("gators"));
         DirectionTracker.initDirections(DirectionTracker.getGateId(), toVisit);
-
-
     }
 
     @Test
@@ -55,7 +53,7 @@ public class RoutePlanSummaryTest {
         List<String> directions = adapter.getDirectionItems();
         String entranceToGators = directions.get(0);
 
-        assertEquals(entranceToGators, "Entrance and Exit Gate to Alligators (110.0m)");
+        assertEquals(entranceToGators, "Entrance and Exit Gate to Alligators (110.0 feet)");
     }
 
     @Test
