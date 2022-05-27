@@ -94,6 +94,7 @@ public class DirectionActivity extends AppCompatActivity {
             switch (i) {
                 // "Yes" button clicked
                 case DialogInterface.BUTTON_POSITIVE:
+                    ExhibitList.clearCheckedExhibits();
                     finish();
                     break;
 

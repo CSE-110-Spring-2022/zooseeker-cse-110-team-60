@@ -12,12 +12,14 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class GPSTracker implements LocationListener {
 
     private Context context;
     private Activity activity;
+    private static NodeDao dao;
 
     public boolean isGPSEnabled = false;
 
@@ -37,6 +39,7 @@ public class GPSTracker implements LocationListener {
     public GPSTracker(Context context, Activity activity) {
         this.context = context;
         this.activity = activity;
+        dao = DirectionTracker.getDao(); // TODO: make sure DirectionTracker is called before GPSTracker
         getLocation();
     }
 
@@ -70,8 +73,15 @@ public class GPSTracker implements LocationListener {
     // OffTrack
     @Override
     public void onLocationChanged(@NonNull Location location) {
-//        List<Node> exhibits = DirectionTracker.currentExhibitOrder;
-//        Node next = DirectionTracker.currentExhibitOrder.get(0);
+//        List<String> exhibitIds = DirectionTracker.currentExhibitIdsOrder;
+//
+//        List<Node> exhibits = new ArrayList<>();
+//        for (String id : exhibitIds) {
+//            Node exhibit = dao.get(id);
+//            exhibits.add(exhibit);
+//        }
+//
+//        Node next = exhibits.get(0);
 //        double closestDistance = Integer.MAX_VALUE;
 //        String closestExhibit = next.id;
 //
@@ -81,18 +91,21 @@ public class GPSTracker implements LocationListener {
 //
 //        {
 //            for (Node exhibit : exhibits) {
-//                double distance = Utilities.getVincentyDistance(latitude, longitude, item.latitude,
-//                item.longitude);
+//                double distance = Utilities.getVincentyDistance(latitude, longitude,
+//                                                                exhibit.latitude,
+//                                                                exhibit.longitude);
 //                if (distance < closestDistance) {
 //                    closestDistance = distance;
-//                    closestExhibit = item.id;
+//                    closestExhibit = exhibit.id;
 //                }
 //            }
 //            /* Scenario 1 */
 //            if (!closestExhibit.equals(next.id)) {
 //                // prompt
-//                boolean redirect = Utilities.showAlert(activity, "You are off track!
-//                Do you want to re-plan your directions?", "Yes", "No");
+//                boolean redirect = Utilities.showAlert(activity, "You are off track! Do" +
+//                                                                 " you want to re-plan " +
+//                                                                 "your directions?",
+//                                                       "Yes", "No");
 //                if (redirect) {
 //                    DirectionTracker.redirect(findNearestNode(latitude, longitude));
 //                }
@@ -104,6 +117,7 @@ public class GPSTracker implements LocationListener {
 //            }
 //            /* Scenario 2 */
 //            else {
+//                // TODO: check if passing nodes in correct order; waiting for Ziv's code
 //                DirectionTracker.redirect(findNearestNode(latitude, longitude));
 //            }
 //        }
@@ -117,7 +131,7 @@ public class GPSTracker implements LocationListener {
     private String findNearestNode(double latitude, double longitude) {
         List<Node> nodes = ExhibitList.getAllNodes();
         double closestDistance = Integer.MAX_VALUE;
-        String closestExhibit = "";
+        String closestNodeId = "";
 
         for (Node node : nodes) {
             double distance = Utilities.getVincentyDistance(latitude, longitude,
@@ -125,11 +139,11 @@ public class GPSTracker implements LocationListener {
                                                             node.longitude);
             if (distance < closestDistance) {
                 closestDistance = distance;
-                closestExhibit = node.id;
+                closestNodeId = node.id;
             }
         }
 
-        return closestExhibit;
+        return closestNodeId;
     }
 }
 

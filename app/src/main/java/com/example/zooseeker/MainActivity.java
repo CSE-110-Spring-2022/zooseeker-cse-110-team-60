@@ -216,7 +216,7 @@ public class MainActivity extends AppCompatActivity {
         numPlanned.setText("Planned " + ExhibitList.getNumChecked() + " Exhibit(s)");
     }
 
-    private void uncheckExhibits() {
+    public void uncheckExhibits() {
         List<Node> checkedExhibits = ExhibitList.getCheckedExhibits();
         for (Node item : checkedExhibits) {
             viewModel.uncheckExhibit(item);

@@ -27,6 +27,10 @@ public class ExhibitList {
         return getCheckedExhibits().size();
     }
 
+    public static void clearCheckedExhibits() {
+        main.uncheckExhibits();
+    }
+
     public static List<Node> getSearchItems(String search) {
         List<Node> allExhibits = getAllExhibits();
         List<Node> searchItems = new ArrayList<>();
