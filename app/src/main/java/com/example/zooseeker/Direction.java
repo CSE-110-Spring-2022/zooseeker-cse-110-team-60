@@ -14,13 +14,15 @@ import java.util.List;
 public class Direction {
     private String start;
     private String end;
-    private List<String> steps;
+    private List<String> briefSteps;
+    private List<String> detailedSteps;
     private double distance;
 
-    public Direction(String start, String end, List<String> steps, double distance) {
+    public Direction(String start, String end, List<String> briefSteps, List<String> detailedSteps, double distance) {
         this.start = start;
         this.end = end;
-        this.steps = steps;
+        this.briefSteps = briefSteps;
+        this.detailedSteps = detailedSteps;
         this.distance = distance;
     }
 
@@ -28,13 +30,20 @@ public class Direction {
 
     public String getEnd() {return end;}
 
-    public List<String> getSteps() {return steps;}
+    public List<String> getBriefDirections() { return briefSteps; }
+
+    public List<String> getDetailedDirections() {return detailedSteps;}
 
     public double getDistance() { return distance; }
 
     @Override
     public String toString() {
-        return "Direction{" + "start='" + start + '\'' + ", end='" + end + '\'' + ", " +
-               "steps=" + steps + '}';
+        return "Direction{" +
+                "start='" + start + '\'' +
+                ", end='" + end + '\'' +
+                ", briefSteps=" + briefSteps +
+                ", detailedSteps=" + detailedSteps +
+                ", distance=" + distance +
+                '}';
     }
 }
