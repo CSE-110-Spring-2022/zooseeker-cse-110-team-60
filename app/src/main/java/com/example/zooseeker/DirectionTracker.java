@@ -22,6 +22,7 @@ public class DirectionTracker {
     public static int index;
     public static List<String> currentExhibitIdsOrder;
     private static List<String> routePlanSummary;
+    public static Direction currentDirection;
 
     private static NodeDao dao;
 
@@ -159,7 +160,8 @@ public class DirectionTracker {
             i++;
         }
 
-        Direction currentDirection = new Direction(startNodeName, nextNodeName, briefSteps, detailedSteps, path.getWeight(), nodes);
+        currentDirection = new Direction(startNodeName, nextNodeName, briefSteps, detailedSteps, path.getWeight(), nodes);
+
 //        Log.d("DIR", currentDirection.toString());
         return currentDirection;
     }
