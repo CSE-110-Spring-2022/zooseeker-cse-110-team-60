@@ -159,7 +159,7 @@ public class DirectionTracker {
             i++;
         }
 
-        Direction currentDirection = new Direction(startNodeName, nextNodeName, briefSteps, detailedSteps, path.getWeight());
+        Direction currentDirection = new Direction(startNodeName, nextNodeName, briefSteps, detailedSteps, path.getWeight(), nodes);
 //        Log.d("DIR", currentDirection.toString());
         return currentDirection;
     }

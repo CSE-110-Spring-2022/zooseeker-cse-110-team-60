@@ -64,25 +64,25 @@ public class DirectionTest {
     @Test
     public void getDirectionTest() {
         Direction currentDirection = DirectionTracker.getDirection("entrance_exit_gate");
-        Direction expectedDirection = new Direction("Entrance and Exit Gate", "Alligators", new ArrayList<String>(), new ArrayList<String>(), 0);
+        Direction expectedDirection = new Direction("Entrance and Exit Gate", "Alligators", new ArrayList<String>(), new ArrayList<String>(), 0, new ArrayList<String>());
         assertEquals(expectedDirection.getStart(), currentDirection.getStart());
         assertEquals(expectedDirection.getEnd(), currentDirection.getEnd());
         DirectionTracker.next();
 
-        expectedDirection = new Direction("Alligators", "Lions", new ArrayList<String>(), new ArrayList<String>(), 0);
+        expectedDirection = new Direction("Alligators", "Lions", new ArrayList<String>(), new ArrayList<String>(), 0, new ArrayList<String>());
         currentDirection = DirectionTracker.getDirection("gators");
         assertEquals(expectedDirection.getStart(), currentDirection.getStart());
         assertEquals(expectedDirection.getEnd(), currentDirection.getEnd());
         DirectionTracker.next();
 
-        expectedDirection = new Direction("Lions", "Gorillas", new ArrayList<String>(), new ArrayList<String>(), 0);
+        expectedDirection = new Direction("Lions", "Gorillas", new ArrayList<String>(), new ArrayList<String>(), 0, new ArrayList<String>());
         currentDirection = DirectionTracker.getDirection("lions");
         assertEquals(expectedDirection.getStart(), currentDirection.getStart());
         assertEquals(expectedDirection.getEnd(), currentDirection.getEnd());
         DirectionTracker.previous();
         DirectionTracker.previous();
 
-        expectedDirection = new Direction("Lions", "Alligators", new ArrayList<String>(), new ArrayList<String>(), 0);
+        expectedDirection = new Direction("Lions", "Alligators", new ArrayList<String>(), new ArrayList<String>(), 0, new ArrayList<String>());
         currentDirection = DirectionTracker.getDirection("lions");
         assertEquals(expectedDirection.getStart(), currentDirection.getStart());
         assertEquals(expectedDirection.getEnd(), currentDirection.getEnd());
@@ -90,7 +90,7 @@ public class DirectionTest {
         DirectionTracker.next();
         DirectionTracker.next();
 
-        expectedDirection = new Direction("Gorillas", "Entrance and Exit Gate", new ArrayList<String>(), new ArrayList<String>(), 0);
+        expectedDirection = new Direction("Gorillas", "Entrance and Exit Gate", new ArrayList<String>(), new ArrayList<String>(), 0, new ArrayList<String>());
         currentDirection = DirectionTracker.getDirection("gorillas");
         assertEquals(expectedDirection.getStart(), currentDirection.getStart());
         assertEquals(expectedDirection.getEnd(), currentDirection.getEnd());
