@@ -2,14 +2,18 @@ package com.example.zooseeker;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
+import java.util.Random;
 
 public class DirectionActivity extends AppCompatActivity {
     public TextView header;
@@ -17,18 +21,36 @@ public class DirectionActivity extends AppCompatActivity {
     public Button nextButton;
     public Button previousButton;
     public Button exitButton;
+    public Button skipButton;
+    public Button toggleButton;
     public int i;
+    public boolean detailed = false;
+
+    public RecyclerView recyclerView;
+    public DirectionAdapter adapter;
+
+    // for redirect testing
+    public String currentId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_direction);
 
+        adapter = new DirectionAdapter();
+        adapter.setHasStableIds(true);
+
+        recyclerView = findViewById(R.id.direction_reycler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(adapter);
+
         header = findViewById(R.id.direction_header_textView);
-        body = findViewById(R.id.direction_body_textView);
+//        body = findViewById(R.id.direction_body_textView);
         nextButton = findViewById(R.id.direction_next_button);
         previousButton = findViewById(R.id.direction_previous_button);
         exitButton = findViewById(R.id.direction_exit_button);
+        skipButton = findViewById(R.id.direction_skip_button);
+        toggleButton = findViewById(R.id.direction_toggle_button);
         i = 0;
 
         setDirection();
@@ -36,8 +58,13 @@ public class DirectionActivity extends AppCompatActivity {
         nextButton.setOnClickListener(this::nextClicked);
         previousButton.setOnClickListener(this::previousClicked);
         exitButton.setOnClickListener(this::exitClicked);
+        skipButton.setOnClickListener(this::skipClicked);
+        toggleButton.setOnClickListener(this::toggleClicked);
 
         DirectionTracker.loadDatabaseAndDaoByContext(this);
+
+        // for redirect testing
+        currentId = DirectionTracker.getGateId();
     }
 
     /*
@@ -105,11 +132,45 @@ public class DirectionActivity extends AppCompatActivity {
         };
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Are you sure to exit your current path?")
+        builder.setMessage("Are you sure you want to exit?")
                .setPositiveButton("Yes", dialog).setNegativeButton("No", dialog).show();
+    }
 
-//        DirectionTracker.redirect("arctic_foxes");
-//        setDirection();
+    void skipClicked(View view) {
+        if (DirectionTracker.index == DirectionTracker.currentExhibitIdsOrder.size()) {
+            Utilities.showAlert(this, "Last direction, can't skip!", "Ok", "Cancel");
+            return;
+        }
+
+        DialogInterface.OnClickListener dialog = (dialogInterface, i) -> {
+            switch (i) {
+                // "Yes" button clicked
+                case DialogInterface.BUTTON_POSITIVE:
+                    DirectionTracker.skip(currentId); // change to from current location
+                    setDirection();
+                    break;
+
+                // "No" button clicked
+                case DialogInterface.BUTTON_NEGATIVE:
+                    break;
+            }
+        };
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Are you sure you want to skip?")
+                .setPositiveButton("Yes", dialog).setNegativeButton("No", dialog).show();
+    }
+
+    void toggleClicked(View view) {
+        if (detailed) {
+            detailed = false;
+            toggleButton.setText("DETAILED");
+        } else {
+            detailed = true;
+            toggleButton.setText("BRIEF");
+        }
+
+        setDirection();
     }
 
     /*
@@ -133,12 +194,20 @@ public class DirectionActivity extends AppCompatActivity {
 
         header.setText(currentDirection.getStart() + " to " + currentDirection.getEnd() + " (" + currentDirection.getDistance() + " feet)");
 
-        String directionsString = "";
-        List<String> steps = currentDirection.getSteps();
-        for (int j = 0; j < steps.size(); ++j) {
-            directionsString += steps.get(j) + "\n";
-        }
+//        String directionsString = "";
+//        List<String> steps = currentDirection.get();
+//        for (int j = 0; j < steps.size(); ++j) {
+//            directionsString += steps.get(j) + "\n";
+//        }
 
-        body.setText(directionsString);
+//        body.setText(directionsString);
+        List<String> steps;
+        if (detailed) steps = currentDirection.getDetailedDirections();
+        else steps = currentDirection.getBriefDirections();
+
+        adapter.setDirections(steps);
+
+        // for redirect testing
+        currentId = currentNodeId;
     }
 }
