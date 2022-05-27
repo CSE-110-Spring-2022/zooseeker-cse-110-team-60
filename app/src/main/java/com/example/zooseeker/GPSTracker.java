@@ -70,7 +70,15 @@ public class GPSTracker implements LocationListener {
         return location;
     }
 
-    // OffTrack
+    /**
+     * Name:     onLocationChanged
+     * Behavior: called each time the user moves 10 meters and checks if the user is off track
+     *           it prompts them to redirect if they are off track and the order of remaining nodes has changed
+     *           if they decline, then they arent prompted if they go off track once again between the same 2 exhibits
+     *           if they approve, then we delegate to redirect
+     *
+     * @param     location        the user's current location
+     */
     @Override
     public void onLocationChanged(@NonNull Location location) {
 //        List<String> exhibitIds = DirectionTracker.currentExhibitIdsOrder;
@@ -128,16 +136,26 @@ public class GPSTracker implements LocationListener {
         LocationListener.super.onLocationChanged(locations);
     }
 
+    /**
+     * @param latitude : represents user's current latitude
+     * @param longitude : represents user's current longitude
+     * @return the name of the nearest node (this includes gates, intersections, exhibits, groups, etc..)
+     */
     private String findNearestNode(double latitude, double longitude) {
         List<Node> nodes = ExhibitList.getAllNodes();
         double closestDistance = Integer.MAX_VALUE;
         String closestNodeId = "";
 
+        // goes through all nodes and calculates distance from user's current location(parameters)
+        // to all the other nodes using the vincenty formula
         for (Node node : nodes) {
             double distance = Utilities.getVincentyDistance(latitude, longitude,
                                                             node.latitude,
                                                             node.longitude);
+
+            // if the distance is less than the minimum so far
             if (distance < closestDistance) {
+                // update the minimum distance
                 closestDistance = distance;
                 closestNodeId = node.id;
             }
