@@ -34,23 +34,26 @@ public class PermissionChecker {
             // precise location access granted
             if (fineLocationGranted != null && fineLocationGranted) {
                 this.activity.recreate();
-                MainActivity main = MainActivity.getInstance();
-                main.gpsTracker = new GPSTracker(this.activity, this.activity); //TODO: call in DirectionActivity.java
+                MainActivity.locationAllowed = true;
+
+//                MainActivity main = MainActivity.getInstance();
             }
             // only approximate location access granted or no access granted
             else {
-                DialogInterface.OnClickListener dialog = (dialogInterface, i) -> {
-                    if (i == DialogInterface.BUTTON_POSITIVE) {
-                        this.activity.finish(); // TODO: downgrade
-                        System.exit(0);
-                    }
-                };
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(this.activity);
-                builder.setMessage("Please go to System Settings to enable Precise " +
-                                   "Location for ZooSeeker.")
-                       .setPositiveButton("Ok", dialog)
-                       .show();  // TODO: check what happens if clicking "only allow this time"
+                this.activity.recreate(); // TODO
+                MainActivity.locationAllowed = false; // downgrade
+//                DialogInterface.OnClickListener dialog = (dialogInterface, i) -> {
+//                    if (i == DialogInterface.BUTTON_POSITIVE) {
+//                        this.activity.finish();
+//                        System.exit(0);
+//                    }
+//                };
+//
+//                AlertDialog.Builder builder = new AlertDialog.Builder(this.activity);
+//                builder.setMessage("Please go to System Settings to enable Precise " +
+//                                   "Location for ZooSeeker.")
+//                       .setPositiveButton("Ok", dialog)
+//                       .show();  // TODO: check what happens if clicking "only allow this time"
             }
         });
     }

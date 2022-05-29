@@ -1,5 +1,7 @@
 package com.example.zooseeker;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,7 +19,7 @@ import java.util.Random;
 
 public class DirectionActivity extends AppCompatActivity {
     public TextView header;
-    public TextView body;
+//    public TextView body;
     public Button nextButton;
     public Button previousButton;
     public Button exitButton;
@@ -31,6 +33,8 @@ public class DirectionActivity extends AppCompatActivity {
 
     // for redirect testing
     public String currentId;
+
+    private GPSTracker gpsTracker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +58,10 @@ public class DirectionActivity extends AppCompatActivity {
         i = 0;
 
         setDirection();
+
+        if (MainActivity.locationAllowed) {
+            gpsTracker = new GPSTracker(this, this, new DirectionTracker()); // TODO
+        }
 
         nextButton.setOnClickListener(this::nextClicked);
         previousButton.setOnClickListener(this::previousClicked);
@@ -173,12 +181,10 @@ public class DirectionActivity extends AppCompatActivity {
         setDirection();
     }
 
-    /*
+    /**
      *   Name:       setDirection
      *   Behavior:   Update the header and body to reflect the details of the current
      * direction.
-     *   @param      View     view       the view being called from
-     *   @return
      */
     void setDirection() {
 //        String currentLocationId = getCurrentLocationId();

@@ -3,8 +3,6 @@ package com.example.zooseeker;
 import android.content.Context;
 import android.util.Log;
 
-import androidx.core.util.Pair;
-
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -13,9 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class DirectionTracker {
+public class DirectionTracker implements DirectionSubject {
 
-    private static Graph g;
+    public static Graph g;
     private static Map<String, ZooData.VertexInfo> vInfo;
     private static Map<String, ZooData.EdgeInfo> eInfo;
 
@@ -25,6 +23,8 @@ public class DirectionTracker {
     public static Direction currentDirection;
 
     private static NodeDao dao;
+
+    private static ArrayList<DirectionObserver> observers = new ArrayList<>();
 
     static void loadGraphData(Context context, String vertexPath, String edgePath, String graphPath) {
         vInfo = ZooData.loadVertexInfoJSON(context,vertexPath);
@@ -57,6 +57,9 @@ public class DirectionTracker {
             routePlanSummary.add(vInfo.get(previousId).name + " to " + nextNode.name + " (" + distance + " feet)");
             previousId = nextId;
         }
+
+        notifyOrderChange();
+        notifyOrderChange();
 
         ZooData.VertexInfo gate = DirectionTracker.vInfo.get(DirectionTracker.getGateId());
         double distance = getDistanceBetweenNodes(previousId, gate.id);
@@ -162,6 +165,8 @@ public class DirectionTracker {
 
         currentDirection = new Direction(startNodeName, nextNodeName, briefSteps, detailedSteps, path.getWeight(), nodes);
 
+        notifyDirectionChange();
+
 //        Log.d("DIR", currentDirection.toString());
         return currentDirection;
     }
@@ -247,6 +252,8 @@ public class DirectionTracker {
             previousId = nextId;
             currentExhibitIdsOrder.add(nextId);
         }
+
+        notifyOrderChange();
     }
 
     static void skip(String currentNodeId) {
@@ -288,4 +295,20 @@ public class DirectionTracker {
 
     static Node getCurrentExhibit() { return dao.get(currentExhibitIdsOrder.get(index)); }
 
+    @Override
+    public void register(DirectionObserver directionObserver) {
+        observers.add(directionObserver);
+    }
+
+    public static void notifyOrderChange() {
+        for (DirectionObserver observer : observers) {
+            observer.updateOrder(currentExhibitIdsOrder);
+        }
+    }
+
+    public static void notifyDirectionChange() {
+        for (DirectionObserver observer : observers) {
+            observer.updateDirection(currentDirection);
+        }
+    }
 }

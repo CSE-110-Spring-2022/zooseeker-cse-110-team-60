@@ -32,8 +32,6 @@ public class MainActivity extends AppCompatActivity {
             new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
                          Manifest.permission.ACCESS_COARSE_LOCATION};
 
-    public GPSTracker gpsTracker;
-
     public RecyclerView recyclerView;
     private ExhibitViewModel viewModel;
     private ExhibitListAdapter adapter;
@@ -48,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     private Button directionsBtn;
 
     public static boolean update = true;
+    public static boolean locationAllowed = false;
 
     @SuppressLint("StaticFieldLeak")
     static MainActivity main;
@@ -86,17 +85,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         setNumPlanned();
-
-        /* Location Permissions Setup */
-        {
-            boolean hasNoLocationPerms = Arrays.stream(requiredPermissions)
-                                               .map(perm -> ContextCompat.checkSelfPermission(this, perm))
-                                               .allMatch(status -> status == PackageManager.PERMISSION_DENIED);
-
-            if (hasNoLocationPerms) {
-                permissionChecker.requestPermissionLauncher.launch(requiredPermissions);
-            }
-        }
 
         /* Views Setup */
         {
@@ -189,6 +177,17 @@ public class MainActivity extends AppCompatActivity {
         if (toVisit.size() == 0) {
             Utilities.showAlert(this, "Select Exhibit(s) Before Continuing!", "Ok", "Cancel");
             return;
+        }
+
+        /* Location Permissions Setup */
+        {
+            boolean hasNoLocationPerms = Arrays.stream(requiredPermissions)
+                                               .map(perm -> ContextCompat.checkSelfPermission(this, perm))
+                                               .allMatch(status -> status == PackageManager.PERMISSION_DENIED);
+
+            if (hasNoLocationPerms) {
+                permissionChecker.requestPermissionLauncher.launch(requiredPermissions);
+            }
         }
 
         DirectionTracker.loadGraphData(this,"sample_node_info.JSON", "sample_edge_info.JSON", "sample_zoo_graph.JSON");

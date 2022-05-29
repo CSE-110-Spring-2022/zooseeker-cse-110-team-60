@@ -3,19 +3,18 @@ package com.example.zooseeker;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
-public class GPSTracker implements LocationListener {
+public class GPSTracker implements LocationListener, DirectionObserver {
 
     private Context context;
     private Activity activity;
@@ -29,6 +28,8 @@ public class GPSTracker implements LocationListener {
 
     private boolean rejected = false;
     private String nextExhibit = "";
+    private double radius;
+    private List<Node> nodes;
 
     private static final String provider = LocationManager.GPS_PROVIDER;
     private static final long MIN_TIME_BW_UPDATES = 0;
@@ -36,11 +37,20 @@ public class GPSTracker implements LocationListener {
 
     public LocationManager locationManager;
 
-    public GPSTracker(Context context, Activity activity) {
+    private static List<String> exhibitIdsToVisit = DirectionTracker.currentExhibitIdsOrder;
+    private static List<String> nodeIdsToPass = new ArrayList<>();
+    private static List<Node> exhibitsToVisit = new ArrayList<>();
+    private static List<Node> nodesToPass = new ArrayList<>();
+
+    public GPSTracker(Context context, Activity activity, DirectionSubject subject) {
         this.context = context;
         this.activity = activity;
-        dao = DirectionTracker.getDao(); // TODO: make sure DirectionTracker is called before GPSTracker
+        dao = DirectionTracker.getDao();
         getLocation();
+        radius = findSmallestDistance() * 0.5;
+        nodes = dao.getAll();
+
+        subject.register(this);
     }
 
     @SuppressLint("MissingPermission")
@@ -81,54 +91,61 @@ public class GPSTracker implements LocationListener {
      */
     @Override
     public void onLocationChanged(@NonNull Location location) {
-//        List<String> exhibitIds = DirectionTracker.currentExhibitIdsOrder;
-//
-//        List<Node> exhibits = new ArrayList<>();
-//        for (String id : exhibitIds) {
-//            Node exhibit = dao.get(id);
-//            exhibits.add(exhibit);
-//        }
-//
-//        Node next = exhibits.get(0);
-//        double closestDistance = Integer.MAX_VALUE;
-//        String closestExhibit = next.id;
-//
-//        if (rejected && !nextExhibit.equals(next.id)) {
-//            rejected = false;
-//        }
-//
-//        {
-//            for (Node exhibit : exhibits) {
-//                double distance = Utilities.getVincentyDistance(latitude, longitude,
-//                                                                exhibit.latitude,
-//                                                                exhibit.longitude);
-//                if (distance < closestDistance) {
-//                    closestDistance = distance;
-//                    closestExhibit = exhibit.id;
-//                }
-//            }
-//            /* Scenario 1 */
-//            if (!closestExhibit.equals(next.id)) {
-//                // prompt
-//                boolean redirect = Utilities.showAlert(activity, "You are off track! Do" +
-//                                                                 " you want to re-plan " +
-//                                                                 "your directions?",
-//                                                       "Yes", "No");
-//                if (redirect) {
-//                    DirectionTracker.redirect(findNearestNode(latitude, longitude));
-//                }
-//                else {
-//                    // do nothing until next exhibit
-//                    rejected = true;
-//                    nextExhibit = next.id;
-//                }
-//            }
-//            /* Scenario 2 */
-//            else {
-//                // TODO: check if passing nodes in correct order; waiting for Ziv's code
-//                DirectionTracker.redirect(findNearestNode(latitude, longitude));
-//            }
-//        }
+        Node nextExhibitToVisit;
+        if (exhibitsToVisit.size() > 0) {
+            nextExhibitToVisit = exhibitsToVisit.get(0);
+        }
+        // finished all exhibits, heading back to gate
+        else {
+            nextExhibitToVisit = dao.get("entrance_exit_gate");
+        }
+        double closestDistance = Integer.MAX_VALUE;
+        String closestExhibit = nextExhibitToVisit.id;
+
+        if (rejected && !nextExhibit.equals(nextExhibitToVisit.id)) {
+            rejected = false;
+        }
+
+        {
+            for (Node exhibit : exhibitsToVisit) {
+                double distance = Utilities.getVincentyDistance(latitude, longitude, exhibit.latitude, exhibit.longitude);
+                if (distance < closestDistance) {
+                    closestDistance = distance;
+                    closestExhibit = exhibit.id;
+                }
+            }
+            /* Scenario 1 */
+            if (!closestExhibit.equals(nextExhibitToVisit.id)) {
+                // prompt
+                boolean redirect = Utilities.showAlert(activity, "You are off track! Do" + " you want to re-plan " + "your directions?", "Yes", "No");
+                if (redirect) {
+                    DirectionTracker.redirect(findNearestNode(latitude, longitude));
+                }
+                else {
+                    // do nothing until next exhibit
+                    rejected = true;
+                    nextExhibit = nextExhibitToVisit.id;
+                }
+            }
+            /* Scenario 2 */
+            else {
+                for (Node node : nodes) {
+                    // offTrack
+                    if (Utilities.getVincentyDistance(latitude, longitude, node.latitude, node.longitude) < radius && !(nodesToPass.get(0) == node)) {
+                        DirectionTracker.redirect(node.id);
+                    }
+                    // node passed
+                    else if (Utilities.getVincentyDistance(latitude, longitude, node.latitude, node.longitude) < radius && (nodesToPass.get(0) == node)) {
+                        nodesToPass.remove(0);
+                    }
+
+                    // exhibit visited
+                    if (Utilities.getVincentyDistance(latitude, longitude, node.latitude, node.longitude) < radius && (exhibitsToVisit.get(0) == node)) {
+                        exhibitsToVisit.remove(0);
+                    }
+                }
+            }
+        }
     }
 
     @Override
@@ -163,5 +180,52 @@ public class GPSTracker implements LocationListener {
 
         return closestNodeId;
     }
-}
 
+    private double findSmallestDistance() {
+            Set<IdentifiedWeightedEdge> edges = DirectionTracker.g.edgeSet();
+            double closestDistance = Integer.MAX_VALUE;
+
+            for (IdentifiedWeightedEdge edge : edges) {
+                String sourceId = (String) DirectionTracker.g.getEdgeSource(edge);
+Log.d("EDGES source id", sourceId);
+
+                String targetId = (String) DirectionTracker.g.getEdgeTarget(edge);
+Log.d("EDGES target id", targetId);
+
+                Node source = dao.get(sourceId);
+Log.d("EDGES source node", source.toString());
+
+                Node target = dao.get(targetId);
+Log.d("EDGES target node", target.toString());
+
+                double distance = Utilities.getVincentyDistance(source.latitude, source.longitude, target.latitude, target.longitude);
+Log.d("EDGES distance", String.valueOf(distance));
+
+                if (distance < closestDistance) {
+                    closestDistance = distance;
+                }
+            }
+            return closestDistance;
+        }
+
+    @Override
+    public void updateDirection(Direction direction) {
+        nodeIdsToPass = direction.nodeIds;
+        nodesToPass = getNodes(nodeIdsToPass);
+    }
+
+    @Override
+    public void updateOrder(List<String> exhibitIds) {
+        exhibitIdsToVisit = exhibitIds;
+        exhibitsToVisit = getNodes(exhibitIdsToVisit);
+    }
+
+    private List<Node> getNodes(List<String> ids) {
+        List<Node> nodes = new ArrayList<>();
+        for (String id : ids) {
+            Node node = dao.get(id);
+            nodes.add(node);
+        }
+        return nodes;
+    }
+}
