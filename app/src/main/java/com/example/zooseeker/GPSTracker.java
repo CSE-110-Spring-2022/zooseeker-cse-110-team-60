@@ -6,7 +6,7 @@ import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.util.Log;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 
@@ -14,70 +14,77 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+@SuppressLint("StaticFieldLeak")
 public class GPSTracker implements LocationListener, DirectionObserver {
 
-    private Context context;
-    private Activity activity;
+    private static Context context;
+    private static Activity activity;
     private static NodeDao dao;
 
-    public boolean isGPSEnabled = false;
+    public static boolean isGPSEnabled = false;
+    public static boolean manualLocation = false;
 
-    public Location location;
-    public double latitude;
-    public double longitude;
+    public static Location location;
+    public static double latitude;
+    public static double longitude;
 
-    private boolean rejected = false;
-    private String nextExhibit = "";
-    private double radius;
-    private List<Node> nodes;
+    private static boolean rejected = false;
+    private static String nextExhibit = "";
+    private static double radius;
+    private static List<Node> nodes;
 
     private static final String provider = LocationManager.GPS_PROVIDER;
     private static final long MIN_TIME_BW_UPDATES = 0;
     private static final float MIN_DISTANCE_CHANGE_FOR_UPDATES = 1f;
 
-    public LocationManager locationManager;
+    public static LocationManager locationManager;
 
     private static List<String> exhibitIdsToVisit = DirectionTracker.currentExhibitIdsOrder;
     private static List<String> nodeIdsToPass = new ArrayList<>();
     private static List<Node> exhibitsToVisit = new ArrayList<>();
     private static List<Node> nodesToPass = new ArrayList<>();
 
+    private static int exhibitIndex = 0;
+    private static int currIndex = 0;
+
     public GPSTracker(Context context, Activity activity, DirectionSubject subject) {
-        this.context = context;
-        this.activity = activity;
+        GPSTracker.context = context;
+        GPSTracker.activity = activity;
         dao = DirectionTracker.getDao();
-        getLocation();
         radius = findSmallestDistance() * 0.5;
         nodes = dao.getAll();
-
         subject.register(this);
+
+        getLocation();
     }
 
     @SuppressLint("MissingPermission")
     public Location getLocation() {
-        locationManager =
-                (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-        isGPSEnabled = locationManager.isProviderEnabled(provider);
+        if (manualLocation) {
+            Location manualLocation = new Location(LocationManager.GPS_PROVIDER);
+            manualLocation.setLatitude(latitude);
+            manualLocation.setLongitude(longitude);
 
-        if (!isGPSEnabled) {
-            // gpsTracker only called if Precise Location granted
-            // TODO: downgrade
+            return manualLocation;
         }
         else {
-            locationManager.requestLocationUpdates(provider, MIN_TIME_BW_UPDATES,
-                                                   MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
+            locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+            isGPSEnabled = locationManager.isProviderEnabled(provider);
 
-            if (locationManager != null) {
-                Location lastKnownLocation =
-                        locationManager.getLastKnownLocation(provider);
-                if (lastKnownLocation != null) {
-                    location = lastKnownLocation;
-                    latitude = location.getLatitude();
-                    longitude = location.getLongitude();
+            if (isGPSEnabled) {
+                locationManager.requestLocationUpdates(provider, MIN_TIME_BW_UPDATES, MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
+
+                if (locationManager != null) {
+                    Location lastKnownLocation = locationManager.getLastKnownLocation(provider);
+                    if (lastKnownLocation != null) {
+                        location = lastKnownLocation;
+                        latitude = location.getLatitude();
+                        longitude = location.getLongitude();
+                    }
                 }
             }
+            return location;
         }
-        return location;
     }
 
     /**
@@ -91,41 +98,50 @@ public class GPSTracker implements LocationListener, DirectionObserver {
      */
     @Override
     public void onLocationChanged(@NonNull Location location) {
+        latitude = location.getLatitude();
+        longitude = location.getLongitude();
+        offTrack();
+    }
+
+    public void offTrack() {
+
         Node nextExhibitToVisit;
-        if (exhibitsToVisit.size() > 0) {
-            nextExhibitToVisit = exhibitsToVisit.get(0);
+        if (exhibitIndex < exhibitsToVisit.size()) {
+            nextExhibitToVisit = exhibitsToVisit.get(exhibitIndex);
         }
-        // finished all exhibits, heading back to gate
         else {
-            nextExhibitToVisit = dao.get("entrance_exit_gate");
+            return;
         }
+
         double closestDistance = Integer.MAX_VALUE;
         String closestExhibit = nextExhibitToVisit.id;
 
-        if (rejected && !nextExhibit.equals(nextExhibitToVisit.id)) {
+        if (rejected && currIndex != exhibitIndex) {
             rejected = false;
         }
 
         {
-            for (Node exhibit : exhibitsToVisit) {
-                double distance = Utilities.getVincentyDistance(latitude, longitude, exhibit.latitude, exhibit.longitude);
+            for (int iterator = exhibitIndex; iterator < exhibitsToVisit.size(); iterator++) {
+                double distance = Utilities.getVincentyDistance(latitude, longitude, exhibitsToVisit.get(exhibitIndex).latitude, exhibitsToVisit.get(exhibitIndex).longitude);
                 if (distance < closestDistance) {
                     closestDistance = distance;
-                    closestExhibit = exhibit.id;
+                    closestExhibit = exhibitsToVisit.get(exhibitIndex).id;
                 }
             }
             /* Scenario 1 */
             if (!closestExhibit.equals(nextExhibitToVisit.id)) {
                 // prompt
-                boolean redirect = Utilities.showAlert(activity, "You are off track! Do" + " you want to re-plan " + "your directions?", "Yes", "No");
-                if (redirect) {
-                    DirectionTracker.redirect(findNearestNode(latitude, longitude));
-                }
-                else {
-                    // do nothing until next exhibit
-                    rejected = true;
-                    nextExhibit = nextExhibitToVisit.id;
-                }
+                AlertUtilities alert = new AlertUtilities(context, response -> {
+                    if (response) {
+                        DirectionTracker.redirect(findNearestNode(latitude, longitude));
+                    }
+                    else {
+                        // do nothing until next exhibit
+                        rejected = true;
+                        currIndex = exhibitIndex;
+                    }
+                });
+                alert.showAlert("You are off track! Do" + " you want to re-plan " + "your directions?", "Yes", "No");
             }
             /* Scenario 2 */
             else {
@@ -138,10 +154,9 @@ public class GPSTracker implements LocationListener, DirectionObserver {
                     else if (Utilities.getVincentyDistance(latitude, longitude, node.latitude, node.longitude) < radius && (nodesToPass.get(0) == node)) {
                         nodesToPass.remove(0);
                     }
-
                     // exhibit visited
-                    if (Utilities.getVincentyDistance(latitude, longitude, node.latitude, node.longitude) < radius && (exhibitsToVisit.get(0) == node)) {
-                        exhibitsToVisit.remove(0);
+                    if (Utilities.getVincentyDistance(latitude, longitude, node.latitude, node.longitude) < radius && (exhibitsToVisit.get(exhibitIndex) == node)) {
+                        exhibitIndex++;
                     }
                 }
             }
@@ -187,19 +202,14 @@ public class GPSTracker implements LocationListener, DirectionObserver {
 
             for (IdentifiedWeightedEdge edge : edges) {
                 String sourceId = (String) DirectionTracker.g.getEdgeSource(edge);
-Log.d("EDGES source id", sourceId);
 
                 String targetId = (String) DirectionTracker.g.getEdgeTarget(edge);
-Log.d("EDGES target id", targetId);
 
                 Node source = dao.get(sourceId);
-Log.d("EDGES source node", source.toString());
 
                 Node target = dao.get(targetId);
-Log.d("EDGES target node", target.toString());
 
                 double distance = Utilities.getVincentyDistance(source.latitude, source.longitude, target.latitude, target.longitude);
-Log.d("EDGES distance", String.valueOf(distance));
 
                 if (distance < closestDistance) {
                     closestDistance = distance;
@@ -217,6 +227,7 @@ Log.d("EDGES distance", String.valueOf(distance));
     @Override
     public void updateOrder(List<String> exhibitIds) {
         exhibitIdsToVisit = exhibitIds;
+        exhibitIdsToVisit.add("entrance_exit_gate");
         exhibitsToVisit = getNodes(exhibitIdsToVisit);
     }
 

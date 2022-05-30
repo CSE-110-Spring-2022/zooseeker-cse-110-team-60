@@ -86,6 +86,17 @@ public class MainActivity extends AppCompatActivity {
 
         setNumPlanned();
 
+        /* Location Permissions Setup */
+        {
+            boolean hasNoLocationPerms = Arrays.stream(requiredPermissions)
+                                               .map(perm -> ContextCompat.checkSelfPermission(this, perm))
+                                               .allMatch(status -> status == PackageManager.PERMISSION_DENIED);
+
+            if (hasNoLocationPerms) {
+                permissionChecker.requestPermissionLauncher.launch(requiredPermissions);
+            }
+        }
+
         /* Views Setup */
         {
             searchBar.addTextChangedListener(new TextWatcher() {
@@ -177,17 +188,6 @@ public class MainActivity extends AppCompatActivity {
         if (toVisit.size() == 0) {
             Utilities.showAlert(this, "Select Exhibit(s) Before Continuing!", "Ok", "Cancel");
             return;
-        }
-
-        /* Location Permissions Setup */
-        {
-            boolean hasNoLocationPerms = Arrays.stream(requiredPermissions)
-                                               .map(perm -> ContextCompat.checkSelfPermission(this, perm))
-                                               .allMatch(status -> status == PackageManager.PERMISSION_DENIED);
-
-            if (hasNoLocationPerms) {
-                permissionChecker.requestPermissionLauncher.launch(requiredPermissions);
-            }
         }
 
         DirectionTracker.loadGraphData(this,"sample_node_info.JSON", "sample_edge_info.JSON", "sample_zoo_graph.JSON");

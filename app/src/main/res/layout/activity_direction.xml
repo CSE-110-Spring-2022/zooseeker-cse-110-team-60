@@ -4,82 +4,163 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context=".DirectionActivity">
 
     <TextView
         android:id="@+id/direction_header_textView"
         android:layout_width="0dp"
-        android:layout_height="64dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_height="80dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/direction_reycler_view"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/direction_toggle_button"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/direction_previous_button"
-        android:layout_width="80dp"
-        android:layout_height="72dp"
-        android:layout_marginTop="8dp"
-        android:text="Previous"
-        android:textSize="12sp"
-        app:layout_constraintStart_toStartOf="@+id/direction_reycler_view"
-        app:layout_constraintTop_toBottomOf="@+id/direction_reycler_view" />
-
-    <Button
-        android:id="@+id/direction_next_button"
-        android:layout_width="80dp"
-        android:layout_height="72dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="Next"
-        android:textSize="12sp"
-        app:layout_constraintStart_toEndOf="@+id/direction_skip_button"
-        app:layout_constraintTop_toBottomOf="@+id/direction_reycler_view" />
-
-    <Button
         android:id="@+id/direction_toggle_button"
-        android:layout_width="80dp"
-        android:layout_height="72dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="DETAILED"
+        android:layout_width="85dp"
+        android:layout_height="40dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="0dp"
+        android:paddingStart="0dp"
+        android:paddingEnd="0dp"
+        android:text="@string/detailed"
         android:textSize="12sp"
-        app:layout_constraintStart_toEndOf="@+id/direction_next_button"
-        app:layout_constraintTop_toBottomOf="@+id/direction_reycler_view" />
+        app:layout_constraintBottom_toTopOf="@+id/direction_mock_button"
+        app:layout_constraintLeft_toRightOf="@id/direction_header_textView"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/direction_skip_button"
-        android:layout_width="80dp"
-        android:layout_height="72dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="SKIP"
+        android:id="@+id/direction_mock_button"
+        android:layout_width="85dp"
+        android:layout_height="40dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="16dp"
+        android:paddingStart="0dp"
+        android:paddingEnd="0dp"
+        android:text="@string/mock"
         android:textSize="12sp"
-        app:layout_constraintStart_toEndOf="@+id/direction_exit_button"
+        app:layout_constraintBottom_toTopOf="@id/direction_reycler_view"
+        app:layout_constraintLeft_toRightOf="@id/direction_header_textView"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/direction_toggle_button" />
+
+    <LinearLayout
+        android:id="@+id/direction_enter_mock_location"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/white"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:translationZ="90dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@id/direction_previous_button"
+        app:layout_constraintTop_toBottomOf="@id/direction_header_textView">
+
+        <EditText
+            android:id="@+id/direction_mock_lat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="@string/latitude"
+            android:importantForAutofill="no"
+            android:inputType="numberDecimal|numberSigned" />
+
+        <EditText
+            android:id="@+id/direction_mock_lng"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:ems="10"
+            android:hint="@string/longitude"
+            android:importantForAutofill="no"
+            android:inputType="numberDecimal|numberSigned" />
+
+        <Button
+            android:id="@+id/direction_mock_mock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/mock_location"
+            android:textSize="12sp" />
+
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/direction_reycler_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginRight="16dp"
+        app:layout_constraintBottom_toTopOf="@id/direction_previous_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/direction_header_textView" />
+
+    <Button
+        android:id="@+id/direction_previous_button"
+        android:layout_width="70dp"
+        android:layout_height="60dp"
+        android:layout_margin="16dp"
+        android:paddingStart="0dp"
+        android:paddingEnd="0dp"
+        android:text="@string/prev"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/direction_exit_button"
         app:layout_constraintTop_toBottomOf="@+id/direction_reycler_view" />
 
     <Button
         android:id="@+id/direction_exit_button"
-        android:layout_width="80dp"
-        android:layout_height="72dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="Exit"
+        android:layout_width="70dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:paddingStart="0dp"
+        android:paddingEnd="0dp"
+        android:text="@string/exit"
         android:textSize="12sp"
-        app:layout_constraintStart_toEndOf="@+id/direction_previous_button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/direction_previous_button"
+        app:layout_constraintRight_toLeftOf="@id/direction_skip_button"
         app:layout_constraintTop_toBottomOf="@+id/direction_reycler_view" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/direction_reycler_view"
-        android:layout_width="409dp"
-        android:layout_height="545dp"
-        android:layout_marginStart="1dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="1dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/direction_header_textView" />
+    <Button
+        android:id="@+id/direction_skip_button"
+        android:layout_width="70dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:paddingStart="0dp"
+        android:paddingEnd="0dp"
+        android:text="@string/skip"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/direction_exit_button"
+        app:layout_constraintRight_toLeftOf="@id/direction_next_button"
+        app:layout_constraintTop_toBottomOf="@+id/direction_reycler_view" />
+
+    <Button
+        android:id="@+id/direction_next_button"
+        android:layout_width="70dp"
+        android:layout_height="60dp"
+        android:layout_margin="16dp"
+        android:paddingStart="0dp"
+        android:paddingEnd="0dp"
+        android:text="@string/next"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/direction_skip_button"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/direction_reycler_view" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

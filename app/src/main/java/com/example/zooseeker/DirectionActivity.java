@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
@@ -16,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class DirectionActivity extends AppCompatActivity {
     public TextView header;
@@ -25,6 +28,11 @@ public class DirectionActivity extends AppCompatActivity {
     public Button exitButton;
     public Button skipButton;
     public Button toggleButton;
+    public Button mockButton;
+    public LinearLayout mockLocation;
+    public EditText mockLatitude;
+    public EditText mockLongitude;
+    public Button enterMockLocation;
     public int i;
     public boolean detailed = false;
 
@@ -55,6 +63,12 @@ public class DirectionActivity extends AppCompatActivity {
         exitButton = findViewById(R.id.direction_exit_button);
         skipButton = findViewById(R.id.direction_skip_button);
         toggleButton = findViewById(R.id.direction_toggle_button);
+        mockLocation = findViewById(R.id.direction_enter_mock_location);
+        mockButton = findViewById(R.id.direction_mock_button);
+        mockLatitude = findViewById(R.id.direction_mock_lat);
+        mockLongitude = findViewById(R.id.direction_mock_lng);
+        enterMockLocation = findViewById(R.id.direction_mock_mock);
+
         i = 0;
 
         setDirection();
@@ -68,6 +82,8 @@ public class DirectionActivity extends AppCompatActivity {
         exitButton.setOnClickListener(this::exitClicked);
         skipButton.setOnClickListener(this::skipClicked);
         toggleButton.setOnClickListener(this::toggleClicked);
+        mockButton.setOnClickListener(this::mockClicked);
+        enterMockLocation.setOnClickListener(this::enterMockLocationClicked);
 
         DirectionTracker.loadDatabaseAndDaoByContext(this);
 
@@ -181,6 +197,26 @@ public class DirectionActivity extends AppCompatActivity {
         setDirection();
     }
 
+    void mockClicked(View view) {
+        AlertUtilities alert = new AlertUtilities(this, response -> {
+            if (response) {
+                GPSTracker.manualLocation = true;
+                mockLocation.setVisibility(View.VISIBLE);
+            }
+        });
+        alert.showAlert("Do you want to set your current location manually?", "Yes", "No");
+    }
+
+    void enterMockLocationClicked(View view) {
+        GPSTracker.latitude = Double.parseDouble(mockLatitude.getText().toString());
+        GPSTracker.longitude = Double.parseDouble(mockLongitude.getText().toString());
+
+        mockLocation.setVisibility(View.INVISIBLE);
+        mockLatitude.getText().clear();
+        mockLongitude.getText().clear();
+        gpsTracker.offTrack();
+    }
+
     /**
      *   Name:       setDirection
      *   Behavior:   Update the header and body to reflect the details of the current
@@ -198,7 +234,7 @@ public class DirectionActivity extends AppCompatActivity {
         }
         Direction currentDirection = DirectionTracker.getDirection(currentNodeId);
 
-        header.setText(currentDirection.getStart() + " to " + currentDirection.getEnd() + " (" + currentDirection.getDistance() + " feet)");
+        header.setText(currentDirection.getStart() + " to " + currentDirection.getEnd() + "\n(" + currentDirection.getDistance() + " feet)");
 
 //        String directionsString = "";
 //        List<String> steps = currentDirection.get();
