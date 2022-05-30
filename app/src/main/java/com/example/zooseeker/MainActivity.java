@@ -182,6 +182,23 @@ public class MainActivity extends AppCompatActivity {
         displayAllExhibits();
     }
 
+    void getDirectionsClicked(View view) {
+        List<Node> toVisit = ExhibitList.getCheckedExhibits();
+
+        if (toVisit.size() == 0) {
+            Utilities.showAlert(this, "Select Exhibit(s) Before Continuing!", "Ok", "Cancel");
+            return;
+        }
+
+        DirectionTracker.loadGraphData(this,"sample_node_info.JSON", "sample_edge_info.JSON", "sample_zoo_graph.JSON");
+        DirectionTracker.loadDatabaseAndDaoByContext(this);
+        DirectionTracker.initDirections("entrance_exit_gate", toVisit);
+
+        Intent summaryIntent = new Intent(this, RoutePlanSummaryActivity.class);
+        startActivity(summaryIntent);
+    }
+
+    /*
     private void getDirectionsClicked(View view) {
 
         List<Node> toVisit = ExhibitList.getCheckedExhibits();
@@ -198,6 +215,8 @@ public class MainActivity extends AppCompatActivity {
         Intent directionIntent = new Intent(this, DirectionActivity.class);
         startActivity(directionIntent);
     }
+     */
+
 
     public static MainActivity getInstance() {
         return main;
