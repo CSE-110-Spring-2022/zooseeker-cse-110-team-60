@@ -5,20 +5,14 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
 
-import androidx.lifecycle.Lifecycle;
 import androidx.room.Room;
-import androidx.test.core.app.ActivityScenario;
 import androidx.test.core.app.ApplicationProvider;
-import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -28,49 +22,51 @@ import java.util.List;
 
 @RunWith(AndroidJUnit4.class)
 public class CounterTest {
-    private ExhibitItemDao dao;
-    private ExhibitDatabase db;
+    private NodeDao dao;
+    private NodeDatabase db;
 
     // Three mock ExhibitItems used for Testing
-    ExhibitItem ex1 = new ExhibitItem("gorillas", VertexInfo.Kind.EXHIBIT, "Gorillas", "gorilla, monkey, ape, mammal");
-    ExhibitItem ex2 = new ExhibitItem("gators", VertexInfo.Kind.EXHIBIT, "Alligators", "alligator, reptile, gator");
-    ExhibitItem ex3 = new ExhibitItem("lions", VertexInfo.Kind.EXHIBIT, "Lions", "lion, cat, mammal, africa");
+    Node ex1 = new Node("gorillas", "", VertexInfo.Kind.EXHIBIT, "Gorillas", "gorilla, monkey, ape, mammal", 50, 60);
+    Node ex2 = new Node("gators", "", VertexInfo.Kind.EXHIBIT, "Alligators", "alligator, reptile, gator", 55, 65);
+    Node ex3 = new Node("lions", "mammal", VertexInfo.Kind.EXHIBIT, "Lions", "lion, cat, mammal, africa", 70, 78);
+    Node ex4 = new Node("intersection1", "", VertexInfo.Kind.INTERSECTION, "Intersection 1", "", 55, 88);
 
 
     @Before
     public void createDb() {
         Context context = ApplicationProvider.getApplicationContext();
-        db = Room.inMemoryDatabaseBuilder(context, ExhibitDatabase.class)
+        db = Room.inMemoryDatabaseBuilder(context, NodeDatabase.class)
                 .allowMainThreadQueries()
                 .build();
-        dao = db.exhibitItemDao();
+        dao = db.nodeDao();
     }
 
     @After
-    public void closeDb() throws IOException {
+    public void closeDb() {
         db.close();
     }
 
     @Test
     public void counterUp() {
         // Create a mock list of exhibits to be inserted into a list.
-        List<ExhibitItem> mockItems = new ArrayList<>();
+        List<Node> mockItems = new ArrayList<>();
         mockItems.add(ex1);
         mockItems.add(ex2);
         mockItems.add(ex3);
+        mockItems.add(ex4);
         dao.insertAll(mockItems);
-        List<ExhibitItem> items = dao.getAll();
+        List<Node> items = dao.getAllExhibits();
         // Verify that none of the exhibits are added
-        for (ExhibitItem item : items) {
+        for (Node item : items) {
             assertFalse(item.added);
         }
         // Set the added parameter of all exhibits to true and update database
-        for (ExhibitItem item : items) {
+        for (Node item : items) {
             item.added = true;
             dao.update(item);
         }
         // Test counterUp() by checking getNumChecked() returns that all exhibits are checked
-        for (ExhibitItem item : items) {
+        for (Node item : items) {
             assertTrue(item.added);
         }
     }
@@ -78,23 +74,24 @@ public class CounterTest {
     @Test
     public void counterDown() {
         // Create a mock list of exhibits to be inserted into a list.
-        List<ExhibitItem> mockItems = new ArrayList<>();
+        List<Node> mockItems = new ArrayList<>();
         mockItems.add(ex1);
         mockItems.add(ex2);
         mockItems.add(ex3);
+        mockItems.add(ex4);
         dao.insertAll(mockItems);
-        List<ExhibitItem> items = dao.getAll();
+        List<Node> items = dao.getAllExhibits();
         // Verify that none of the exhibits are added
-        for (ExhibitItem item : items) {
+        for (Node item : items) {
             assertFalse(item.added);
         }
         // Set the added parameter of all exhibits to true and update database
-        for (ExhibitItem item : items) {
+        for (Node item : items) {
             item.added = true;
             dao.update(item);
         }
         // Test counterUp() by checking getNumChecked() returns that all exhibits are checked
-        for (ExhibitItem item : items) {
+        for (Node item : items) {
             assertTrue(item.added);
         }
         // Set one exhibit to false and update database

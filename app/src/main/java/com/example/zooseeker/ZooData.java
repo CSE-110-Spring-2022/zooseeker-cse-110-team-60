@@ -1,6 +1,7 @@
 package com.example.zooseeker;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
@@ -26,7 +27,8 @@ public class ZooData {
             // from the strings in our JSON to this Enum.
             @SerializedName("gate") GATE,
             @SerializedName("exhibit") EXHIBIT,
-            @SerializedName("intersection") INTERSECTION
+            @SerializedName("intersection") INTERSECTION,
+            @SerializedName("exhibit_group") GROUP
         }
 
         public String id;
@@ -40,13 +42,14 @@ public class ZooData {
         public String street;
     }
 
-    public static Map<String, ZooData.VertexInfo> loadVertexInfoJSON(Context context, String path) {
+    public static Map<String, ZooData.VertexInfo> loadVertexInfoJSON(Context context,
+                                                                     String path) {
         try {
             InputStream inputStream = context.getAssets().open(path);
             Reader reader = new InputStreamReader(inputStream);
 
             Gson gson = new Gson();
-            Type type = new TypeToken<List<ZooData.VertexInfo>>(){}.getType();
+            Type type = new TypeToken<List<ZooData.VertexInfo>>() {}.getType();
             List<ZooData.VertexInfo> zooData = gson.fromJson(reader, type);
 
             // This code is equivalent to:
@@ -56,9 +59,8 @@ public class ZooData {
             //   indexedZooData[datum.id] = datum;
             // }
             //
-            Map<String, ZooData.VertexInfo> indexedZooData = zooData
-                    .stream()
-                    .collect(Collectors.toMap(v -> v.id, datum -> datum));
+            Map<String, ZooData.VertexInfo> indexedZooData = zooData.stream()
+                                                                    .collect(Collectors.toMap(v -> v.id, datum -> datum));
 
             return indexedZooData;
         } catch (IOException e) {
@@ -67,18 +69,18 @@ public class ZooData {
         }
     }
 
-    public static Map<String, ZooData.EdgeInfo> loadEdgeInfoJSON(Context context, String path) {
+    public static Map<String, ZooData.EdgeInfo> loadEdgeInfoJSON(Context context,
+                                                                 String path) {
         try {
             InputStream inputStream = context.getAssets().open(path);
             Reader reader = new InputStreamReader(inputStream);
 
             Gson gson = new Gson();
-            Type type = new TypeToken<List<ZooData.EdgeInfo>>(){}.getType();
+            Type type = new TypeToken<List<ZooData.EdgeInfo>>() {}.getType();
             List<ZooData.EdgeInfo> zooData = gson.fromJson(reader, type);
 
-            Map<String, ZooData.EdgeInfo> indexedZooData = zooData
-                    .stream()
-                    .collect(Collectors.toMap(v -> v.id, datum -> datum));
+            Map<String, ZooData.EdgeInfo> indexedZooData = zooData.stream()
+                                                                  .collect(Collectors.toMap(v -> v.id, datum -> datum));
 
             return indexedZooData;
         } catch (IOException e) {
@@ -90,7 +92,8 @@ public class ZooData {
 
     public static Graph<String, IdentifiedWeightedEdge> loadZooGraphJSON(Context context, String path) {
         // Create an empty graph to populate.
-        Graph<String, IdentifiedWeightedEdge> g = new DefaultUndirectedWeightedGraph<>(IdentifiedWeightedEdge.class);
+        Graph<String, IdentifiedWeightedEdge> g =
+                new DefaultUndirectedWeightedGraph<>(IdentifiedWeightedEdge.class);
 
         // Create an importer that can be used to populate our empty graph.
         JSONImporter<String, IdentifiedWeightedEdge> importer = new JSONImporter<>();
@@ -104,7 +107,8 @@ public class ZooData {
         importer.addEdgeAttributeConsumer(IdentifiedWeightedEdge::attributeConsumer);
 
         try {
-            // On Android, you would use context.getAssets().open(path) here like in Lab 5.
+            // On Android, you would use context.getAssets().open(path) here like in
+            // Lab 5.
             InputStream inputStream = context.getAssets().open(path);
             Reader reader = new InputStreamReader(inputStream);
 
@@ -112,8 +116,7 @@ public class ZooData {
             importer.importGraph(g, reader);
 
             return g;
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
             return null;
         }

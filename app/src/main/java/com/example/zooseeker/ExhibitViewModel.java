@@ -3,6 +3,7 @@ package com.example.zooseeker;
 import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
+import android.util.Log;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -12,35 +13,39 @@ import androidx.lifecycle.LiveData;
 import java.util.List;
 
 public class ExhibitViewModel extends AndroidViewModel {
-    private LiveData<List<ExhibitItem>> exhibitItems;
-    private final ExhibitItemDao exhibitItemDao;
+    private LiveData<List<Node>> exhibits;
+    private final NodeDao nodeDao;
 
     public ExhibitViewModel(@NonNull Application application) {
         super(application);
         Context context = getApplication().getApplicationContext();
-        ExhibitDatabase db = ExhibitDatabase.getSingleton(context);
-        exhibitItemDao = db.exhibitItemDao();
+        NodeDatabase db = NodeDatabase.getSingleton(context);
+        nodeDao = db.nodeDao();
     }
 
-    public List<ExhibitItem> getAllExhibits() {
-        return exhibitItemDao.getAll();
+    public List<Node> getAllNodes() {
+        return nodeDao.getAll();
     }
 
-    public LiveData<List<ExhibitItem>> getExhibitItems() {
-        if (exhibitItems == null) {
-            loadUsers();
+    public List<Node> getAllExhibits() {
+        return nodeDao.getAllExhibits();
+    }
+
+    public LiveData<List<Node>> getAllExhibitsLive() {
+        if (exhibits == null) {
+            loadDB();
         }
-        return exhibitItems;
+        return exhibits;
     }
 
-    private void loadUsers() {
-        exhibitItems = exhibitItemDao.getAllLive();
+    private void loadDB() {
+        exhibits = nodeDao.getAllExhibitsLive();
     }
 
     @SuppressLint("SetTextI18n")
-    public void toggleAdded(ExhibitItem exhibitItem) {
-        exhibitItem.added = !exhibitItem.added;
-        exhibitItemDao.update(exhibitItem);
+    public void toggleCheckbox(Node exhibit) {
+        exhibit.added = !exhibit.added;
+        nodeDao.update(exhibit);
 
         MainActivity main = MainActivity.getInstance();
         TextView numPlanned = main.findViewById(R.id.counter);
@@ -49,8 +54,8 @@ public class ExhibitViewModel extends AndroidViewModel {
         MainActivity.update = false;
     }
 
-    public void uncheckList(ExhibitItem exhibitItem) {
-        exhibitItem.added = !exhibitItem.added;
-        exhibitItemDao.update(exhibitItem);
+    public void uncheckExhibit(Node exhibit) {
+        exhibit.added = !exhibit.added;
+        nodeDao.update(exhibit);
     }
 }

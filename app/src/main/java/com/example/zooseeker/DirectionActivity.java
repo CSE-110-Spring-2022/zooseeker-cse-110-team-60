@@ -2,33 +2,55 @@ package com.example.zooseeker;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
+import java.util.Random;
 
 public class DirectionActivity extends AppCompatActivity {
     public TextView header;
     public TextView body;
-    public Button   nextButton;
+    public Button nextButton;
     public Button previousButton;
-    public Button   exitButton;
+    public Button exitButton;
+    public Button skipButton;
+    public Button toggleButton;
     public int i;
+    public boolean detailed = false;
+
+    public RecyclerView recyclerView;
+    public DirectionAdapter adapter;
+
+    // for redirect testing
+    public String currentId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_direction);
 
+        adapter = new DirectionAdapter();
+        adapter.setHasStableIds(true);
+
+        recyclerView = findViewById(R.id.direction_reycler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(adapter);
+
         header = findViewById(R.id.direction_header_textView);
-        body = findViewById(R.id.direction_body_textView);
+//        body = findViewById(R.id.direction_body_textView);
         nextButton = findViewById(R.id.direction_next_button);
         previousButton = findViewById(R.id.direction_previous_button);
         exitButton = findViewById(R.id.direction_exit_button);
+        skipButton = findViewById(R.id.direction_skip_button);
+        toggleButton = findViewById(R.id.direction_toggle_button);
         i = 0;
 
         setDirection();
@@ -36,21 +58,28 @@ public class DirectionActivity extends AppCompatActivity {
         nextButton.setOnClickListener(this::nextClicked);
         previousButton.setOnClickListener(this::previousClicked);
         exitButton.setOnClickListener(this::exitClicked);
+        skipButton.setOnClickListener(this::skipClicked);
+        toggleButton.setOnClickListener(this::toggleClicked);
 
         DirectionTracker.loadDatabaseAndDaoByContext(this);
+
+        // for redirect testing
+        currentId = DirectionTracker.getGateId();
     }
 
     /*
-    *   Name:       nextClicked
-    *   Behavior:   When the next button is clicked, if the current direction is the last one,
-    *               display a message notifying there are no more directions. Otherwise, increment the
-    *               index of the current direction i and set the direction.
-    *   @param      View     view       the view being called from
-    *   @return
+     *   Name:       nextClicked
+     *   Behavior:   When the next button is clicked, if the current direction is the
+     * last one,
+     *               display a message notifying there are no more directions.
+     * Otherwise, increment the
+     *               index of the current direction i and set the direction.
+     *   @param      View     view       the view being called from
+     *   @return
      */
     void nextClicked(View view) {
-        if (DirectionTracker.index == DirectionTracker.currentExhibitsOrder.size()) {
-            Utilities.showAlert(this, "No More Directions!");
+        if (DirectionTracker.index == DirectionTracker.currentExhibitIdsOrder.size()) {
+            Utilities.showAlert(this, "No More Directions!", "Ok", "Cancel");
             return;
         }
 
@@ -61,15 +90,17 @@ public class DirectionActivity extends AppCompatActivity {
 
     /*
      *   Name:       previousClicked
-     *   Behavior:   When the previous button is clicked, if the current direction is the first one,
-     *               display a message notifying the user this is the case. Otherwise, decrement the
+     *   Behavior:   When the previous button is clicked, if the current direction is
+     * the first one,
+     *               display a message notifying the user this is the case. Otherwise,
+     * decrement the
      *               index of the current direction i and set the direction.
      *   @param      View     view       the view being called from
      *   @return
      */
     void previousClicked(View view) {
         if (DirectionTracker.index == 0) {
-            Utilities.showAlert(this, "This is the First Direction!");
+            Utilities.showAlert(this, "This is the First Direction!", "Ok", "Cancel");
             return;
         }
 
@@ -80,14 +111,14 @@ public class DirectionActivity extends AppCompatActivity {
     /**
      * Name:     exitClicked
      * Behavior: When the exit button is clicked, a popup alert is displayed to confirm.
-     *           If "yes" is clicked, exit current path, remove all selected, and return to search.
-     *           Else, stay on directions.
+     * If "yes" is clicked, exit current path, remove all selected, and return to search.
+     * Else, stay on directions.
      *
-     * @param    view the view being called from
+     * @param view the view being called from
      */
     void exitClicked(View view) {
         DialogInterface.OnClickListener dialog = (dialogInterface, i) -> {
-            switch(i) {
+            switch (i) {
                 // "Yes" button clicked
                 case DialogInterface.BUTTON_POSITIVE:
                     finish();
@@ -100,39 +131,82 @@ public class DirectionActivity extends AppCompatActivity {
         };
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Are you sure to exit your current path?")
-                .setPositiveButton("Yes", dialog)
-                .setNegativeButton("No", dialog)
-                .show();
+        builder.setMessage("Are you sure you want to exit?")
+               .setPositiveButton("Yes", dialog).setNegativeButton("No", dialog).show();
+    }
 
-//        DirectionTracker.redirect("arctic_foxes");
-//        setDirection();
+    void skipClicked(View view) {
+        if (DirectionTracker.index == DirectionTracker.currentExhibitIdsOrder.size()) {
+            Utilities.showAlert(this, "Last direction, can't skip!", "Ok", "Cancel");
+            return;
+        }
+
+        DialogInterface.OnClickListener dialog = (dialogInterface, i) -> {
+            switch (i) {
+                // "Yes" button clicked
+                case DialogInterface.BUTTON_POSITIVE:
+                    DirectionTracker.skip(currentId); // change to from current location
+                    setDirection();
+                    break;
+
+                // "No" button clicked
+                case DialogInterface.BUTTON_NEGATIVE:
+                    break;
+            }
+        };
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Are you sure you want to skip?")
+                .setPositiveButton("Yes", dialog).setNegativeButton("No", dialog).show();
+    }
+
+    void toggleClicked(View view) {
+        if (detailed) {
+            detailed = false;
+            toggleButton.setText("DETAILED");
+        } else {
+            detailed = true;
+            toggleButton.setText("BRIEF");
+        }
+
+        setDirection();
     }
 
     /*
      *   Name:       setDirection
-     *   Behavior:   Update the header and body to reflect the details of the current direction.
+     *   Behavior:   Update the header and body to reflect the details of the current
+     * direction.
      *   @param      View     view       the view being called from
      *   @return
      */
     void setDirection() {
-
-        // String currentLocationId = getCurrentLocationId()
-        // Direction currentDirection = getDirection(currentLocationId)
+//        String currentLocationId = getCurrentLocationId();
+//        Direction currentDirection = getDirection(currentLocationId);
 
         String currentNodeId;
         if (DirectionTracker.index == 0) currentNodeId = "entrance_exit_gate";
-        else currentNodeId = DirectionTracker.currentExhibitsOrder.get(DirectionTracker.index - 1).id;
+        else {
+            String currentExhibitId = DirectionTracker.currentExhibitIdsOrder.get(DirectionTracker.index - 1);
+            currentNodeId = DirectionTracker.getParentNodeIfExists(DirectionTracker.getDao().get(currentExhibitId)).id;
+        }
         Direction currentDirection = DirectionTracker.getDirection(currentNodeId);
 
-        header.setText(currentDirection.getStart() + " to " + currentDirection.getEnd() + " (" + currentDirection.getDistance() + "m)");
+        header.setText(currentDirection.getStart() + " to " + currentDirection.getEnd() + " (" + currentDirection.getDistance() + " feet)");
 
-        String directionsString = "";
-        List<String> steps = currentDirection.getSteps();
-        for (int j = 0; j < steps.size(); ++j) {
-            directionsString += steps.get(j) + "\n";
-        }
+//        String directionsString = "";
+//        List<String> steps = currentDirection.get();
+//        for (int j = 0; j < steps.size(); ++j) {
+//            directionsString += steps.get(j) + "\n";
+//        }
 
-        body.setText(directionsString);
+//        body.setText(directionsString);
+        List<String> steps;
+        if (detailed) steps = currentDirection.getDetailedDirections();
+        else steps = currentDirection.getBriefDirections();
+
+        adapter.setDirections(steps);
+
+        // for redirect testing
+        currentId = currentNodeId;
     }
 }

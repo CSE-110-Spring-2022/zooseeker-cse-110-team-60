@@ -15,19 +15,19 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public class ExhibitListAdapter extends RecyclerView.Adapter<ExhibitListAdapter.ViewHolder> {
-    private List<ExhibitItem> exhibitItems = Collections.emptyList();
-    private Consumer<ExhibitItem> onCheckBoxClicked;
+    private List<Node> exhibits = Collections.emptyList();
+    private Consumer<Node> onCheckBoxClicked;
 
     @SuppressLint("NotifyDataSetChanged")
-    public void setExhibitListItems(List<ExhibitItem> newExhibitItems) {
+    public void setExhibitList(List<Node> newExhibitList) {
         if (MainActivity.update) {
-            this.exhibitItems.clear();
-            this.exhibitItems = newExhibitItems;
+            this.exhibits.clear();
+            this.exhibits = newExhibitList;
             notifyDataSetChanged();
         }
     }
 
-    public void setOnCheckBoxClickedHandler(Consumer<ExhibitItem> onCheckBoxClicked) {
+    public void setOnCheckBoxClickedHandler(Consumer<Node> onCheckBoxClicked) {
         this.onCheckBoxClicked = onCheckBoxClicked;
     }
 
@@ -41,17 +41,22 @@ public class ExhibitListAdapter extends RecyclerView.Adapter<ExhibitListAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.setExhibitItem(exhibitItems.get(position));
+        holder.setExhibit(exhibits.get(position));
+//        holder.setIsRecyclable(false);
     }
 
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
 
     @Override
     public int getItemCount() {
-        return exhibitItems.size();
+        return exhibits.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        private ExhibitItem exhibitItem;
+        private Node exhibit;
         private final TextView textView;
         private final CheckBox checkbox;
 
@@ -62,18 +67,18 @@ public class ExhibitListAdapter extends RecyclerView.Adapter<ExhibitListAdapter.
 
             this.checkbox.setOnClickListener(view -> {
                 if (onCheckBoxClicked == null) return;
-                onCheckBoxClicked.accept(exhibitItem);
+                onCheckBoxClicked.accept(exhibit);
             });
         }
 
-        public ExhibitItem getExhibitItem() {
-            return exhibitItem;
+        public Node getExhibit() {
+            return exhibit;
         }
 
-        public void setExhibitItem(ExhibitItem exhibitItem) {
-            this.exhibitItem = exhibitItem;
-            this.textView.setText(exhibitItem.name);
-            this.checkbox.setChecked(exhibitItem.added);
+        public void setExhibit(Node exhibit) {
+            this.exhibit = exhibit;
+            this.textView.setText(exhibit.name);
+            this.checkbox.setChecked(exhibit.added);
         }
     }
 }

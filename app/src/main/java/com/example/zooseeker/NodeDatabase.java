@@ -12,36 +12,36 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 import java.util.List;
 import java.util.concurrent.Executors;
 
-@Database(entities = {ExhibitItem.class}, version = 1)
-public abstract class ExhibitDatabase extends RoomDatabase {
-    private static ExhibitDatabase singleton = null;
+@Database(entities = {Node.class}, version = 1)
+public abstract class NodeDatabase extends RoomDatabase {
+    private static NodeDatabase singleton = null;
 
-    public abstract ExhibitItemDao exhibitItemDao();
+    public abstract NodeDao nodeDao();
 
-    public synchronized static ExhibitDatabase getSingleton(Context context) {
+    public synchronized static NodeDatabase getSingleton(Context context) {
         if (singleton == null) {
-            singleton = ExhibitDatabase.makeDatabase(context);
+            singleton = NodeDatabase.makeDatabase(context);
         }
         return singleton;
     }
 
-    private static ExhibitDatabase makeDatabase(Context context) {
-        return Room.databaseBuilder(context, ExhibitDatabase.class, "exhibit_list.db")
+    private static NodeDatabase makeDatabase(Context context) {
+        return Room.databaseBuilder(context, NodeDatabase.class, "node_list.db")
                    .allowMainThreadQueries().addCallback(new Callback() {
                     @Override
                     public void onCreate(@NonNull SupportSQLiteDatabase db) {
                         super.onCreate(db);
                         Executors.newSingleThreadExecutor().execute(() -> {
-                            List<ExhibitItem> exhibits = ExhibitItem
-                                    .loadJSON(context, "sample_node_info.JSON");
-                            getSingleton(context).exhibitItemDao().insertAll(exhibits);
+                            List<Node> nodes = Node.loadJSON(context, "sample_node_info" +
+                                                                      ".JSON");
+                            getSingleton(context).nodeDao().insertAll(nodes);
                         });
                     }
                 }).build();
     }
 
     @VisibleForTesting
-    public static void injectTestDatabase(ExhibitDatabase testDatabase) {
+    public static void injectTestDatabase(NodeDatabase testDatabase) {
         if (singleton != null) {
             singleton.close();
         }
