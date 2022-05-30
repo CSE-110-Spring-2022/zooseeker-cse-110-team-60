@@ -7,4 +7,13 @@
     <string name="back">Back</string>
     <string name="show">Show</string>
     <string name="planned_num">\"Number of Planned Exhibits: \"</string>
+    <string name="next">Next</string>
+    <string name="skip">Skip</string>
+    <string name="exit">Exit</string>
+    <string name="prev">Prev</string>
+    <string name="mock_location">Mock Location</string>
+    <string name="longitude">Longitude</string>
+    <string name="latitude">Latitude</string>
+    <string name="mock">Mock</string>
+    <string name="detailed">Detailed</string>
 </resources>
