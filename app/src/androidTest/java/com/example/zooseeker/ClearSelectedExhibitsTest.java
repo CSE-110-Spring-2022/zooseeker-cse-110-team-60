@@ -29,7 +29,7 @@ import org.junit.runner.RunWith;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class ClearButtonTest {
+public class ClearSelectedExhibitsTest {
 
     @Rule
     public ActivityScenarioRule<MainActivity> mActivityScenarioRule =
