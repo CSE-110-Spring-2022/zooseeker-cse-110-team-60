@@ -47,10 +47,10 @@ public class FindNearestNodeTest {
         scenario.moveToState(Lifecycle.State.STARTED);
         scenario.moveToState(Lifecycle.State.RESUMED);
 
-//        scenario.onActivity(activity -> {
-//            RecyclerView recyclerView = activity.recyclerView;
-//            RecyclerView.ViewHolder firstVH = recyclerView.findViewHolderForAdapterPosition(0);
-//        });
+        scenario.onActivity(activity -> {
+            RecyclerView recyclerView = activity.recyclerView;
+            RecyclerView.ViewHolder firstVH = recyclerView.findViewHolderForAdapterPosition(0);
+        });
         // Create a mock list of exhibits to be added into a list.
         DirectionTracker.loadGraphData(ApplicationProvider.getApplicationContext(), "test_vertex_info.JSON", "test_edge_info.JSON", "test_zoo_graph_info.JSON");
         DirectionTracker.loadDatabaseAndDaoByContext(ApplicationProvider.getApplicationContext());
