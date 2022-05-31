@@ -3,6 +3,12 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/CS Stuff/Android_Studio_Projects/zooseeker-cse-110-team-60/app/src/main/res/layout/activity_direction.xml" value="0.25416666666666665" />
+        <entry key="..\:/CS Stuff/Android_Studio_Projects/zooseeker-cse-110-team-60/app/src/main/res/layout/activity_main.xml" value="0.25416666666666665" />
+        <entry key="..\:/CS Stuff/Android_Studio_Projects/zooseeker-cse-110-team-60/app/src/main/res/layout/activity_route_plan_summary.xml" value="0.25416666666666665" />
+        <entry key="..\:/CS Stuff/Android_Studio_Projects/zooseeker-cse-110-team-60/app/src/main/res/layout/direction_item.xml" value="0.12360688956433637" />
+        <entry key="..\:/CS Stuff/Android_Studio_Projects/zooseeker-cse-110-team-60/app/src/main/res/layout/node.xml" value="0.25416666666666665" />
+        <entry key="..\:/CS Stuff/Android_Studio_Projects/zooseeker-cse-110-team-60/app/src/main/res/layout/route_plan_summary_item.xml" value="0.20854700854700856" />
         <entry key="app/src/main/res/layout/activity_direction.xml" value="0.14336372847011145" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.14387031408308004" />
         <entry key="app/src/main/res/layout/activity_search.xml" value="0.15070921985815602" />

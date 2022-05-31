@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.Editable;
@@ -27,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
             new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
                          Manifest.permission.ACCESS_COARSE_LOCATION};
 
+    public static GPSTracker gpsTracker;
     public RecyclerView recyclerView;
     private ExhibitViewModel viewModel;
     private ExhibitListAdapter adapter;
@@ -183,15 +185,15 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-//        DirectionTracker.loadGraphData(this, "sample_node_info.JSON", "sample_edge_info.JSON", "sample_zoo_graph.JSON");
-//        DirectionTracker.loadDatabaseAndDaoByContext(this);
-//
-//        gpsTracker = new GPSTracker(this, this);
-//
-//        DirectionTracker.initDirections("entrance_exit_gate", toVisit);
-//        DirectionTracker.getDirection(GPSTracker.findNearestNode(GPSTracker.latitude, GPSTracker.longitude));
-//        Intent summaryIntent = new Intent(this, RoutePlanSummaryActivity.class);
-//        startActivity(summaryIntent);
+        DirectionTracker.loadGraphData(this, "exhibit_info.json", "trail_info.json", "zoo_graph.json");
+        DirectionTracker.loadDatabaseAndDaoByContext(this);
+
+        gpsTracker = new GPSTracker(this, this);
+
+        DirectionTracker.initDirections("entrance_exit_gate", toVisit);
+        DirectionTracker.getDirection(GPSTracker.findNearestNode(GPSTracker.latitude, GPSTracker.longitude));
+        Intent summaryIntent = new Intent(this, RoutePlanSummaryActivity.class);
+        startActivity(summaryIntent);
     }
 
     public static MainActivity getInstance() {
