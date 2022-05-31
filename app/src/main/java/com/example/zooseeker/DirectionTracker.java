@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class DirectionTracker implements DirectionSubject {
+public class DirectionTracker {
 
     public static Graph g;
     private static Map<String, ZooData.VertexInfo> vInfo;
@@ -180,6 +180,7 @@ public class DirectionTracker implements DirectionSubject {
         String exhibitToRemoveId = currentExhibitIdsOrder.get(index);
         removeExhibit(exhibitToRemoveId);
         ++index;
+        getDirection(GPSTracker.findNearestNode(GPSTracker.latitude, GPSTracker.longitude));
     }
 
     private static void removeExhibit(String exhibitToRemoveId) {
@@ -197,6 +198,7 @@ public class DirectionTracker implements DirectionSubject {
         String exhibitToAddId = currentExhibitIdsOrder.get(index - 1);
         addExhibit(exhibitToAddId);
         --index;
+        getDirection(GPSTracker.findNearestNode(GPSTracker.latitude, GPSTracker.longitude));
     }
 
     private static void addExhibit(String exhibitToAddId) {
@@ -235,9 +237,13 @@ public class DirectionTracker implements DirectionSubject {
     static void redirect(String currentNodeId) {
 //        List<String> exhibitsToBeReorderedIds = new ArrayList<String>();
 
+        currentExhibitIdsOrder.remove(getGateId());
+        Log.d("REDIRECT", "currentOrderBefore: " + currentExhibitIdsOrder.toString());
+
         List<Node> exhibitsToBeReordered = new ArrayList<Node>();
         for (int i = currentExhibitIdsOrder.size() - 1; i >= index; --i) {
             String currId = currentExhibitIdsOrder.get(i);
+            Log.d("REDIRECT", "currId:" + currId);
 //            exhibitsToBeReorderedIds.add(currId);
             exhibitsToBeReordered.add(dao.get(currId));
             currentExhibitIdsOrder.remove(currId);
@@ -247,13 +253,17 @@ public class DirectionTracker implements DirectionSubject {
 
         while (!exhibitsToBeReordered.isEmpty()) {
             Node nextExhibit = getNextClosestExhibitToVisit(previousId, exhibitsToBeReordered);
+            Log.d("REDIRECT", "nextExhibit: " + nextExhibit.toString());
             exhibitsToBeReordered.remove(nextExhibit);
             String nextId = nextExhibit.id;
             previousId = nextId;
+            Log.d("REDIRECT", "nextId: " + nextId);
             currentExhibitIdsOrder.add(nextId);
         }
 
         notifyOrderChange();
+
+        getDirection(currentNodeId);
     }
 
     static void skip(String currentNodeId) {
@@ -295,19 +305,24 @@ public class DirectionTracker implements DirectionSubject {
 
     static Node getCurrentExhibit() { return dao.get(currentExhibitIdsOrder.get(index)); }
 
-    @Override
-    public void register(DirectionObserver directionObserver) {
+    public static void register(DirectionObserver directionObserver) {
         observers.add(directionObserver);
     }
 
     public static void notifyOrderChange() {
         for (DirectionObserver observer : observers) {
+
+Log.d("MOCK notify of order change", "***");
+
             observer.updateOrder(currentExhibitIdsOrder);
         }
     }
 
     public static void notifyDirectionChange() {
         for (DirectionObserver observer : observers) {
+
+Log.d("MOCK notify of direction change", "***");
+
             observer.updateDirection(currentDirection);
         }
     }

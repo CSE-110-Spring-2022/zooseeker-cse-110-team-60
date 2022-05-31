@@ -52,6 +52,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/direction_toggle_button" />
 
+    <!-- Source: https://stackoverflow.com/questions/6759279/how-to-bring-view-in-front-of-everything -->
     <LinearLayout
         android:id="@+id/direction_enter_mock_location"
         android:layout_width="match_parent"

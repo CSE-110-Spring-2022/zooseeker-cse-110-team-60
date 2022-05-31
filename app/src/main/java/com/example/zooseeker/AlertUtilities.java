@@ -4,6 +4,9 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 
+/**
+ * Source: https://stackoverflow.com/questions/52925790/alert-dialog-button-pressed-returning-0-values-always
+ */
 public class AlertUtilities {
     private AlertDialog.Builder builder;
     private AlertDialogListener listener;

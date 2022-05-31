@@ -26,11 +26,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+@SuppressLint("StaticFieldLeak")
 public class MainActivity extends AppCompatActivity {
     private final PermissionChecker permissionChecker = new PermissionChecker(this);
     private static final String[] requiredPermissions =
             new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
                          Manifest.permission.ACCESS_COARSE_LOCATION};
+    public static GPSTracker gpsTracker;
 
     public RecyclerView recyclerView;
     private ExhibitViewModel viewModel;
@@ -46,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
     private Button directionsBtn;
 
     public static boolean update = true;
-    public static boolean locationAllowed = false;
+//    public static boolean locationAllowed = false;
 
     @SuppressLint("StaticFieldLeak")
     static MainActivity main;
@@ -192,7 +194,13 @@ public class MainActivity extends AppCompatActivity {
 
         DirectionTracker.loadGraphData(this,"sample_node_info.JSON", "sample_edge_info.JSON", "sample_zoo_graph.JSON");
         DirectionTracker.loadDatabaseAndDaoByContext(this);
+
+
+
+        gpsTracker = new GPSTracker(this, this);
+
         DirectionTracker.initDirections("entrance_exit_gate", toVisit);
+        DirectionTracker.getDirection(GPSTracker.findNearestNode(GPSTracker.latitude, GPSTracker.longitude));
 
         Intent directionIntent = new Intent(this, DirectionActivity.class);
         startActivity(directionIntent);

@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class DirectionActivity extends AppCompatActivity {
+public class DirectionActivity extends AppCompatActivity implements DirectionObserver {
     public TextView header;
 //    public TextView body;
     public Button nextButton;
@@ -42,7 +42,7 @@ public class DirectionActivity extends AppCompatActivity {
     // for redirect testing
     public String currentId;
 
-    private GPSTracker gpsTracker;
+//    private GPSTracker gpsTracker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,9 +73,7 @@ public class DirectionActivity extends AppCompatActivity {
 
         setDirection();
 
-        if (MainActivity.locationAllowed) {
-            gpsTracker = new GPSTracker(this, this, new DirectionTracker()); // TODO
-        }
+        DirectionTracker.register(this);
 
         nextButton.setOnClickListener(this::nextClicked);
         previousButton.setOnClickListener(this::previousClicked);
@@ -102,14 +100,14 @@ public class DirectionActivity extends AppCompatActivity {
      *   @return
      */
     void nextClicked(View view) {
-        if (DirectionTracker.index == DirectionTracker.currentExhibitIdsOrder.size()) {
+        if (DirectionTracker.index == DirectionTracker.currentExhibitIdsOrder.size() - 1) {
             Utilities.showAlert(this, "No More Directions!", "Ok", "Cancel");
             return;
         }
 
         DirectionTracker.next();
         // if current location == current index, next again
-        setDirection();
+//        setDirection();
     }
 
     /*
@@ -129,7 +127,7 @@ public class DirectionActivity extends AppCompatActivity {
         }
 
         DirectionTracker.previous();
-        setDirection();
+//        setDirection();
     }
 
     /**
@@ -208,13 +206,49 @@ public class DirectionActivity extends AppCompatActivity {
     }
 
     void enterMockLocationClicked(View view) {
-        GPSTracker.latitude = Double.parseDouble(mockLatitude.getText().toString());
-        GPSTracker.longitude = Double.parseDouble(mockLongitude.getText().toString());
+
+        if (!mockLatitude.getText().toString().equals("")) {
+            double latitude = Double.parseDouble(mockLatitude.getText().toString());
+
+            if (-90 <= latitude && latitude <= 90) {
+                GPSTracker.latitude = Double.parseDouble(mockLatitude.getText().toString());
+            }
+            else {
+                Utilities.showAlert(this, "Please enter a valid latitude!", "Ok", "Cancel");
+                return;
+            }
+        }
+        else {
+            Utilities.showAlert(this, "Please enter a valid latitude!", "Ok", "Cancel");
+            return;
+        }
+
+        if (!mockLongitude.getText().toString().equals("")) {
+            double longitude = Double.parseDouble(mockLongitude.getText().toString());
+
+            if (-180 <= longitude && longitude <= 180) {
+                GPSTracker.longitude = Double.parseDouble(mockLongitude.getText().toString());
+            }
+            else {
+                Utilities.showAlert(this, "Please enter a valid longitude!", "Ok", "Cancel");
+                return;
+            }
+        }
+        else {
+            Utilities.showAlert(this, "Please enter a valid longitude!", "Ok", "Cancel");
+            return;
+        }
+
+Log.d("MOCK manual latitude", String.valueOf(GPSTracker.latitude));
+Log.d("MOCK manual longitude", String.valueOf(GPSTracker.longitude));
 
         mockLocation.setVisibility(View.INVISIBLE);
         mockLatitude.getText().clear();
         mockLongitude.getText().clear();
-        gpsTracker.offTrack();
+
+Log.d("MOCK calling offTrack", "***");
+
+        MainActivity.gpsTracker.offTrack();
     }
 
     /**
@@ -232,7 +266,8 @@ public class DirectionActivity extends AppCompatActivity {
             String currentExhibitId = DirectionTracker.currentExhibitIdsOrder.get(DirectionTracker.index - 1);
             currentNodeId = DirectionTracker.getParentNodeIfExists(DirectionTracker.getDao().get(currentExhibitId)).id;
         }
-        Direction currentDirection = DirectionTracker.getDirection(currentNodeId);
+
+        Direction currentDirection = DirectionTracker.currentDirection; // = DirectionTracker.getDirection(currentNodeId);
 
         header.setText(currentDirection.getStart() + " to " + currentDirection.getEnd() + "\n(" + currentDirection.getDistance() + " feet)");
 
@@ -252,4 +287,15 @@ public class DirectionActivity extends AppCompatActivity {
         // for redirect testing
         currentId = currentNodeId;
     }
+
+    @Override
+    public void updateDirection(Direction direction) {
+
+Log.d("MOCK updated directions, setting new directions, updating screen", "***");
+
+        setDirection();
+    }
+
+    @Override
+    public void updateOrder(List<String> exhibitIds) {}
 }
