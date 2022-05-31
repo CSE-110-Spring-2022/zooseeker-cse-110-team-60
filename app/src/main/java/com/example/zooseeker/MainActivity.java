@@ -191,7 +191,7 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        DirectionTracker.loadGraphData(this,"sample_node_info.JSON", "sample_edge_info.JSON", "sample_zoo_graph.JSON");
+        DirectionTracker.loadGraphData(this, "sample_node_info.JSON", "sample_edge_info.JSON", "sample_zoo_graph.JSON");
         DirectionTracker.loadDatabaseAndDaoByContext(this);
 
         gpsTracker = new GPSTracker(this, this);
@@ -200,13 +200,6 @@ public class MainActivity extends AppCompatActivity {
         DirectionTracker.getDirection(GPSTracker.findNearestNode(GPSTracker.latitude, GPSTracker.longitude));
         Intent summaryIntent = new Intent(this, RoutePlanSummaryActivity.class);
         startActivity(summaryIntent);
-
-    public static MainActivity getInstance() {
-        return main;
-    }
-
-    public List<Node> getAllNodes() {
-        return viewModel.getAllNodes();
     }
 
     public static MainActivity getInstance() {

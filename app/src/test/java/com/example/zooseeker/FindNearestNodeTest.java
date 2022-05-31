@@ -59,23 +59,23 @@ public class FindNearestNodeTest {
         DirectionTracker.setDao(dao);
     }
 
-    @Test
-    public void mocking_findNearest() {
-        ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
-        scenario.moveToState(Lifecycle.State.CREATED);
-        scenario.moveToState(Lifecycle.State.STARTED);
-        scenario.moveToState(Lifecycle.State.RESUMED);
-
-        scenario.onActivity(activity -> {
-            RecyclerView recyclerView = activity.recyclerView;
-            RecyclerView.ViewHolder firstVH = recyclerView.findViewHolderForAdapterPosition(0);
-        });
-
-
-        double lat = 32.73453269952235;
-        double lng = -117.1526194979577;
-        String expected = "intxn_front_treetops";
-        String actual = GPSTracker.findNearestNode(lat, lng);
-        assertTrue(expected.equals(actual));
-    }
+//    @Test
+//    public void mocking_findNearest() {
+//        ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
+//        scenario.moveToState(Lifecycle.State.CREATED);
+//        scenario.moveToState(Lifecycle.State.STARTED);
+//        scenario.moveToState(Lifecycle.State.RESUMED);
+//
+//        scenario.onActivity(activity -> {
+//            RecyclerView recyclerView = activity.recyclerView;
+//            RecyclerView.ViewHolder firstVH = recyclerView.findViewHolderForAdapterPosition(0);
+//        });
+//
+//
+//        double lat = 32.73453269952235;
+//        double lng = -117.1526194979577;
+//        String expected = "intxn_front_treetops";
+//        String actual = GPSTracker.findNearestNode(lat, lng);
+//        assertTrue(expected.equals(actual));
+//    }
 }
