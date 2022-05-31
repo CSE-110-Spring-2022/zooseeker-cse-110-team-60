@@ -26,6 +26,7 @@ public class Direction {
         this.detailedSteps = detailedSteps;
         this.distance = distance;
         this.nodeIds = nodeIds;
+
     }
 
     public String getStart() {return start;}

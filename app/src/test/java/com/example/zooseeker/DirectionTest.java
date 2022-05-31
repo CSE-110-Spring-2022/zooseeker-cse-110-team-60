@@ -19,6 +19,12 @@ import java.util.List;
 public class DirectionTest {
     NodeDao dao;
 
+    /**
+     * Name:     createGraph
+     * Behavior: Using a given JSON file, load in the graph data as well as create a database. Then,
+     *           mark 3 exhibits as visited and initialize the direction tracker.
+     *
+     */
     @Before
     public void createGraph() {
         DirectionTracker.loadGraphData(ApplicationProvider.getApplicationContext(), "test_vertex_info.JSON", "test_edge_info.JSON", "test_zoo_graph_info.JSON");
@@ -43,8 +49,16 @@ public class DirectionTest {
         DirectionTracker.initDirections(DirectionTracker.getGateId(), toVisit);
     }
 
+    /**
+     * Name:     initDirectionsTest
+     * Behavior: Verify that initializing directions creates a proper route plan summary
+     *           Then, verify that the mocked exhibits are in the correct order for directions.
+     *
+     */
     @Test
     public void initDirectionsTest() {
+
+        // Verify that the route plan summary matches the expected summary.
         List<String> expectedSummary = new ArrayList<>();
         expectedSummary.add("Entrance and Exit Gate to Alligators (110.0 feet)");
         expectedSummary.add("Alligators to Lions (200.0 feet)");
@@ -52,15 +66,23 @@ public class DirectionTest {
         expectedSummary.add("Gorillas to Entrance and Exit Gate (210.0 feet)");
         assertEquals(expectedSummary, DirectionTracker.getRoutePlanSummary());
 
+        // Create 3 nodes
         Node gators = dao.get("gators");
         Node lions = dao.get("lions");
         Node gorillas = dao.get("gorillas");
 
+        // Verify that they're in the correct order in direction tracker
         assertEquals(gators.id, DirectionTracker.currentExhibitIdsOrder.get(0));
         assertEquals(lions.id, DirectionTracker.currentExhibitIdsOrder.get(1));
         assertEquals(gorillas.id, DirectionTracker.currentExhibitIdsOrder.get(2));
     }
 
+    /**
+     * Name:     getDirectionTest
+     * Behavior: Verify that the directions generated from DirectionTracker match the expected
+     *           directions.
+     *
+     */
     @Test
     public void getDirectionTest() {
         Direction currentDirection = DirectionTracker.getDirection("entrance_exit_gate");
@@ -95,7 +117,11 @@ public class DirectionTest {
         assertEquals(expectedDirection.getStart(), currentDirection.getStart());
         assertEquals(expectedDirection.getEnd(), currentDirection.getEnd());
     }
-
+    /**
+     * Name:     redirectTest
+     * Behavior: Verify after using redirect, the order of exhibits is changed to its expected
+     *           direction.
+     */
     @Test
     public void redirectTest() {
         DirectionTracker.redirect("elephant_odyssey");
@@ -120,6 +146,11 @@ public class DirectionTest {
         assertEquals("gators", DirectionTracker.currentExhibitIdsOrder.get(2));
     }
 
+    /**
+     * Name:     skipTest
+     * Behavior: Verify after using skip, the order of exhibits is maintained with the skipped
+     *           exhibit removed from the directions.
+     */
     @Test
     public void skipTest() {
         DirectionTracker.skip("entrance_exit_gate");

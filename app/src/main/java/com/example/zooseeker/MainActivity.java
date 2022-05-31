@@ -32,8 +32,8 @@ public class MainActivity extends AppCompatActivity {
     private static final String[] requiredPermissions =
             new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
                          Manifest.permission.ACCESS_COARSE_LOCATION};
+    
     public static GPSTracker gpsTracker;
-
     public RecyclerView recyclerView;
     private ExhibitViewModel viewModel;
     private ExhibitListAdapter adapter;
@@ -184,7 +184,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getDirectionsClicked(View view) {
-
         List<Node> toVisit = ExhibitList.getCheckedExhibits();
 
         if (toVisit.size() == 0) {
@@ -195,15 +194,19 @@ public class MainActivity extends AppCompatActivity {
         DirectionTracker.loadGraphData(this,"sample_node_info.JSON", "sample_edge_info.JSON", "sample_zoo_graph.JSON");
         DirectionTracker.loadDatabaseAndDaoByContext(this);
 
-
-
         gpsTracker = new GPSTracker(this, this);
 
         DirectionTracker.initDirections("entrance_exit_gate", toVisit);
         DirectionTracker.getDirection(GPSTracker.findNearestNode(GPSTracker.latitude, GPSTracker.longitude));
+        Intent summaryIntent = new Intent(this, RoutePlanSummaryActivity.class);
+        startActivity(summaryIntent);
 
-        Intent directionIntent = new Intent(this, DirectionActivity.class);
-        startActivity(directionIntent);
+    public static MainActivity getInstance() {
+        return main;
+    }
+
+    public List<Node> getAllNodes() {
+        return viewModel.getAllNodes();
     }
 
     public static MainActivity getInstance() {

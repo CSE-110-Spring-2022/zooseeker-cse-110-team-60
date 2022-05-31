@@ -31,6 +31,10 @@ public class NodeDatabaseTest {
     Node ex3 = new Node("lions", "mammal", VertexInfo.Kind.EXHIBIT, "Lions", "lion, cat, mammal, africa", 50, 80);
     Node ex4 = new Node("intersection1", "", VertexInfo.Kind.INTERSECTION, "Intersection 1", "", 55, 88);
 
+    /**
+     * Name:     createDb
+     * Behavior: Get the context, create a database, and initialize it before tests run
+     */
     @Before
     public void createDb() {
         Context context = ApplicationProvider.getApplicationContext();
@@ -40,11 +44,19 @@ public class NodeDatabaseTest {
         dao = db.nodeDao();
     }
 
+    /**
+     * Name:     closeDb
+     * Behavior: Close the database after tests are finished running
+     */
     @After
     public void closeDb() {
         db.close();
     }
 
+    /**
+     * Name:     testInsertAll
+     * Behavior: Verify that after inserting items into the database that the size is correct.
+     */
     @Test
     public void testInsertAll() {
         // Create a mock list of exhibits to be added into a list.
@@ -58,6 +70,10 @@ public class NodeDatabaseTest {
         assertEquals(4, numInserted.size());
     }
 
+    /**
+     * Name:     testGet
+     * Behavior: Verify that the items received from the dao are correct.
+     */
     @Test
     public void testGet() {
         // Create a mock exhibit and insert it as a list into the database
@@ -90,6 +106,11 @@ public class NodeDatabaseTest {
         assertEquals(88, item2.longitude, 0.000001);
     }
 
+    /**
+     * Name:     getAll
+     * Behavior: Verify that all exhibits, intersections,
+     *           and groups inserted are returned in the correct order
+     */
     @Test
     public void getAll() {
         // Create a mock list of exhibits to be inserted into a list.
@@ -109,6 +130,10 @@ public class NodeDatabaseTest {
         assertEquals("lions", listToTest.get(3).id);
     }
 
+    /**
+     * Name:     getAllExhibits
+     * Behavior: Verify that all exhibits are returned in the correct order
+     */
     @Test
     public void getAllExhibits() {
         // Create a mock list of exhibits to be inserted into a list.
@@ -127,6 +152,11 @@ public class NodeDatabaseTest {
         assertEquals("lions", listToTest.get(2).id);
     }
 
+    /**
+     * Name:     update
+     * Behavior: Verify that update works after changing the added parameter. There should be one
+     *           item marked as updated.
+     */
     @Test
     public void update() {
         // Create a mock exhibit and insert it as a list into the database
