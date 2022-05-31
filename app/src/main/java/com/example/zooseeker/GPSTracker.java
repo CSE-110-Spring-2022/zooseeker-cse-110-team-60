@@ -173,7 +173,7 @@ public class GPSTracker implements LocationListener, DirectionObserver {
      * @param longitude : represents user's current longitude
      * @return the name of the nearest node (this includes gates, intersections, exhibits, groups, etc..)
      */
-    private String findNearestNode(double latitude, double longitude) {
+    public static String findNearestNode(double latitude, double longitude) {
         List<Node> nodes = ExhibitList.getAllNodes();
         double closestDistance = Integer.MAX_VALUE;
         String closestNodeId = "";
