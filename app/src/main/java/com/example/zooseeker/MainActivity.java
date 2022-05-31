@@ -88,6 +88,8 @@ public class MainActivity extends AppCompatActivity {
 
         setNumPlanned();
 
+        ActivityTracker.setContext(this);
+
         /* Location Permissions Setup */
         {
             boolean hasNoLocationPerms = Arrays.stream(requiredPermissions)
@@ -141,6 +143,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         update = true;
+
+        if (ActivityTracker.getDirectionsFlag()) goToDirections();
+        ActivityTracker.setDirectionsFlag(false);
+
         setNumPlanned();
         displayAllExhibits();
     }
@@ -245,5 +251,20 @@ public class MainActivity extends AppCompatActivity {
     private void displaySearchedExhibits(String search) {
         List<Node> searchLists = ExhibitList.getSearchItems(search);
         adapter.setExhibitList(searchLists);
+    }
+
+    private void goToDirections() {
+        DirectionTracker.loadGraphData(this, "sample_node_info.JSON", "sample_edge_info.JSON", "sample_zoo_graph.JSON");
+        DirectionTracker.loadDatabaseAndDaoByContext(this);
+
+        int index = ActivityTracker.getIndex();
+        List<String> currentExhibitIdsOrder = ActivityTracker.getIds();
+        gpsTracker = new GPSTracker(this, this);
+
+        DirectionTracker.loadInformation(index, currentExhibitIdsOrder);
+        DirectionTracker.getDirection(GPSTracker.findNearestNode(GPSTracker.latitude, GPSTracker.longitude));
+        ActivityTracker.setDirectionsFlag(true);
+        Intent directionIntent = new Intent(this, DirectionActivity.class);
+        startActivity(directionIntent);
     }
 }

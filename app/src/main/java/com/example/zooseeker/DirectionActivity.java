@@ -144,6 +144,7 @@ public class DirectionActivity extends AppCompatActivity implements DirectionObs
                 // "Yes" button clicked
                 case DialogInterface.BUTTON_POSITIVE:
                     ExhibitList.clearCheckedExhibits();
+                    ActivityTracker.setDirectionsFlag(false);
                     finish();
                     break;
 

@@ -10,6 +10,7 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class DirectionTracker {
 
@@ -43,6 +44,7 @@ public class DirectionTracker {
      */
     static void initDirections(String startNodeId, List<Node> exhibitsToVisit) {
         index = 0;
+        ActivityTracker.setIndex(index);
         currentExhibitIdsOrder = new ArrayList<String>();
         routePlanSummary = new ArrayList<String>();
         String previousId = startNodeId;
@@ -64,6 +66,7 @@ public class DirectionTracker {
         ZooData.VertexInfo gate = DirectionTracker.vInfo.get(DirectionTracker.getGateId());
         double distance = getDistanceBetweenNodes(previousId, gate.id);
         routePlanSummary.add(vInfo.get(previousId).name + " to " + gate.name + " (" + distance + " feet)");
+        ActivityTracker.setIds(currentExhibitIdsOrder);
     }
 
     /**
@@ -75,21 +78,31 @@ public class DirectionTracker {
      * @return    Direction        a direction object to the next exhibit to be visited
      */
     static Direction getDirection(String startNodeId) {
+
+        Log.d("RETAIN", "currentIds: " + currentExhibitIdsOrder.toString());
+        Log.d("RETAIN", "index: " + String.valueOf(index));
+
         String startNodeName = vInfo.get(startNodeId).name;
         String nextNodeId;
         String nextNodeName;
+
         if (index < currentExhibitIdsOrder.size()) {
             String nextExhibitId = currentExhibitIdsOrder.get(index);
+            Log.d("RETAIN", "next: " + nextExhibitId);
             Node nextExhibit = dao.get(nextExhibitId);
             Node nextNode = getParentNodeIfExists(nextExhibit);
             nextNodeId = nextNode.id;
             nextNodeName = nextNode.name;
         } else {
+            Log.d("RETAIN", "next: gate");
             nextNodeId = getGateId();
             nextNodeName = vInfo.get(getGateId()).name;
         }
 
+        Log.d("RETAIN", "path not calculated");
         GraphPath<String, IdentifiedWeightedEdge> path = DijkstraShortestPath.findPathBetween(g, startNodeId, nextNodeId);
+//        GraphPath<String, IdentifiedWeightedEdge> path = DijkstraShortestPath.findPathBetween(g, getGateId(), getGateId());
+        Log.d("RETAIN", "path calculated");
 
         List<String> briefSteps = new ArrayList<String>();
         ArrayList<String> detailedSteps = new ArrayList<String>();
@@ -178,8 +191,9 @@ public class DirectionTracker {
      */
     static void next() {
         String exhibitToRemoveId = currentExhibitIdsOrder.get(index);
-        removeExhibit(exhibitToRemoveId);
+//        removeExhibit(exhibitToRemoveId);
         ++index;
+        ActivityTracker.setIndex(index);
         getDirection(GPSTracker.findNearestNode(GPSTracker.latitude, GPSTracker.longitude));
     }
 
@@ -191,13 +205,13 @@ public class DirectionTracker {
 
     /**
      * Name:     previous
-     * Behavior: Re-add teh exhibit most recently reached to the database, Decrement index.
-     *           exhibits to visi.
+     * Behavior: Re-add the exhibit most recently reached to the database, Decrement index.
      */
     static void previous() {
         String exhibitToAddId = currentExhibitIdsOrder.get(index - 1);
-        addExhibit(exhibitToAddId);
+//        addExhibit(exhibitToAddId);
         --index;
+        ActivityTracker.setIndex(index);
         getDirection(GPSTracker.findNearestNode(GPSTracker.latitude, GPSTracker.longitude));
     }
 
@@ -262,7 +276,7 @@ public class DirectionTracker {
         }
 
         notifyOrderChange();
-
+        ActivityTracker.setIds(currentExhibitIdsOrder);
         getDirection(currentNodeId);
     }
 
@@ -325,5 +339,10 @@ Log.d("MOCK notify of direction change", "***");
 
             observer.updateDirection(currentDirection);
         }
+    }
+
+    public static void loadInformation(int newIndex, List<String> newCurrentExhibitIdsOrder) {
+        index = newIndex;
+        currentExhibitIdsOrder = newCurrentExhibitIdsOrder;
     }
 }

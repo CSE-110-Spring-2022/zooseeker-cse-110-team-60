@@ -39,6 +39,7 @@ public class RoutePlanSummaryActivity extends AppCompatActivity {
     }
 
     public void onGoClicked(View view) {
+        ActivityTracker.setDirectionsFlag(true);
         Intent directionIntent = new Intent(this, DirectionActivity.class);
         startActivity(directionIntent);
         finish();
