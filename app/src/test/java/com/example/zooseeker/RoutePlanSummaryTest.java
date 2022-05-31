@@ -19,8 +19,13 @@ import java.util.List;
 public class RoutePlanSummaryTest {
     NodeDao dao;
 
+    /**
+     * Name:     createGraph
+     * Behavior: Using a given JSON file, load in the graph data as well as create a database. Then,
+     *           mark 3 exhibits as visited and initialize the direction tracker.
+     */
     @Before
-    public void setup() {
+    public void createGraph() {
         DirectionTracker.loadGraphData(ApplicationProvider.getApplicationContext(), "test_vertex_info.JSON", "test_edge_info.JSON", "test_zoo_graph_info.JSON");
         DirectionTracker.loadDatabaseAndDaoByContext(ApplicationProvider.getApplicationContext());
 
@@ -43,6 +48,11 @@ public class RoutePlanSummaryTest {
         DirectionTracker.initDirections(DirectionTracker.getGateId(), toVisit);
     }
 
+    /**
+     * Name:     summaryTest
+     * Behavior: Create a RoutePlan Summary adapter and verify that calling getDirectionItems()
+     *           returns the expected summary given that only one exhibit is checked.
+     */
     @Test
     public void summaryTest(){
         RoutePlanSummaryAdapter adapter = new RoutePlanSummaryAdapter();
@@ -56,6 +66,11 @@ public class RoutePlanSummaryTest {
         assertEquals(entranceToGators, "Entrance and Exit Gate to Alligators (110.0 feet)");
     }
 
+    /**
+     * Name:     distanceTest
+     * Behavior: Create a RoutePlan Summary adapter and verify that the distance in the
+     *           for the directions in the summary is correct.
+     */
     @Test
     public void distanceTest(){
         RoutePlanSummaryAdapter adapter = new RoutePlanSummaryAdapter();
