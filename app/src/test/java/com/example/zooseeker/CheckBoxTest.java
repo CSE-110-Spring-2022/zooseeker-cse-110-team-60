@@ -1,27 +1,27 @@
-package com.example.zooseeker;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import android.widget.CheckBox;
-
-import androidx.lifecycle.Lifecycle;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.test.core.app.ActivityScenario;
-import androidx.test.ext.junit.runners.AndroidJUnit4;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-@RunWith(AndroidJUnit4.class)
-public class CheckBoxTest {
-    /**
-     * Name:     testCheckBox
-     * Behavior: Verify that the checkBox returns True after the first checkbox is set to true.
-     *           Then, set the checkBox to False and verify that the first checkbox is set to false.
-     *
-     */
+//package com.example.zooseeker;
+//
+//import static org.junit.Assert.assertFalse;
+//import static org.junit.Assert.assertNotNull;
+//import static org.junit.Assert.assertTrue;
+//
+//import android.widget.CheckBox;
+//
+//import androidx.lifecycle.Lifecycle;
+//import androidx.recyclerview.widget.RecyclerView;
+//import androidx.test.core.app.ActivityScenario;
+//import androidx.test.ext.junit.runners.AndroidJUnit4;
+//
+//import org.junit.Test;
+//import org.junit.runner.RunWith;
+//
+//@RunWith(AndroidJUnit4.class)
+//public class CheckBoxTest {
+//    /**
+//     * Name:     testCheckBox
+//     * Behavior: Verify that the checkBox returns True after the first checkbox is set to true.
+//     *           Then, set the checkBox to False and verify that the first checkbox is set to false.
+//     *
+//     */
 //    @Test
 //    public void testCheckBox() {
 //        // Start an instance of main activity for testing.
@@ -46,5 +46,5 @@ public class CheckBoxTest {
 //            assertFalse(checkBox.isChecked());
 //        });
 //    }
-
-}
+//
+//}
