@@ -31,7 +31,11 @@ public class CounterTest {
     Node ex3 = new Node("lions", "mammal", VertexInfo.Kind.EXHIBIT, "Lions", "lion, cat, mammal, africa", 70, 78);
     Node ex4 = new Node("intersection1", "", VertexInfo.Kind.INTERSECTION, "Intersection 1", "", 55, 88);
 
-
+    /**
+     * Name:     createDb
+     * Behavior: Get the context, create a database, and initialize it before tests run
+     *
+     */
     @Before
     public void createDb() {
         Context context = ApplicationProvider.getApplicationContext();
@@ -41,11 +45,22 @@ public class CounterTest {
         dao = db.nodeDao();
     }
 
+    /**
+     * Name:     closeDb
+     * Behavior: Close the database after tests are finished running
+     *
+     */
     @After
     public void closeDb() {
         db.close();
     }
 
+    /**
+     * Name:     counterUp
+     * Behavior: Verify that exhibits are not added to start, that make sure the getNumChecked()
+     *           returns the the proper count after it is incremented.
+     *
+     */
     @Test
     public void counterUp() {
         // Create a mock list of exhibits to be inserted into a list.
@@ -71,6 +86,13 @@ public class CounterTest {
         }
     }
 
+    /**
+     * Name:     counterDown
+     * Behavior: Verify that exhibits are not added to start, that make sure the getNumChecked()
+     *           returns the the proper count after it is incremented. Then set an exhibit to false
+     *           and verify that the counter has been decremented.
+     *
+     */
     @Test
     public void counterDown() {
         // Create a mock list of exhibits to be inserted into a list.
