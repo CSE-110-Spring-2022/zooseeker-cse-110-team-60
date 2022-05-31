@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">ZooSeeker</string>
+    <string name="next">Next</string>
+    <string name="skip">Skip</string>
+    <string name="exit">Exit</string>
+    <string name="prev">Prev</string>
+    <string name="mock_location">Mock Location</string>
+    <string name="longitude">Longitude</string>
+    <string name="latitude">Latitude</string>
+    <string name="mock">Mock</string>
+    <string name="detailed">Detailed</string>
+    <string name="search_for_exhibit">Search for an Exhibit</string>
+    <string name="search">Search</string>
+    <string name="show">Show</string>
+    <string name="back">Back</string>
+    <string name="clear">Clear</string>
+    <string name="get_directions">Get Directions</string>
+</resources>

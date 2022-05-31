@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".MainActivity">
+
+    <AutoCompleteTextView
+        android:id="@+id/main_searchBar"
+        android:layout_width="0dp"
+        android:layout_height="66dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="32dp"
+        android:hint="@string/search_for_exhibit"
+        android:inputType="text"
+        android:singleLine="true"
+        app:layout_constraintBottom_toTopOf="@id/main_exhibitsRecyclerView"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/main_searchButton"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/main_deleteButton"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:background="@android:drawable/ic_menu_close_clear_cancel"
+        android:backgroundTint="@color/black"
+        android:clickable="true"
+        android:gravity="center"
+        app:layout_constraintBottom_toTopOf="@id/main_exhibitsRecyclerView"
+        app:layout_constraintLeft_toRightOf="@+id/main_searchBar"
+        app:layout_constraintRight_toLeftOf="@+id/main_searchButton"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/main_searchButton"
+        android:layout_width="wrap_content"
+        android:layout_height="66dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:text="@string/search"
+        app:layout_constraintBottom_toTopOf="@+id/main_exhibitsRecyclerView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/main_searchBar"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/main_exhibitsRecyclerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/main_clearButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/main_searchBar" />
+
+    <TextView
+        android:id="@+id/main_counter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text=""
+        app:layout_constraintBottom_toTopOf="@id/main_directionsButton"
+        app:layout_constraintRight_toLeftOf="@+id/main_clearButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/main_exhibitsRecyclerView"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <Button
+        android:id="@+id/main_showButton"
+        android:layout_width="60dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:paddingStart="0dp"
+        android:paddingEnd="0dp"
+        android:text="@string/show"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/main_directionsButton"
+        app:layout_constraintEnd_toStartOf="@+id/main_clearButton"
+        app:layout_constraintLeft_toRightOf="@+id/main_counter"
+        app:layout_constraintTop_toBottomOf="@+id/main_exhibitsRecyclerView"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:id="@+id/main_backButton"
+        android:layout_width="60dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:paddingStart="0dp"
+        android:paddingEnd="0dp"
+        android:text="@string/back"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/main_directionsButton"
+        app:layout_constraintEnd_toStartOf="@+id/main_clearButton"
+        app:layout_constraintLeft_toRightOf="@+id/main_counter"
+        app:layout_constraintTop_toBottomOf="@+id/main_exhibitsRecyclerView"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:id="@+id/main_clearButton"
+        android:layout_width="65dp"
+        android:layout_height="45dp"
+        android:layout_marginEnd="16dp"
+        android:paddingStart="0dp"
+        android:paddingEnd="0dp"
+        android:text="@string/clear"
+        app:layout_constraintBottom_toTopOf="@+id/main_directionsButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/main_counter"
+        app:layout_constraintTop_toBottomOf="@+id/main_exhibitsRecyclerView"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:id="@+id/main_directionsButton"
+        android:layout_width="0dp"
+        android:layout_height="66dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="16dp"
+        android:text="@string/get_directions"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

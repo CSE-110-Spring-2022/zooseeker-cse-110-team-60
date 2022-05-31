@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".DirectionActivity">
+
+    <TextView
+        android:id="@+id/direction_header"
+        android:layout_width="0dp"
+        android:layout_height="80dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/direction_directionsRecyclerView"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/direction_toggleButton"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/direction_toggleButton"
+        android:layout_width="85dp"
+        android:layout_height="40dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="0dp"
+        android:paddingStart="0dp"
+        android:paddingEnd="0dp"
+        android:text="@string/detailed"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toTopOf="@+id/direction_mockButton"
+        app:layout_constraintLeft_toRightOf="@id/direction_header"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/direction_mockButton"
+        android:layout_width="85dp"
+        android:layout_height="40dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="16dp"
+        android:paddingStart="0dp"
+        android:paddingEnd="0dp"
+        android:text="@string/mock"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toTopOf="@id/direction_directionsRecyclerView"
+        app:layout_constraintLeft_toRightOf="@id/direction_header"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/direction_toggleButton" />
+
+    <!-- Source: https://stackoverflow.com/questions/6759279/how-to-bring-view-in-front-of-everything -->
+    <LinearLayout
+        android:id="@+id/direction_linearLayout_mockLocation"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/white"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:translationZ="90dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@id/direction_previousButton"
+        app:layout_constraintTop_toBottomOf="@id/direction_header">
+
+        <EditText
+            android:id="@+id/direction_mockLatitude"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="@string/latitude"
+            android:importantForAutofill="no"
+            android:inputType="numberDecimal|numberSigned" />
+
+        <EditText
+            android:id="@+id/direction_mockLongitude"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:ems="10"
+            android:hint="@string/longitude"
+            android:importantForAutofill="no"
+            android:inputType="numberDecimal|numberSigned" />
+
+        <Button
+            android:id="@+id/direction_mockLocation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/mock_location"
+            android:textSize="12sp" />
+
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/direction_directionsRecyclerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginRight="16dp"
+        app:layout_constraintBottom_toTopOf="@id/direction_previousButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/direction_header" />
+
+    <Button
+        android:id="@+id/direction_previousButton"
+        android:layout_width="70dp"
+        android:layout_height="60dp"
+        android:layout_margin="16dp"
+        android:paddingStart="0dp"
+        android:paddingEnd="0dp"
+        android:text="@string/prev"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/direction_exitButton"
+        app:layout_constraintTop_toBottomOf="@+id/direction_directionsRecyclerView" />
+
+    <Button
+        android:id="@+id/direction_exitButton"
+        android:layout_width="70dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:paddingStart="0dp"
+        android:paddingEnd="0dp"
+        android:text="@string/exit"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/direction_previousButton"
+        app:layout_constraintRight_toLeftOf="@id/direction_skipButton"
+        app:layout_constraintTop_toBottomOf="@+id/direction_directionsRecyclerView" />
+
+    <Button
+        android:id="@+id/direction_skipButton"
+        android:layout_width="70dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:paddingStart="0dp"
+        android:paddingEnd="0dp"
+        android:text="@string/skip"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/direction_exitButton"
+        app:layout_constraintRight_toLeftOf="@id/direction_nextButton"
+        app:layout_constraintTop_toBottomOf="@+id/direction_directionsRecyclerView" />
+
+    <Button
+        android:id="@+id/direction_nextButton"
+        android:layout_width="70dp"
+        android:layout_height="60dp"
+        android:layout_margin="16dp"
+        android:paddingStart="0dp"
+        android:paddingEnd="0dp"
+        android:text="@string/next"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/direction_skipButton"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/direction_directionsRecyclerView" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
