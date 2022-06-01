@@ -14,6 +14,11 @@ import java.util.List;
 public class DirectionAdapter extends RecyclerView.Adapter<DirectionAdapter.ViewHolder> {
     private List<String> directions = Collections.emptyList();
 
+    /**
+     * Name:     setDirections
+     * Behavior: Given a list of string objects, set the recyclerVIew to reflect that list.
+     * - @param  List<String>                       directions
+     */
     public void setDirections(List<String> directions) {
         this.directions.clear();
         this.directions = directions;
