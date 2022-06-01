@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DirectionActivity extends AppCompatActivity implements DirectionObserver {
@@ -277,8 +278,8 @@ Log.d("MOCK calling offTrack", "***");
 
 //        body.setText(directionsString);
         List<String> steps;
-        if (detailed) steps = currentDirection.getDetailedDirections();
-        else steps = currentDirection.getBriefDirections();
+        if (detailed) steps = new ArrayList<String>(currentDirection.getDetailedDirections());
+        else steps = new ArrayList<String>(currentDirection.getBriefDirections());
 
         adapter.setDirections(steps);
 
