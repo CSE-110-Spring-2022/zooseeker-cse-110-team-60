@@ -42,6 +42,11 @@ public class DirectionActivity extends AppCompatActivity implements DirectionObs
 //    private GPSTracker gpsTracker;
 
     @Override
+    /**
+     * Name:     onCreate
+     * Behavior: When the DirectionActivity is created, bind the view elements, set the direction,
+     *           register the activity as an observer of DirectionTracker, and set on click listeners.
+     */
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_direction);
@@ -88,15 +93,12 @@ public class DirectionActivity extends AppCompatActivity implements DirectionObs
         currentId = DirectionTracker.getGateId();
     }
 
-    /*
+    /**
      *   Name:       nextClicked
      *   Behavior:   When the next button is clicked, if the current direction is the
-     * last one,
-     *               display a message notifying there are no more directions.
-     * Otherwise, increment the
-     *               index of the current direction i and set the direction.
-     *   @param      View     view       the view being called from
-     *   @return
+     *               last one, display a message notifying there are no more directions.
+     *               Otherwise, call next() in DirectionTracker.
+     *   - @param      View     view       the view being called from
      */
     void nextClicked(View view) {
         if (DirectionTracker.index == DirectionTracker.currentExhibitIdsOrder.size() - 1) {
@@ -109,15 +111,12 @@ public class DirectionActivity extends AppCompatActivity implements DirectionObs
 //        setDirection();
     }
 
-    /*
+    /**
      *   Name:       previousClicked
-     *   Behavior:   When the previous button is clicked, if the current direction is
-     * the first one,
-     *               display a message notifying the user this is the case. Otherwise,
-     * decrement the
-     *               index of the current direction i and set the direction.
-     *   @param      View     view       the view being called from
-     *   @return
+     *   Behavior:   When the previous button is clicked, if the current direction is the
+     *               first one, display a message notifying this is the first direction.
+     *               Otherwise, call previous() in DirectionTracker.
+     *   - @param      View     view       the view being called from
      */
     void previousClicked(View view) {
         if (DirectionTracker.index == 0) {
@@ -132,8 +131,8 @@ public class DirectionActivity extends AppCompatActivity implements DirectionObs
     /**
      * Name:     exitClicked
      * Behavior: When the exit button is clicked, a popup alert is displayed to confirm.
-     * If "yes" is clicked, exit current path, remove all selected, and return to search.
-     * Else, stay on directions.
+     *           If "yes" is clicked, exit current path, remove all selected, and return to search.
+     *           Esse, stay on directions.
      *
      * @param view the view being called from
      */
@@ -157,6 +156,13 @@ public class DirectionActivity extends AppCompatActivity implements DirectionObs
                .setPositiveButton("Yes", dialog).setNegativeButton("No", dialog).show();
     }
 
+    /**
+     *   Name:       skipClicked
+     *   Behavior:   When the skip button is clicked, if the current direction is the
+     *               last one, display a message notifying user cannot skip.
+     *               Otherwise, call skip() in DirectionTracker.
+     *   - @param      View     view       the view being called from
+     */
     void skipClicked(View view) {
         if (DirectionTracker.index == DirectionTracker.currentExhibitIdsOrder.size() - 1) {
             Utilities.showAlert(this, "Last direction, can't skip!", "Ok", "Cancel");
@@ -182,6 +188,13 @@ public class DirectionActivity extends AppCompatActivity implements DirectionObs
                 .setPositiveButton("Yes", dialog).setNegativeButton("No", dialog).show();
     }
 
+    /**
+     *   Name:       toggleClicked
+     *   Behavior:   When the toggle button is clicked, if detailed is true, set it to false and
+     *               update the toggle button to read "DETAILED". If detailed is false, set it to
+     *               true and update the toggle button to read "BRIEF". Then set the direction.
+     *   - @param      View     view       the view being called from
+     */
     void toggleClicked(View view) {
         if (detailed) {
             detailed = false;
@@ -194,6 +207,12 @@ public class DirectionActivity extends AppCompatActivity implements DirectionObs
         setDirection();
     }
 
+    /**
+     *   Name:       mockClicked
+     *   Behavior:   When the mock button is clicked, ask the user whether they're sure they wish
+     *               to mock location. If they are, display the UI elements for mocking location.
+     *   - @param      View     view       the view being called from
+     */
     void mockClicked(View view) {
         AlertUtilities alert = new AlertUtilities(this, response -> {
             if (response) {
@@ -204,6 +223,13 @@ public class DirectionActivity extends AppCompatActivity implements DirectionObs
         alert.showAlert("Do you want to set your current location manually?", "Yes", "No");
     }
 
+    /**
+     *   Name:       enterMockLocationClicked
+     *   Behavior:   When the enter mock location button is clicked, ensure the user has input
+     *               a valid latitude and longitude. If they have not, inform them, otherwise
+     *               set user's location to reflect the mocked coordinates.
+     *   - @param      View     view       the view being called from
+     */
     void enterMockLocationClicked(View view) {
 
         if (!mockLatitude.getText().toString().equals("")) {
@@ -253,7 +279,8 @@ Log.d("MOCK calling offTrack", "***");
     /**
      *   Name:       setDirection
      *   Behavior:   Update the header and body to reflect the details of the current
-     * direction.
+     *               direction. If detailed is true, load the recyclerView with the detailed
+     *               directions, otherwise load it with the brief directions.
      */
     void setDirection() {
 //        String currentLocationId = getCurrentLocationId();

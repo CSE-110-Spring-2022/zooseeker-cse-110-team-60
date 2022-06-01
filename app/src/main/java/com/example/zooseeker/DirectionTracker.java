@@ -191,8 +191,7 @@ public class DirectionTracker {
 
     /**
      * Name:     previous
-     * Behavior: Re-add teh exhibit most recently reached to the database, Decrement index.
-     *           exhibits to visi.
+     * Behavior: Re-add the exhibit most recently reached to the database, decrement index.
      */
     static void previous() {
         String exhibitToAddId = currentExhibitIdsOrder.get(index - 1);
@@ -234,6 +233,12 @@ public class DirectionTracker {
         return closestExhibit;
     }
 
+    /**
+     * Name:     redirect
+     * Behavior: Given the node closest to the user's location, efficiently
+     *           reorder the remaining exhibits to be visited.
+     * @param    currentNodeId       id of the node closest to the user's location
+     */
     static void redirect(String currentNodeId) {
 //        List<String> exhibitsToBeReorderedIds = new ArrayList<String>();
 
@@ -266,12 +271,25 @@ public class DirectionTracker {
         getDirection(currentNodeId);
     }
 
+    /**
+     * Name:     skip
+     * Behavior: Given the node closest to the user's location, skip the next exhibit planned to be
+     *           visited and reorder the remaining exhibits accordingly.
+     * @param    currentNodeId       id of the node closest to the user's location
+     */
     static void skip(String currentNodeId) {
         removeExhibit(currentExhibitIdsOrder.get(index));
         currentExhibitIdsOrder.remove(index);
         redirect(currentNodeId);
     }
 
+    /**
+     * Name:     getParentNodeIfExists
+     * Behavior: Given a node, return that node's parent if it exists, otherwise return the
+     *           original node.
+     * - @param    Node                             node
+     * - @return   node/dao.get(node.parentId)      the given node, or its parent if it exists
+     */
     static Node getParentNodeIfExists(Node node) {
         if (node.parentId.equals("")) return node;
         else {
