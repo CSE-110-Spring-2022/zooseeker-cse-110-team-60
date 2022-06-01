@@ -1,9 +1,3 @@
-/**
- * Displays a summary of the planned route in the following format:
- *  A to B (X meters)
- *  B to C (Y meters)
- */
-
 package com.example.zooseeker;
 
 
@@ -21,6 +15,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
+/**
+ * Activity to display route plan summary. Contains buttons to go back to
+ * search and advance to directions. Has a button to inject mock location and
+ * update the RecyclerView if needed.
+ *
+ * Displays a summary of the planned route in the following format:
+ * A to B (X meters)
+ * B to C (Y meters)
+ */
 public class RoutePlanSummaryActivity extends AppCompatActivity {
     // Testing
     public RecyclerView recyclerView;
@@ -38,18 +41,27 @@ public class RoutePlanSummaryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_route_plan_summary);
 
-        adapter = new RoutePlanSummaryAdapter();
-        adapter.setHasStableIds(true);
+        /* Adapter Setup */
+        {
+            adapter = new RoutePlanSummaryAdapter();
+            adapter.setHasStableIds(true);
+        }
 
-        recyclerView = findViewById(R.id.summary_RecyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(adapter);
+        /* RecyclerView Setup */
+        {
+            recyclerView = findViewById(R.id.summary_RecyclerView);
+            recyclerView.setLayoutManager(new LinearLayoutManager(this));
+            recyclerView.setAdapter(adapter);
+        }
 
-        mockLocation = findViewById(R.id.summary_enter_mock_location);
-        mockButton = findViewById(R.id.summary_mockButton);
-        mockLatitude = findViewById(R.id.summary_mock_lat);
-        mockLongitude = findViewById(R.id.summary_mock_lng);
-        enterMockLocation = findViewById(R.id.summary_mock_mock);
+        /* Views Setup */
+        {
+            mockLocation = findViewById(R.id.summary_enter_mock_location);
+            mockButton = findViewById(R.id.summary_mockButton);
+            mockLatitude = findViewById(R.id.summary_mock_lat);
+            mockLongitude = findViewById(R.id.summary_mock_lng);
+            enterMockLocation = findViewById(R.id.summary_mock_mock);
+        }
 
         adapter.setDirectionItems(DirectionTracker.getRoutePlanSummary());
 
@@ -57,16 +69,32 @@ public class RoutePlanSummaryActivity extends AppCompatActivity {
         enterMockLocation.setOnClickListener(this::enterMockLocationClicked);
     }
 
+    /**
+     * Called when 'back' button is clicked. Intent finishes and returns back
+     * to MainActivity.
+     * @param view
+     */
     public void onBackClicked(View view) {
         finish();
     }
 
+    /**
+     * Called when 'go' button is clicked. Starts DirectionActivity and
+     * finishes intent.
+     * @param view
+     */
     public void onGoClicked(View view) {
         Intent directionIntent = new Intent(this, DirectionActivity.class);
         startActivity(directionIntent);
         finish();
     }
 
+    /**
+     * Called when 'mock' button is clicked. Displays an alert to confirm
+     * whether the user wants to manually inject their current location. If
+     * yes, then option to enter latitude and longitude is shown.
+     * @param view
+     */
     void mockClicked(View view) {
         AlertUtilities alert = new AlertUtilities(this, response -> {
             if (response) {
@@ -77,6 +105,12 @@ public class RoutePlanSummaryActivity extends AppCompatActivity {
         alert.showAlert("Do you want to set your current location manually?", "Yes", "No");
     }
 
+    /**
+     * Called when 'mock location' is clicked. After user selects to inject
+     * their entered location, directions are updated and displayed on the
+     * screen.
+     * @param view
+     */
     void enterMockLocationClicked(View view) {
 
         if (!mockLatitude.getText().toString().equals("")) {

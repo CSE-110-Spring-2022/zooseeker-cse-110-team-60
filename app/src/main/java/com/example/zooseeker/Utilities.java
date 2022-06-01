@@ -6,21 +6,31 @@ import android.content.DialogInterface;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-
+/**
+ * Utilities class. Contains static methods to display alerts and calculates
+ * distance between two latitudes and longitudes using inverse Vincenty formula
+ * and Haversine formula.
+ */
 public class Utilities {
-    public static boolean showAlert(Activity activity, String message,
+
+    /**
+     * Displays alert on activity passed in with chosen message and buttons.
+     *
+     * @param activity          Activity to display alert on.
+     * @param message           Message to be displayed.
+     * @param positiveButtonMsg Message to be set for positive button.
+     * @param negativeButtonMsg Message to be set for negative button.
+     */
+    public static void showAlert(Activity activity, String message,
                                     String positiveButtonMsg, String negativeButtonMsg) {
-        final boolean[] response = new boolean[1];
         DialogInterface.OnClickListener dialog = (dialogInterface, i) -> {
             switch (i) {
                 // "Yes" or "Ok" button clicked
                 case DialogInterface.BUTTON_POSITIVE:
-                    response[0] = true;
                     break;
 
                 // "No" or "Cancel" button clicked
                 case DialogInterface.BUTTON_NEGATIVE:
-                    response[0] = false;
                     break;
             }
         };
@@ -29,21 +39,20 @@ public class Utilities {
 
         alertBuilder.setMessage(message).setPositiveButton(positiveButtonMsg, dialog)
                     .setNegativeButton(negativeButtonMsg, dialog).show();
-
-        return response[0];
     }
 
     /**
-     * Calculates geodetic distance between two points specified by latitude/longitude
-     * using Haversine inverse formula for perfect squares.
+     * Calculates geodetic distance between two points specified by
+     * latitude/longitude using Haversine inverse formula for perfect squares.
      *
-     * Source: https://stackoverflow.com/questions/120283/how-can-i-measure-distance
-     * -and-create-a-bounding-box-based-on-two-latitudelongi
+     * Source: https://stackoverflow
+     * .com/questions/120283/how-can-i-measure-distance-and-create-a-bounding
+     * -box-based-on-two-latitudelongi
      *
-     * @param lat1,lng1: first point in decimal degrees
-     * @param lat2,lng2: second point in decimal degrees
+     * @param lat1,lng1 first point in decimal degrees.
+     * @param lat2,lng2 second point in decimal degrees.
      *
-     * @return distance between two points in kilometers
+     * @return Distance between two points in kilometers.
      */
     public static double getHaversineDistance(double lat1, double lng1, double lat2,
                                               double lng2) {
@@ -64,17 +73,17 @@ public class Utilities {
     }
 
     /**
-     * Calculates geodetic distance between two points specified by latitude/longitude
-     * using Vincenty inverse formula for ellipsoids.
+     * Calculates geodetic distance between two points specified by
+     * latitude/longitude using Vincenty inverse formula for ellipsoids.
      *
-     * Source: http://www.java2s.com/example/java-utility-method/distance-calculate
-     * /distancevincenty-final-double-lat1-final-double-lon1-final-double-lat2-final
-     * -double-lon2-d1be5.html
+     * Source: http://www.java2s.com/example/java-utility-method/distance
+     * -calculate/distancevincenty-final-double-lat1-final-double-lon1-final
+     * -double-lat2-final-double-lon2-d1be5.html
      *
-     * @param lat1,lng1: first point in decimal degrees
-     * @param lat2,lng2: second point in decimal degrees
+     * @param lat1,lng1 First point in decimal degrees.
+     * @param lat2,lng2 Second point in decimal degrees.
      *
-     * @return distance between two points in meters
+     * @return Distance between two points in meters.
      */
     public static double getVincentyDistance(double lat1, double lng1, double lat2,
                                              double lng2) {

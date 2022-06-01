@@ -15,6 +15,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Includes implementation of off track functionality. Enables user to manually
+ * set the locations or observes user's current location and redirects the user
+ * accordingly. Implements Observer Pattern to monitor the changes to
+ * currentExhibitIdsOrder and currentDirection.
+ */
 @SuppressLint("StaticFieldLeak")
 public class GPSTracker implements LocationListener, DirectionObserver {
 
@@ -49,6 +55,12 @@ public class GPSTracker implements LocationListener, DirectionObserver {
     private static int exhibitIndex = 0;
 //    private static int currIndex = 0;
 
+    /**
+     * GPSTracker constructor.
+     *
+     * @param context  Context.
+     * @param activity Activity.
+     */
     public GPSTracker(Context context, Activity activity) {
         GPSTracker.context = context;
         GPSTracker.activity = activity;
@@ -64,11 +76,21 @@ Log.d("MOCK radius = ", String.valueOf(radius));
     }
 
     /**
-     * Source: https://stackoverflow.com/questions/17983865/making-a-location-object-in-android-with-latitude-and-longitude-values
-     * @return Location
+     * Source: https://stackoverflow
+     * .com/questions/17983865/making-a-location-object-in-android-with
+     * -latitude-and-longitude-values
+     *
+     * Returns user's location. If it is set to the user manually injecting the
+     * location, then return the Location of GPSTracker's latitude and
+     * longitude, fields the user has set manually. Otherwise, call
+     * onLocationChanged to track the user's location. Updates whenever the user
+     * moves a meter away from their previous location.
+     *
+     * @return Location User's location.
      */
     @SuppressLint("MissingPermission")
     public Location getLocation() {
+        // If user wants to update their location manually
         if (manualLocation) {
             Location manualLocation = new Location(LocationManager.GPS_PROVIDER);
             manualLocation.setLatitude(latitude);
@@ -76,12 +98,15 @@ Log.d("MOCK radius = ", String.valueOf(radius));
 
             return manualLocation;
         }
+        // If gets user's current location
         else {
             locationManager =
                     (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
             isGPSEnabled = locationManager.isProviderEnabled(provider);
 
             if (isGPSEnabled) {
+                // requests location update whenever the user moves further
+                // than 1 meter
                 locationManager.requestLocationUpdates(provider, MIN_TIME_BW_UPDATES,
                                                        MIN_DISTANCE_CHANGE_FOR_UPDATES,
                                                        this);
@@ -101,16 +126,13 @@ Log.d("MOCK radius = ", String.valueOf(radius));
     }
 
     /**
-     * Name:     onLocationChanged
-     * Behavior: called each time the user moves 10 meters and checks if the user is off
-     * track
-     * it prompts them to redirect if they are off track and the order of remaining nodes
-     * has changed
-     * if they decline, then they arent prompted if they go off track once again between
-     * the same 2 exhibits
-     * if they approve, then we delegate to redirect
+     * Called each time the user moves 10 meters and checks if the user is off
+     * track it prompts them to redirect if they are off track and the order of
+     * remaining nodes has changed if they decline, then they arent prompted if
+     * they go off track once again between the same 2 exhibits if they approve,
+     * then we delegate to redirect
      *
-     * @param location the user's current location
+     * @param location User's current location.
      */
     @Override
     public void onLocationChanged(@NonNull Location location) {
@@ -119,6 +141,15 @@ Log.d("MOCK radius = ", String.valueOf(radius));
         offTrack();
     }
 
+    /**
+     * Implements offTrack functionality. If user is closer to an exhibit to be
+     * visited other than the next one, user is prompted to redirect. If user
+     * responds yes, then the directions are updated to go to the closer
+     * exhibit. If user responds no, the directions are updated from user's
+     * current location to next exhibit as planned. If user simply goes off
+     * track but however stays closest to the next exhibit planned to visit,
+     * then the directions are updated without prompting the user.
+     */
     public void offTrack() {
 
 Log.d("MOCK offtrack method entered", "***");
@@ -271,11 +302,14 @@ Log.d("MOCK passed node, remove from the nodesToPass list", "***");
     }
 
     /**
-     * @param latitude  : represents user's current latitude
-     * @param longitude : represents user's current longitude
+     * Finds the nearest Node to the given location in the database. Excludes
+     * Nodes that have a parentId.
      *
-     * @return the name of the nearest node (this includes gates, intersections, exhibits,
-     * groups, etc..)
+     * @param latitude  User's current latitude.
+     * @param longitude User's current longitude
+     *                  .
+     *
+     * @return Id of the nearest Node.
      */
     public static String findNearestNode(double latitude, double longitude) {
 
@@ -306,6 +340,13 @@ Log.d("MOCK closestNodeId = ", closestNodeId);
         return closestNodeId;
     }
 
+    /**
+     * Goes through all Edges in the database and finds the smallest weight.
+     * This uses the Vincenty formula which is more accurate than the weights in
+     * the asset files.
+     *
+     * @return Smallest weight.
+     */
     private double findSmallestDistance() {
 
 Log.d("MOCK findSmallestDistance entered", "***");
@@ -334,6 +375,11 @@ Log.d("MOCK findSmallestDistance entered", "***");
         return closestDistance;
     }
 
+    /**
+     * Observes changes to Direction and update accordingly.
+     *
+     * @param direction Updated Direction.
+     */
     @Override
     public void updateDirection(Direction direction) {
         nodeIdsToPass = direction.nodeIds;
@@ -345,6 +391,11 @@ for (String id : nodeIdsToPass) {
         nodesToPass = getNodes(nodeIdsToPass);
     }
 
+    /**
+     * Observes changes to currentIdsToVisit and update accordingly.
+     *
+     * @param exhibitIds Updated order.
+     */
     @Override
     public void updateOrder(List<String> exhibitIds) {
 
@@ -371,6 +422,13 @@ Log.d("MOCK first run, nextExhibit is set", nextExhibit);
         exhibitsToVisit = getNodes(exhibitIdsToVisit);
     }
 
+    /**
+     * Convert Ids to Nodes.
+     *
+     * @param ids List of ids to be converted.
+     *
+     * @return List of Nodes.
+     */
     private List<Node> getNodes(List<String> ids) {
         List<Node> nodes = new ArrayList<>();
 
@@ -381,6 +439,12 @@ Log.d("MOCK first run, nextExhibit is set", nextExhibit);
         return nodes;
     }
 
+    /**
+     * Helper method to update context to avoid GPSTracker displaying off track
+     * prompt in MainActivity, where it is declared.
+     *
+     * @param context Context.
+     */
     public void updateContext(Context context) {
         GPSTracker.context = context;
     }
