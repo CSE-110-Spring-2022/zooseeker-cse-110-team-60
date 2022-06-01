@@ -158,7 +158,7 @@ public class DirectionActivity extends AppCompatActivity implements DirectionObs
     }
 
     void skipClicked(View view) {
-        if (DirectionTracker.index == DirectionTracker.currentExhibitIdsOrder.size()) {
+        if (DirectionTracker.index == DirectionTracker.currentExhibitIdsOrder.size() - 1) {
             Utilities.showAlert(this, "Last direction, can't skip!", "Ok", "Cancel");
             return;
         }
