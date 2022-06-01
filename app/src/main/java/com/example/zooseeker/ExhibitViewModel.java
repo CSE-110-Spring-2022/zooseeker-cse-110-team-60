@@ -12,6 +12,9 @@ import androidx.lifecycle.LiveData;
 
 import java.util.List;
 
+/**
+ * ExhibitViewModel is in charge of updating the Dao.
+ */
 public class ExhibitViewModel extends AndroidViewModel {
     private LiveData<List<Node>> exhibits;
     private final NodeDao nodeDao;
@@ -27,14 +30,26 @@ public class ExhibitViewModel extends AndroidViewModel {
         return nodeDao.getGate();
     }
 
+    /**
+     * Delegates to nodeDao's getAll method to getAllNodes.
+     * @return A List of all Nodes (exhibits, group exhibits, intersections, etc.)
+     */
     public List<Node> getAllNodes() {
         return nodeDao.getAll();
     }
 
+    /**
+     * Delegates to nodeDao's getAll method to getAllExhibits.
+     * @return A List of all Exhibits.
+     */
     public List<Node> getAllExhibits() {
         return nodeDao.getAllExhibits();
     }
 
+    /**
+     * Delegates to loadDB to load the database.
+     * @return LiveData
+     */
     public LiveData<List<Node>> getAllExhibitsLive() {
         if (exhibits == null) {
             loadDB();
@@ -42,10 +57,18 @@ public class ExhibitViewModel extends AndroidViewModel {
         return exhibits;
     }
 
+    /**
+     * Sets the LiveData to all the live exhibits by delegating to nodeDao's getAllExhibitsLive.
+     */
     private void loadDB() {
         exhibits = nodeDao.getAllExhibitsLive();
     }
 
+    /**
+     * Updates the counter to reflect the toggle.
+     * Updates the database to reflect the toggled exhibit.
+     * @param exhibit the Node of type exhibit to be checked/unchecked.
+     */
     @SuppressLint("SetTextI18n")
     public void toggleCheckbox(Node exhibit) {
         exhibit.added = !exhibit.added;
@@ -58,6 +81,11 @@ public class ExhibitViewModel extends AndroidViewModel {
         MainActivity.update = false;
     }
 
+    /**
+     * Sets the exhibit to be deleted's added field to false.
+     * Updates the database to reflect the unchecked exhibit.
+     * @param exhibit the Node of type exhibit to be deleted.
+     */
     public void uncheckExhibit(Node exhibit) {
         exhibit.added = !exhibit.added;
         nodeDao.update(exhibit);
