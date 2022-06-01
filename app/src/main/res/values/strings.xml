@@ -16,4 +16,6 @@
     <string name="latitude">Latitude</string>
     <string name="mock">Mock</string>
     <string name="detailed">Detailed</string>
+    <string name="go">Go</string>
+    <string name="route_summary">Route Summary</string>
 </resources>

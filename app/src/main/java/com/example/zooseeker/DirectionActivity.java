@@ -1,7 +1,5 @@
 package com.example.zooseeker;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,8 +15,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
-import java.util.Random;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class DirectionActivity extends AppCompatActivity implements DirectionObserver {
     public TextView header;
@@ -49,6 +45,8 @@ public class DirectionActivity extends AppCompatActivity implements DirectionObs
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_direction);
 
+        MainActivity.gpsTracker.updateContext(this);
+
         adapter = new DirectionAdapter();
         adapter.setHasStableIds(true);
 
@@ -64,7 +62,7 @@ public class DirectionActivity extends AppCompatActivity implements DirectionObs
         skipButton = findViewById(R.id.direction_skip_button);
         toggleButton = findViewById(R.id.direction_toggle_button);
         mockLocation = findViewById(R.id.direction_enter_mock_location);
-        mockButton = findViewById(R.id.direction_mock_button);
+        mockButton = findViewById(R.id.direction_mockButton);
         mockLatitude = findViewById(R.id.direction_mock_lat);
         mockLongitude = findViewById(R.id.direction_mock_lng);
         enterMockLocation = findViewById(R.id.direction_mock_mock);

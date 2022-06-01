@@ -191,12 +191,15 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
+        GPSTracker.latitude = getGate().latitude;
+        GPSTracker.longitude = getGate().longitude;
+
         DirectionTracker.loadGraphData(this, "sample_node_info.JSON", "sample_edge_info.JSON", "sample_zoo_graph.JSON");
         DirectionTracker.loadDatabaseAndDaoByContext(this);
 
         gpsTracker = new GPSTracker(this, this);
 
-        DirectionTracker.initDirections("entrance_exit_gate", toVisit);
+        DirectionTracker.initDirections(GPSTracker.findNearestNode(GPSTracker.latitude, GPSTracker.longitude), toVisit);
         DirectionTracker.getDirection(GPSTracker.findNearestNode(GPSTracker.latitude, GPSTracker.longitude));
         Intent summaryIntent = new Intent(this, RoutePlanSummaryActivity.class);
         startActivity(summaryIntent);
@@ -212,6 +215,10 @@ public class MainActivity extends AppCompatActivity {
 
     public List<Node> getAllExhibits() {
         return viewModel.getAllExhibits();
+    }
+
+    public Node getGate() {
+        return viewModel.getGate();
     }
 
     @SuppressLint("SetTextI18n")

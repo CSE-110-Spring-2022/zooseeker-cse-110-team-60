@@ -19,6 +19,9 @@ public interface NodeDao {
     @Query("SELECT * FROM `node_list` ORDER BY `name`")
     List<Node> getAll();
 
+    @Query("SELECT * FROM `node_list` WHERE `kind`='GATE' ORDER BY `name`")
+    Node getGate();
+
     @Query("SELECT * FROM `node_list` WHERE `kind`='EXHIBIT' ORDER BY `name`")
     List<Node> getAllExhibits();
 

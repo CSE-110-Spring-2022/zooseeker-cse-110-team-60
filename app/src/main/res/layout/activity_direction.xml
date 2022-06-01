@@ -31,13 +31,13 @@
         android:paddingEnd="0dp"
         android:text="@string/detailed"
         android:textSize="12sp"
-        app:layout_constraintBottom_toTopOf="@+id/direction_mock_button"
+        app:layout_constraintBottom_toTopOf="@+id/direction_mockButton"
         app:layout_constraintLeft_toRightOf="@id/direction_header_textView"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/direction_mock_button"
+        android:id="@+id/direction_mockButton"
         android:layout_width="85dp"
         android:layout_height="40dp"
         android:layout_marginLeft="16dp"

@@ -26,8 +26,8 @@ public class GPSTracker implements LocationListener, DirectionObserver {
     public static boolean manualLocation = true;
 
     public static Location location;
-    public static double latitude = 32.73459618734685;
-    public static double longitude = -117.14936;
+    public static double latitude;
+    public static double longitude;
 
     private static boolean rejected = false;
     private static String nextExhibit = "";
@@ -47,7 +47,7 @@ public class GPSTracker implements LocationListener, DirectionObserver {
     private static List<Node> nodesToPass = new ArrayList<>();
 
     private static int exhibitIndex = 0;
-    private static int currIndex = 0;
+//    private static int currIndex = 0;
 
     public GPSTracker(Context context, Activity activity) {
         GPSTracker.context = context;
@@ -57,7 +57,7 @@ public class GPSTracker implements LocationListener, DirectionObserver {
 
 Log.d("MOCK radius = ", String.valueOf(radius));
 
-        nodes = dao.getAll();
+        nodes = ExhibitList.getAllNodes();
         DirectionTracker.register(this);
 
         getLocation();
@@ -123,60 +123,42 @@ Log.d("MOCK radius = ", String.valueOf(radius));
 
 Log.d("MOCK offtrack method entered", "***");
 
-for (Node node2 : exhibitsToVisit) {
-    Log.d("MOCK printing out exhibitsToVisit", node2.toString());
-}
-
-for (Node node2 : nodesToPass) {
-    Log.d("MOCK printing out nodesToPass", node2.toString());
-}
+Log.d("MOCK rejected = ", String.valueOf(rejected));
+Log.d("MOCK nextExhibit = ", nextExhibit);
+Log.d("MOCK exhibitIndex = ", String.valueOf(exhibitIndex));
 
         Node nextExhibitToVisit;
         if (exhibitIndex < exhibitsToVisit.size()) {
-
-Log.d("MOCK exhibitsToVisit.size(): ", String.valueOf(exhibitsToVisit.size()));
-
             nextExhibitToVisit = exhibitsToVisit.get(exhibitIndex);
-
-Log.d("MOCK nextExhibitToVisit: ", nextExhibitToVisit.toString());
-
         }
         else {
-
-Log.d("MOCK offtrack return, done with exhibits", "***");
-
             return;
         }
 
         double closestDistance = Integer.MAX_VALUE;
         String closestExhibit = nextExhibitToVisit.id;
 
-Log.d("MOCK currIndex = ", String.valueOf(currIndex));
-Log.d("MOCK rejected = ", String.valueOf(rejected));
-Log.d("MOCK exhibitIndex = ", String.valueOf(exhibitIndex));
-
-        if (rejected && currIndex != exhibitIndex) {
-
-Log.d("MOCK rejected changed to false, moving on to next exhibit", "***");
+        if (rejected && !nextExhibit.equals(nextExhibitToVisit.id)) {
 
             rejected = false;
+Log.d("MOCK rejected changed to false, moving on to next exhibit", "***");
         }
 
         {
             for (int iterator = exhibitIndex; iterator < exhibitsToVisit.size(); iterator++) {
 
-Log.d("MOCK comparing current location with exhibit ", exhibitsToVisit.get(exhibitIndex).id);
-
                 double distance = Utilities.getVincentyDistance(latitude, longitude,
-                                                                exhibitsToVisit.get(exhibitIndex).latitude, exhibitsToVisit.get(exhibitIndex).longitude);
+                                                                exhibitsToVisit.get(iterator).latitude, exhibitsToVisit.get(iterator).longitude);
+
+Log.d("MOCK calculating distance", "distance between current location lat=" + latitude + ", lng= " + longitude + "and " + exhibitsToVisit.get(iterator).id + ": lat=" + exhibitsToVisit.get(iterator).latitude + ", lng=" + exhibitsToVisit.get(iterator).longitude + ", distance " + distance);
+
                 if (distance < closestDistance) {
                     closestDistance = distance;
-                    closestExhibit = exhibitsToVisit.get(exhibitIndex).id;
+                    closestExhibit = exhibitsToVisit.get(iterator).id;
                 }
             }
 
-Log.d("MOCK closestDistance = ", String.valueOf(closestDistance));
-Log.d("MOCK closestDistance = ", closestExhibit);
+Log.d("MOCK closestExhibit = ", closestExhibit);
 
             /* Scenario 1 */
             if (!closestExhibit.equals(nextExhibitToVisit.id)) {
@@ -200,11 +182,13 @@ Log.d("MOCK redirected", "***");
 Log.d("MOCK prompted, user said no, wait til next exhibit to prompt", "***");
 
                         // do nothing until next exhibit
+                        DirectionTracker.getDirection(findNearestNode(latitude, longitude));
                         rejected = true;
-                        currIndex = exhibitIndex;
+                        nextExhibit = nextExhibitToVisit.id;
+//                        currIndex = exhibitIndex;
 
 Log.d("MOCK rejected changed to true", "***");
-Log.d("MOCK currIndex changed to ", String.valueOf(currIndex));
+Log.d("MOCK nextExhibit changed to ", nextExhibit);
 
                     }
                 });
@@ -218,48 +202,64 @@ Log.d("MOCK scenario 2 entered", "***");
 
                 for (Node node : nodes) {
 
-Log.d("MOCK loop through all nodes and find closest node", "***");
-
-                    // exhibit visited
-                    if (Utilities.getVincentyDistance(latitude, longitude,
-                                                      node.latitude, node.longitude) < radius && (exhibitsToVisit.get(exhibitIndex) == node)) {
-
-Log.d("MOCK mark exhibit as visited", "***");
-
-                        exhibitIndex++;
-
-Log.d("MOCK exhibitIndex updated to ", String.valueOf(exhibitIndex));
-
-                    }
-
+Log.d("MOCK nodesToPass", nodesToPass.toString());
                     // offTrack
                     if (Utilities.getVincentyDistance(latitude, longitude,
                                                       node.latitude, node.longitude) < radius && !(nodesToPass.get(0) == node)) {
 
-Log.d("MOCK passing node not on route, redirect" , "***");
+Log.d("MOCK passing node not on route, redirect" , "*** passing " + node.id);
+Log.d("MOCK nodes to pass", nodesToPass.toString());
 
                         DirectionTracker.redirect(node.id);
+
+Log.d("MOCK closest node", node.id);
+Log.d("MOCK nodes to pass", nodesToPass.toString());
 
 Log.d("MOCK passed wrong node, has been redirected", "***");
 
                     }
                     // node passed
-                    else if (Utilities.getVincentyDistance(latitude, longitude,
-                                                           node.latitude,
-                                                           node.longitude) < radius && (nodesToPass.get(0) == node)) {
+Log.d("MOCK distance=", String.valueOf(Utilities.getVincentyDistance(latitude, longitude,
+                                                                     node.latitude,
+                                                                     node.longitude)));
 
+Log.d("MOCK radius=", String.valueOf(radius));
+Log.d("MOCK node=", node.id);
+Log.d("MOCK nodesToPass.get(0)", nodesToPass.get(0).toString());
+Log.d("MOCK node", node.toString());
+
+                    double distance = (Utilities.getVincentyDistance(latitude, longitude,
+                                                              node.latitude,
+                                                              node.longitude));
+
+                    if ((distance < radius) && (nodesToPass.get(0).id.equals(node.id))) {
+Log.d("MOCK IF STATEMENT ENTERED", "***");
+Log.d("MOCK distance current location to ", node.id  + ", distance=" + String.valueOf(Utilities.getVincentyDistance(latitude, longitude,
+                                                                       node.latitude,
+                                                                       node.longitude)));
 Log.d("MOCK passing planned node", "***");
 
                         nodesToPass.remove(0);
 
 Log.d("MOCK passed node, remove from the nodesToPass list", "***");
-
-for (Node node1 : nodesToPass) {
-    Log.d("MOCK nodesToPass: ", node1.toString());
-}
-
                     }
 
+                    // exhibit visited
+                    if (Utilities.getVincentyDistance(latitude, longitude,
+                                                      node.latitude, node.longitude) < radius && (exhibitsToVisit.get(exhibitIndex).id.equals(node.id))) {
+
+                        Log.d("MOCK mark exhibit as visited", "***");
+
+                        exhibitIndex++;
+
+                        if (exhibitIndex < exhibitsToVisit.size()) {
+
+                            nextExhibit = nextExhibitToVisit.id;
+
+                            Log.d("MOCK nextExhibit: ", nextExhibit);
+
+                        }
+                    }
                 }
             }
         }
@@ -336,12 +336,12 @@ Log.d("MOCK findSmallestDistance entered", "***");
 
     @Override
     public void updateDirection(Direction direction) {
+        nodeIdsToPass = direction.nodeIds;
 
 for (String id : nodeIdsToPass) {
     Log.d("MOCK nodeIdsToPass updated", id);
 }
 
-        nodeIdsToPass = direction.nodeIds;
         nodesToPass = getNodes(nodeIdsToPass);
     }
 
@@ -358,21 +358,30 @@ for (String id : exhibitIds) {
                               .equals("entrance_exit_gate")) {
             exhibitIdsToVisit.add("entrance_exit_gate");
         }
+
+        if (nextExhibit.equals("")) {
+            nextExhibit = exhibitIdsToVisit.get(0);
+
+Log.d("MOCK first run, nextExhibit is set", nextExhibit);
+        }
+        else {
+            nextExhibit = exhibitIdsToVisit.get(exhibitIndex);
+        }
+
         exhibitsToVisit = getNodes(exhibitIdsToVisit);
     }
 
     private List<Node> getNodes(List<String> ids) {
-
-Log.d("MOCK converting ids to nodes", "***");
-
         List<Node> nodes = new ArrayList<>();
+
         for (String id : ids) {
             Node node = dao.get(id);
             nodes.add(node);
-
-Log.d("MOCK converted", node.toString());
-
         }
         return nodes;
+    }
+
+    public void updateContext(Context context) {
+        GPSTracker.context = context;
     }
 }
