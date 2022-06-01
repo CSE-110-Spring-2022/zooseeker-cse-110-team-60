@@ -128,11 +128,11 @@ public class DirectionTracker {
             }
 
             detailedSteps.add(String.format("  %d. Walk %.0f feet along %s from '%s' to '%s'.\n",
-                    i,
-                    currentDistance,
-                    currentStreet,
-                    currentSourceName,
-                    currentSinkName));
+                                            i,
+                                            currentDistance,
+                                            currentStreet,
+                                            currentSourceName,
+                                            currentSinkName));
 
 //            Log.d("DIR|", "current: "+ currentStreet + ", previous: " + previousStreet);
             if (currentStreet.equals(previousStreet)) {
@@ -272,7 +272,7 @@ public class DirectionTracker {
         redirect(currentNodeId);
     }
 
-    public static Node getParentNodeIfExists(Node node) {
+    static Node getParentNodeIfExists(Node node) {
         if (node.parentId.equals("")) return node;
         else {
             return dao.get(node.parentId);
@@ -312,7 +312,7 @@ public class DirectionTracker {
     public static void notifyOrderChange() {
         for (DirectionObserver observer : observers) {
 
-            Log.d("MOCK notify of order change", "***");
+Log.d("MOCK notify of order change", "***");
 
             observer.updateOrder(currentExhibitIdsOrder);
         }
@@ -321,7 +321,7 @@ public class DirectionTracker {
     public static void notifyDirectionChange() {
         for (DirectionObserver observer : observers) {
 
-            Log.d("MOCK notify of direction change", "***");
+Log.d("MOCK notify of direction change", "***");
 
             observer.updateDirection(currentDirection);
         }

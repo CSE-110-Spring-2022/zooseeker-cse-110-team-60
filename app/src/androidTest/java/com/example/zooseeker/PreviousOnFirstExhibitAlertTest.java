@@ -3,8 +3,6 @@ package com.example.zooseeker;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
-import static androidx.test.espresso.action.ViewActions.replaceText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
@@ -15,6 +13,8 @@ import static org.hamcrest.Matchers.allOf;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.test.espresso.ViewInteraction;
 import androidx.test.filters.LargeTest;
@@ -24,44 +24,76 @@ import androidx.test.runner.AndroidJUnit4;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
+import org.hamcrest.core.IsInstanceOf;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class SearchbarAutocompleteTest {
+public class PreviousOnFirstExhibitAlertTest {
 
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
     @Test
-    public void searchbarAutocompleteTest() {
-        ViewInteraction materialAutoCompleteTextView = onView(
-                allOf(withId(R.id.main_searchBar),
+    public void previousOnFirstExhibitAlertTest() {
+        ViewInteraction materialCheckBox = onView(
+                allOf(withId(R.id.node_checkBox),
                         childAtPosition(
                                 childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
+                                        withId(R.id.main_exhibitsRecyclerView),
+                                        1),
                                 0),
                         isDisplayed()));
-        materialAutoCompleteTextView.perform(click());
+        materialCheckBox.perform(click());
 
-        ViewInteraction materialAutoCompleteTextView2 = onView(
-                allOf(withId(R.id.main_searchBar),
+        ViewInteraction materialCheckBox2 = onView(
+                allOf(withId(R.id.node_checkBox),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(R.id.main_exhibitsRecyclerView),
+                                        2),
+                                0),
+                        isDisplayed()));
+        materialCheckBox2.perform(click());
+
+        ViewInteraction materialCheckBox3 = onView(
+                allOf(withId(R.id.node_checkBox),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(R.id.main_exhibitsRecyclerView),
+                                        3),
+                                0),
+                        isDisplayed()));
+        materialCheckBox3.perform(click());
+
+        ViewInteraction materialButton = onView(
+                allOf(withId(R.id. main_directionsButton), withText("Get Directions"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                0),
+                                3),
                         isDisplayed()));
-        materialAutoCompleteTextView2.perform(replaceText("go"), closeSoftKeyboard());
+        materialButton.perform(click());
+
+        ViewInteraction materialButton2 = onView(
+                allOf(withId(R.id.direction_previousButton), withText("Previous"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                2),
+                        isDisplayed()));
+        materialButton2.perform(click());
 
         ViewInteraction textView = onView(
-                allOf(withId(R.id.node_name), withText("Gorillas"),
-                        withParent(withParent(withId(R.id.main_exhibitsRecyclerView))),
+                allOf(IsInstanceOf.<View>instanceOf(TextView.class), withText("Alert!"),
+                        withParent(allOf(IsInstanceOf.<View>instanceOf(LinearLayout.class),
+                                withParent(IsInstanceOf.<View>instanceOf(LinearLayout.class)))),
                         isDisplayed()));
-        textView.check(matches(withText("Gorillas")));
+        textView.check(matches(isDisplayed()));
     }
 
     private static Matcher<View> childAtPosition(

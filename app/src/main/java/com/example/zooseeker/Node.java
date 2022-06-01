@@ -1,6 +1,7 @@
 package com.example.zooseeker;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
@@ -8,6 +9,7 @@ import androidx.room.PrimaryKey;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity(tableName = "node_list")
 public class Node {
@@ -42,9 +44,8 @@ public class Node {
     @NonNull
     @Override
     public String toString() {
-        return "Node{" + "id=" + id + ", parentId=" + parentId + ", kind=" + kind + ", "
-               + "name=" + name + ", tags=[" + tags + "], added=" + added + ", latitude" +
-               "=" + latitude + ", " + "longitude" + longitude + "}";
+        return "Node{" + "id=" + id + ", parentId=" + parentId + ", kind=" + kind + ", " +
+               "name=" + name + ", tags=[" + tags + "], added=" + added + ", latitude=" + latitude + ", " + "longitude" + longitude + "}";
     }
 
     public static List<Node> loadJSON(Context context, String path) {
@@ -69,8 +70,7 @@ public class Node {
                 else {
 
                     if (vertexInfo.group_id != null && (vertexInfo.lat == null || vertexInfo.lng == null)) {
-                        throw new RuntimeException("Nodes must have a lat/long unless " +
-                                                   "they are grouped.");
+                        throw new RuntimeException("Nodes must have a lat/long unless they are grouped.");
                     }
 
                     latitude = Double.parseDouble(vertexInfo.lat);

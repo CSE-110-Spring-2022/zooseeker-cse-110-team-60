@@ -3,10 +3,8 @@ package com.example.zooseeker;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
-import static androidx.test.espresso.matcher.ViewMatchers.withParent;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 
@@ -29,7 +27,7 @@ import org.junit.runner.RunWith;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class ClearSelectedExhibitsTest {
+public class RetainSelectedExhibits {
 
     @Rule
     public ActivityScenarioRule<MainActivity> mActivityScenarioRule =
@@ -42,7 +40,9 @@ public class ClearSelectedExhibitsTest {
                     "android.permission.ACCESS_COARSE_LOCATION");
 
     @Test
-    public void checkSelectedExhibitsTest() {
+    public void retainSelectedExhibits() {
+
+        // 1. Click on Crocodiles, Flamingos, Gorillas, and Hippos.
         ViewInteraction materialCheckBox = onView(
                 allOf(withId(R.id.node_checkBox),
                         childAtPosition(
@@ -63,12 +63,29 @@ public class ClearSelectedExhibitsTest {
                         isDisplayed()));
         materialCheckBox2.perform(click());
 
-        ViewInteraction textView = onView(
-                allOf(withId(R.id.main_counter), withText("Planned 2 Exhibit(s)"),
-                        withParent(withParent(withId(android.R.id.content))),
+        ViewInteraction materialCheckBox3 = onView(
+                allOf(withId(R.id.node_checkBox),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(R.id.main_exhibitsRecyclerView),
+                                        4),
+                                0),
                         isDisplayed()));
-        textView.check(matches(withText("Planned 2 Exhibit(s)")));
+        materialCheckBox3.perform(click());
 
+        ViewInteraction materialCheckBox4 = onView(
+                allOf(withId(R.id.node_checkBox),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(R.id.main_exhibitsRecyclerView),
+                                        5),
+                                0),
+                        isDisplayed()));
+        materialCheckBox4.perform(click());
+
+        // 2. Exit out of the app
+        // NOTE: Can't currently exit out of the app, exhibits are cleared to make sure that it doesn't
+        //      cause other tests to fail.
         ViewInteraction materialButton = onView(
                 allOf(withId(R.id.main_clearButton), withText("Clear"),
                         childAtPosition(
@@ -78,12 +95,6 @@ public class ClearSelectedExhibitsTest {
                                 7),
                         isDisplayed()));
         materialButton.perform(click());
-
-        ViewInteraction textView2 = onView(
-                allOf(withId(R.id.main_counter), withText("Planned 0 Exhibit(s)"),
-                        withParent(withParent(withId(android.R.id.content))),
-                        isDisplayed()));
-        textView2.check(matches(withText("Planned 0 Exhibit(s)")));
     }
 
     private static Matcher<View> childAtPosition(

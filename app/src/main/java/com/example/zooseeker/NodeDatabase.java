@@ -32,7 +32,8 @@ public abstract class NodeDatabase extends RoomDatabase {
                     public void onCreate(@NonNull SupportSQLiteDatabase db) {
                         super.onCreate(db);
                         Executors.newSingleThreadExecutor().execute(() -> {
-                            List<Node> nodes = Node.loadJSON(context, "exhibit_info.json");
+                            List<Node> nodes = Node.loadJSON(context, "exhibit_info" +
+                                                                      ".json");
                             getSingleton(context).nodeDao().insertAll(nodes);
                         });
                     }

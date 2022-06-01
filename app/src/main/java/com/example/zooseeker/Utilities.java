@@ -8,16 +8,19 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 
 public class Utilities {
-    public static void showAlert(Activity activity, String message,
+    public static boolean showAlert(Activity activity, String message,
                                     String positiveButtonMsg, String negativeButtonMsg) {
+        final boolean[] response = new boolean[1];
         DialogInterface.OnClickListener dialog = (dialogInterface, i) -> {
             switch (i) {
                 // "Yes" or "Ok" button clicked
                 case DialogInterface.BUTTON_POSITIVE:
+                    response[0] = true;
                     break;
 
                 // "No" or "Cancel" button clicked
                 case DialogInterface.BUTTON_NEGATIVE:
+                    response[0] = false;
                     break;
             }
         };
@@ -26,6 +29,8 @@ public class Utilities {
 
         alertBuilder.setMessage(message).setPositiveButton(positiveButtonMsg, dialog)
                     .setNegativeButton(negativeButtonMsg, dialog).show();
+
+        return response[0];
     }
 
     /**

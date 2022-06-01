@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.concurrent.Executors;
 
 @RunWith(AndroidJUnit4.class)
-public class FindNearestNode {
+public class FindNearestNodeTest {
 
     NodeDao dao;
 

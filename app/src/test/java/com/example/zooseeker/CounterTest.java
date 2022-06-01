@@ -1,6 +1,8 @@
 package com.example.zooseeker;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import android.content.Context;
@@ -14,6 +16,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +25,7 @@ public class CounterTest {
     private NodeDao dao;
     private NodeDatabase db;
 
-    // mock ExhibitItems used for Testing
+    // Three mock ExhibitItems used for Testing
     Node ex1 = new Node("gorillas", "", VertexInfo.Kind.EXHIBIT, "Gorillas", "gorilla, monkey, ape, mammal", 50, 60);
     Node ex2 = new Node("gators", "", VertexInfo.Kind.EXHIBIT, "Alligators", "alligator, reptile, gator", 55, 65);
     Node ex3 = new Node("lions", "mammal", VertexInfo.Kind.EXHIBIT, "Lions", "lion, cat, mammal, africa", 70, 78);
@@ -31,18 +34,21 @@ public class CounterTest {
     /**
      * Name:     createDb
      * Behavior: Get the context, create a database, and initialize it before tests run
+     *
      */
     @Before
     public void createDb() {
         Context context = ApplicationProvider.getApplicationContext();
         db = Room.inMemoryDatabaseBuilder(context, NodeDatabase.class)
-                 .allowMainThreadQueries().build();
+                .allowMainThreadQueries()
+                .build();
         dao = db.nodeDao();
     }
 
     /**
      * Name:     closeDb
      * Behavior: Close the database after tests are finished running
+     *
      */
     @After
     public void closeDb() {
@@ -51,9 +57,9 @@ public class CounterTest {
 
     /**
      * Name:     counterUp
-     * Behavior: Verify that exhibits are not added to start, that make sure the
-     * getNumChecked()
-     * returns the the proper count after it is incremented.
+     * Behavior: Verify that exhibits are not added to start, that make sure the getNumChecked()
+     *           returns the the proper count after it is incremented.
+     *
      */
     @Test
     public void counterUp() {
@@ -74,8 +80,7 @@ public class CounterTest {
             item.added = true;
             dao.update(item);
         }
-        // Test counterUp() by checking getNumChecked() returns that all exhibits are
-        // checked
+        // Test counterUp() by checking getNumChecked() returns that all exhibits are checked
         for (Node item : items) {
             assertTrue(item.added);
         }
@@ -83,10 +88,10 @@ public class CounterTest {
 
     /**
      * Name:     counterDown
-     * Behavior: Verify that exhibits are not added to start, that make sure the
-     * getNumChecked()
-     * returns the the proper count after it is incremented. Then set an exhibit to false
-     * and verify that the counter has been decremented.
+     * Behavior: Verify that exhibits are not added to start, that make sure the getNumChecked()
+     *           returns the the proper count after it is incremented. Then set an exhibit to false
+     *           and verify that the counter has been decremented.
+     *
      */
     @Test
     public void counterDown() {
@@ -107,8 +112,7 @@ public class CounterTest {
             item.added = true;
             dao.update(item);
         }
-        // Test counterUp() by checking getNumChecked() returns that all exhibits are
-        // checked
+        // Test counterUp() by checking getNumChecked() returns that all exhibits are checked
         for (Node item : items) {
             assertTrue(item.added);
         }
@@ -118,4 +122,5 @@ public class CounterTest {
         // Test counterDown() by that one exhibit is un-checked
         assertFalse(items.get(0).added);
     }
+
 }

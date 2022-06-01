@@ -2,7 +2,6 @@ package com.example.zooseeker;
 
 
 import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.replaceText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
@@ -17,10 +16,10 @@ import android.view.ViewGroup;
 import android.view.ViewParent;
 
 import androidx.test.espresso.ViewInteraction;
+import androidx.test.ext.junit.rules.ActivityScenarioRule;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
-import androidx.test.rule.ActivityTestRule;
 import androidx.test.rule.GrantPermissionRule;
-import androidx.test.runner.AndroidJUnit4;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -31,41 +30,36 @@ import org.junit.runner.RunWith;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class SearchbarCategoryTest {
+public class SearchBarCategoryTest {
+
 
     @Rule
-    public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
+    public ActivityScenarioRule<MainActivity> mActivityScenarioRule =
+            new ActivityScenarioRule<>(MainActivity.class);
 
     @Rule
-    public GrantPermissionRule mGrantPermissionRule = GrantPermissionRule.grant(
-            "android.permission.ACCESS_FINE_LOCATION", "android.permission.ACCESS_COARSE_LOCATION");
+    public GrantPermissionRule mGrantPermissionRule =
+            GrantPermissionRule.grant(
+                    "android.permission.ACCESS_FINE_LOCATION",
+                    "android.permission.ACCESS_COARSE_LOCATION");
+
 
     @Test
-    public void searchbarCategoryTest() {
+    public void searchBarCategoryTests() {
         ViewInteraction materialAutoCompleteTextView = onView(
                 allOf(withId(R.id.main_searchBar),
-                      childAtPosition(
-                              childAtPosition(
-                                      withId(android.R.id.content),
-                                      0),
-                              0),
-                      isDisplayed()));
-        materialAutoCompleteTextView.perform(click());
-
-        ViewInteraction materialAutoCompleteTextView2 = onView(
-                allOf(withId(R.id.main_searchBar),
-                      childAtPosition(
-                              childAtPosition(
-                                      withId(android.R.id.content),
-                                      0),
-                              0),
-                      isDisplayed()));
-        materialAutoCompleteTextView2.perform(replaceText("reptile"), closeSoftKeyboard());
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                0),
+                        isDisplayed()));
+        materialAutoCompleteTextView.perform(replaceText("reptile"), closeSoftKeyboard());
 
         ViewInteraction textView = onView(
                 allOf(withId(R.id.node_name), withText("Crocodiles"),
-                      withParent(withParent(withId(R.id.main_exhibitsRecyclerView))),
-                      isDisplayed()));
+                        withParent(withParent(withId(R.id.main_exhibitsRecyclerView))),
+                        isDisplayed()));
         textView.check(matches(withText("Crocodiles")));
     }
 
@@ -83,7 +77,7 @@ public class SearchbarCategoryTest {
             public boolean matchesSafely(View view) {
                 ViewParent parent = view.getParent();
                 return parent instanceof ViewGroup && parentMatcher.matches(parent)
-                       && view.equals(((ViewGroup) parent).getChildAt(position));
+                        && view.equals(((ViewGroup) parent).getChildAt(position));
             }
         };
     }

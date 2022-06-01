@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RunWith(AndroidJUnit4.class)
-public class getDirectionTest {
+public class GetDirectionTest {
     NodeDao dao;
     NodeDatabase testDb;
 

@@ -7,14 +7,16 @@ import java.util.List;
 
 public class ExhibitList {
     @SuppressLint("StaticFieldLeak")
-    private final static MainActivity mainActivity = MainActivity.getInstance();
+    private final static MainActivity main = MainActivity.getInstance();
 
     public static List<Node> getAllNodes() {
-        return mainActivity.getAllNodes();
+        List<Node> nodes = main.getAllNodes();
+        nodes.removeIf(node -> !node.parentId.isEmpty());
+        return nodes;
     }
 
     public static List<Node> getAllExhibits() {
-        return mainActivity.getAllExhibits();
+        return main.getAllExhibits();
     }
 
     public static List<Node> getCheckedExhibits() {
@@ -28,7 +30,7 @@ public class ExhibitList {
     }
 
     public static void clearCheckedExhibits() {
-        mainActivity.uncheckExhibits();
+        main.uncheckExhibits();
     }
 
     public static List<Node> getSearchItems(String search) {

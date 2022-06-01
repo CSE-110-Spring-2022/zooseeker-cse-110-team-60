@@ -70,7 +70,7 @@ public class SearchTest {
     }
 
     @Test
-    public void testExhibitNotExist() {
+    public void testExhibitNotExist() { // 2nd testing
         ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
         scenario.moveToState(Lifecycle.State.CREATED);
         scenario.moveToState(Lifecycle.State.STARTED);
@@ -90,3 +90,30 @@ public class SearchTest {
         });
     }
 }
+
+/*
+@Test
+    public void testExhibitExists() {
+        ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
+        scenario.moveToState(Lifecycle.State.CREATED);
+        scenario.moveToState(Lifecycle.State.STARTED);
+        scenario.moveToState(Lifecycle.State.RESUMED);
+
+        scenario.onActivity(activity -> {
+            RecyclerView recyclerView = activity.recyclerView;
+            AutoCompleteTextView searchBar =
+                    activity.findViewById(R.id.searchBar);
+            Button searchButton = activity.findViewById(R.id.searchButton);
+
+            searchBar.setText("G");
+            searchButton.performClick();
+
+            RecyclerView.ViewHolder firstVH = recyclerView.findViewHolderForAdapterPosition(0);
+            assertNotNull(firstVH);
+
+//            TextView exhibit =
+//                    firstVH.itemView.findViewById(R.id.exhibit_item_text);
+//            assertEquals("Gorillas", exhibit.getText().toString());
+        });
+    }
+ */

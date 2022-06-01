@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
+
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.Editable;
@@ -21,13 +22,13 @@ import android.widget.TextView;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressLint("StaticFieldLeak")
 public class MainActivity extends AppCompatActivity {
-
     private final PermissionChecker permissionChecker = new PermissionChecker(this);
     private static final String[] requiredPermissions =
             new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
                          Manifest.permission.ACCESS_COARSE_LOCATION};
-
+    
     public static GPSTracker gpsTracker;
     public RecyclerView recyclerView;
     private ExhibitViewModel viewModel;
@@ -43,16 +44,17 @@ public class MainActivity extends AppCompatActivity {
     private Button directionsBtn;
 
     public static boolean update = true;
+//    public static boolean locationAllowed = false;
 
     @SuppressLint("StaticFieldLeak")
-    static MainActivity mainActivity;
+    static MainActivity main;
 
+    @SuppressLint("MissingPermission")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        main = this;
         setContentView(R.layout.activity_main);
-
-        mainActivity = this;
 
         /* viewModel, adapter, recyclerView Setup */
         {
@@ -185,19 +187,22 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
+        GPSTracker.latitude = getGate().latitude;
+        GPSTracker.longitude = getGate().longitude;
+
         DirectionTracker.loadGraphData(this, "exhibit_info.json", "trail_info.json", "zoo_graph.json");
         DirectionTracker.loadDatabaseAndDaoByContext(this);
 
         gpsTracker = new GPSTracker(this, this);
 
-        DirectionTracker.initDirections("entrance_exit_gate", toVisit);
+        DirectionTracker.initDirections(GPSTracker.findNearestNode(GPSTracker.latitude, GPSTracker.longitude), toVisit);
         DirectionTracker.getDirection(GPSTracker.findNearestNode(GPSTracker.latitude, GPSTracker.longitude));
         Intent summaryIntent = new Intent(this, RoutePlanSummaryActivity.class);
         startActivity(summaryIntent);
     }
 
     public static MainActivity getInstance() {
-        return mainActivity;
+        return main;
     }
 
     public List<Node> getAllNodes() {
@@ -206,6 +211,10 @@ public class MainActivity extends AppCompatActivity {
 
     public List<Node> getAllExhibits() {
         return viewModel.getAllExhibits();
+    }
+
+    public Node getGate() {
+        return viewModel.getGate();
     }
 
     @SuppressLint("SetTextI18n")

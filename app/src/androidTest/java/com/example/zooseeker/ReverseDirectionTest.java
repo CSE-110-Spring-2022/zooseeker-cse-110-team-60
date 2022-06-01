@@ -32,7 +32,7 @@ import org.junit.runner.RunWith;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class ActualLocationTest {
+public class ReverseDirectionTest {
 
     @Rule
     public ActivityScenarioRule<MainActivity> mActivityScenarioRule =
@@ -45,7 +45,7 @@ public class ActualLocationTest {
                     "android.permission.ACCESS_COARSE_LOCATION");
 
     @Test
-    public void actualLocationTest() {
+    public void reverseDirectionTest() {
         ViewInteraction materialCheckBox = onView(
                 allOf(withId(R.id.node_checkBox),
                         childAtPosition(
@@ -65,6 +65,26 @@ public class ActualLocationTest {
                                 0),
                         isDisplayed()));
         materialCheckBox2.perform(click());
+
+        ViewInteraction materialCheckBox3 = onView(
+                allOf(withId(R.id.node_checkBox),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(R.id.main_exhibitsRecyclerView),
+                                        4),
+                                0),
+                        isDisplayed()));
+        materialCheckBox3.perform(click());
+
+        ViewInteraction materialCheckBox4 = onView(
+                allOf(withId(R.id.node_checkBox),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(R.id.main_exhibitsRecyclerView),
+                                        5),
+                                0),
+                        isDisplayed()));
+        materialCheckBox4.perform(click());
 
         ViewInteraction materialButton = onView(
                 allOf(withId(R.id.main_directionsButton), withText("Get Directions"),
@@ -87,6 +107,16 @@ public class ActualLocationTest {
         materialButton2.perform(click());
 
         ViewInteraction materialButton3 = onView(
+                allOf(withId(R.id.direction_nextButton), withText("Next"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                8),
+                        isDisplayed()));
+        materialButton3.perform(click());
+
+        ViewInteraction materialButton4 = onView(
                 allOf(withId(R.id.direction_mockButton), withText("Mock"),
                         childAtPosition(
                                 childAtPosition(
@@ -94,16 +124,16 @@ public class ActualLocationTest {
                                         0),
                                 2),
                         isDisplayed()));
-        materialButton3.perform(click());
+        materialButton4.perform(click());
 
-        ViewInteraction materialButton4 = onView(
+        ViewInteraction materialButton5 = onView(
                 allOf(withId(android.R.id.button1), withText("Yes"),
                         childAtPosition(
                                 childAtPosition(
                                         withClassName(is("android.widget.ScrollView")),
                                         0),
                                 3)));
-        materialButton4.perform(scrollTo(), click());
+        materialButton5.perform(scrollTo(), click());
 
         ViewInteraction appCompatEditText = onView(
                 allOf(withId(R.id.direction_mockLatitude),
@@ -114,7 +144,7 @@ public class ActualLocationTest {
                                                 3)),
                                 0),
                         isDisplayed()));
-        appCompatEditText.perform(replaceText("32.74112858"), closeSoftKeyboard());
+        appCompatEditText.perform(replaceText("32.745293428608484"), closeSoftKeyboard());
 
         ViewInteraction appCompatEditText2 = onView(
                 allOf(withId(R.id.direction_mockLongitude),
@@ -125,9 +155,9 @@ public class ActualLocationTest {
                                                 3)),
                                 1),
                         isDisplayed()));
-        appCompatEditText2.perform(replaceText("-117.16274043"), closeSoftKeyboard());
+        appCompatEditText2.perform(replaceText("-117.16976102878033"), closeSoftKeyboard());
 
-        ViewInteraction materialButton5 = onView(
+        ViewInteraction materialButton6 = onView(
                 allOf(withId(R.id.direction_mockLocation), withText("Mock Location"),
                         childAtPosition(
                                 allOf(withId(R.id.direction_mockButton),
@@ -136,9 +166,28 @@ public class ActualLocationTest {
                                                 3)),
                                 2),
                         isDisplayed()));
-        materialButton5.perform(click());
+        materialButton6.perform(click());
 
-        ViewInteraction materialButton6 = onView(
+        ViewInteraction materialButton7 = onView(
+                allOf(withId(android.R.id.button1), withText("Yes"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withClassName(is("android.widget.ScrollView")),
+                                        0),
+                                3)));
+        materialButton7.perform(scrollTo(), click());
+
+        ViewInteraction materialButton8 = onView(
+                allOf(withId(R.id.direction_previousButton), withText("Prev"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                5),
+                        isDisplayed()));
+        materialButton8.perform(click());
+
+        ViewInteraction materialButton9 = onView(
                 allOf(withId(R.id.direction_exitButton), withText("Exit"),
                         childAtPosition(
                                 childAtPosition(
@@ -146,16 +195,16 @@ public class ActualLocationTest {
                                         0),
                                 6),
                         isDisplayed()));
-        materialButton6.perform(click());
+        materialButton9.perform(click());
 
-        ViewInteraction materialButton7 = onView(
+        ViewInteraction materialButton10 = onView(
                 allOf(withId(android.R.id.button1), withText("Yes"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(androidx.appcompat.R.id.buttonPanel),
                                         0),
                                 3)));
-        materialButton7.perform(scrollTo(), click());
+        materialButton10.perform(scrollTo(), click());
     }
 
     private static Matcher<View> childAtPosition(

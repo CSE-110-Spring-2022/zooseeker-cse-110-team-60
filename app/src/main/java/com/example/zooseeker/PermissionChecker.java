@@ -7,10 +7,9 @@ import androidx.activity.ComponentActivity;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 
 public class PermissionChecker {
-    private final AppCompatActivity activity;
+    private ComponentActivity activity;
     final ActivityResultLauncher<String[]> requestPermissionLauncher;
 
     /**
@@ -24,33 +23,38 @@ public class PermissionChecker {
      *
      * @param activity activity
      */
-    public PermissionChecker(AppCompatActivity activity) {
+    public PermissionChecker(ComponentActivity activity) {
         this.activity = activity;
 
         requestPermissionLauncher =
                 activity.registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), result -> {
-                    Boolean fineLocationGranted =
-                            result.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false);
+            Boolean fineLocationGranted =
+                    result.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false);
 
-                    // precise location access granted
-                    if (fineLocationGranted != null && fineLocationGranted) {
-                        this.activity.recreate();
-                    }
-                    // only approximate location access granted or no access granted
-                    else {
-                        DialogInterface.OnClickListener dialog = (dialogInterface, i) -> {
-                            if (i == DialogInterface.BUTTON_POSITIVE) {
-                                this.activity.finish();
-                                System.exit(0);
-                            }
-                        };
+            // precise location access granted
+            if (fineLocationGranted != null && fineLocationGranted) {
+                this.activity.recreate();
+//                MainActivity.locationAllowed = true;
 
-                        AlertDialog.Builder builder = new AlertDialog.Builder(this.activity);
-                        builder.setMessage("Please go to System Settings to enable Precise " +
-                                           "Location for ZooSeeker.")
-                               .setPositiveButton("Ok", dialog)
-                               .show();  // TODO: check what happens if clicking "only allow this time"
+//                MainActivity main = MainActivity.getInstance();
+            }
+            // only approximate location access granted or no access granted
+            else {
+//                this.activity.recreate();
+//                MainActivity.locationAllowed = false; // downgrade
+                DialogInterface.OnClickListener dialog = (dialogInterface, i) -> {
+                    if (i == DialogInterface.BUTTON_POSITIVE) {
+                        this.activity.finish();
+                        System.exit(0);
                     }
-                });
+                };
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(this.activity);
+                builder.setMessage("Please go to System Settings to enable Precise " +
+                                   "Location for ZooSeeker.")
+                       .setPositiveButton("Ok", dialog)
+                       .show();  // TODO: check what happens if clicking "only allow this time"
+            }
+        });
     }
 }

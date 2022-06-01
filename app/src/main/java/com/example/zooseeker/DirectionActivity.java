@@ -1,7 +1,5 @@
 package com.example.zooseeker;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,13 +14,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class DirectionActivity extends AppCompatActivity implements DirectionObserver {
     public TextView header;
-    //    public TextView body;
+//    public TextView body;
     public Button nextButton;
     public Button previousButton;
     public Button exitButton;
@@ -49,6 +46,8 @@ public class DirectionActivity extends AppCompatActivity implements DirectionObs
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_direction);
 
+        MainActivity.gpsTracker.updateContext(this);
+
         adapter = new DirectionAdapter();
         adapter.setHasStableIds(true);
 
@@ -57,6 +56,7 @@ public class DirectionActivity extends AppCompatActivity implements DirectionObs
         recyclerView.setAdapter(adapter);
 
         header = findViewById(R.id.direction_header);
+//        body = findViewById(R.id.direction_body_textView);
         nextButton = findViewById(R.id.direction_nextButton);
         previousButton = findViewById(R.id.direction_previousButton);
         exitButton = findViewById(R.id.direction_exitButton);
@@ -154,11 +154,11 @@ public class DirectionActivity extends AppCompatActivity implements DirectionObs
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Are you sure you want to exit?")
-                .setPositiveButton("Yes", dialog).setNegativeButton("No", dialog).show();
+               .setPositiveButton("Yes", dialog).setNegativeButton("No", dialog).show();
     }
 
     void skipClicked(View view) {
-        if (DirectionTracker.index == DirectionTracker.currentExhibitIdsOrder.size()) {
+        if (DirectionTracker.index == DirectionTracker.currentExhibitIdsOrder.size() - 1) {
             Utilities.showAlert(this, "Last direction, can't skip!", "Ok", "Cancel");
             return;
         }
@@ -167,7 +167,7 @@ public class DirectionActivity extends AppCompatActivity implements DirectionObs
             switch (i) {
                 // "Yes" button clicked
                 case DialogInterface.BUTTON_POSITIVE:
-                    DirectionTracker.skip(currentId); // change to from current location
+                    DirectionTracker.skip(GPSTracker.findNearestNode(GPSTracker.latitude, GPSTracker.longitude)); // change to from current location
                     setDirection();
                     break;
 
@@ -238,14 +238,14 @@ public class DirectionActivity extends AppCompatActivity implements DirectionObs
             return;
         }
 
-        Log.d("MOCK manual latitude", String.valueOf(GPSTracker.latitude));
-        Log.d("MOCK manual longitude", String.valueOf(GPSTracker.longitude));
+Log.d("MOCK manual latitude", String.valueOf(GPSTracker.latitude));
+Log.d("MOCK manual longitude", String.valueOf(GPSTracker.longitude));
 
         mockLocation.setVisibility(View.INVISIBLE);
         mockLatitude.getText().clear();
         mockLongitude.getText().clear();
 
-        Log.d("MOCK calling offTrack", "***");
+Log.d("MOCK calling offTrack", "***");
 
         MainActivity.gpsTracker.offTrack();
     }
@@ -278,8 +278,8 @@ public class DirectionActivity extends AppCompatActivity implements DirectionObs
 
 //        body.setText(directionsString);
         List<String> steps;
-        if (detailed) steps = currentDirection.getDetailedDirections();
-        else steps = currentDirection.getBriefDirections();
+        if (detailed) steps = new ArrayList<String>(currentDirection.getDetailedDirections());
+        else steps = new ArrayList<String>(currentDirection.getBriefDirections());
 
         adapter.setDirections(steps);
 
@@ -290,7 +290,7 @@ public class DirectionActivity extends AppCompatActivity implements DirectionObs
     @Override
     public void updateDirection(Direction direction) {
 
-        Log.d("MOCK updated directions, setting new directions, updating screen", "***");
+Log.d("MOCK updated directions, setting new directions, updating screen", "***");
 
         setDirection();
     }

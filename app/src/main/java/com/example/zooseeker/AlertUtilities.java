@@ -2,14 +2,14 @@ package com.example.zooseeker;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 
 /**
- * Source: https://stackoverflow.com/questions/52925790/alert-dialog-button-pressed
- * -returning-0-values-always
+ * Source: https://stackoverflow.com/questions/52925790/alert-dialog-button-pressed-returning-0-values-always
  */
 public class AlertUtilities {
-    private final AlertDialog.Builder builder;
-    private final AlertDialogListener listener;
+    private AlertDialog.Builder builder;
+    private AlertDialogListener listener;
 
     interface AlertDialogListener {
         void onClick(boolean response);
@@ -20,8 +20,7 @@ public class AlertUtilities {
         this.listener = listener;
     }
 
-    public void showAlert(String message, String positiveButtonMsg,
-                          String negativeButtonMsg) {
+    public void showAlert(String message, String positiveButtonMsg, String negativeButtonMsg) {
         builder.setMessage(message);
         builder.setPositiveButton(positiveButtonMsg, (dialogInterface, i) -> {
             listener.onClick(true);

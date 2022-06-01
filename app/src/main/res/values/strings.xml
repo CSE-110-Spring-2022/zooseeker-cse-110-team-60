@@ -15,4 +15,6 @@
     <string name="back">Back</string>
     <string name="clear">Clear</string>
     <string name="get_directions">Get Directions</string>
+    <string name="route_summary">Route Summary</string>
+    <string name="go">Go</string>
 </resources>

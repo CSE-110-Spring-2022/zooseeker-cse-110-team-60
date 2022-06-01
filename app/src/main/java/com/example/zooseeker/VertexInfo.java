@@ -17,15 +17,6 @@ import java.util.Collections;
 import java.util.List;
 
 public class VertexInfo {
-    public static List<VertexInfo> vertexInfos;
-    public String id;
-    public String group_id;
-    public Kind kind;
-    public String name;
-    public List<String> tags;
-    public String lat;
-    public String lng;
-
     public enum Kind {
         // The SerializedName annotation tells GSON how to convert
         // from the strings in our JSON to this Enum.
@@ -34,6 +25,16 @@ public class VertexInfo {
         @SerializedName("intersection") INTERSECTION,
         @SerializedName("exhibit_group") GROUP
     }
+
+    public String id;
+    public String group_id;
+    public Kind kind;
+    public String name;
+    public List<String> tags;
+    public String lat;
+    public String lng;
+
+    public static List<VertexInfo> vertexInfos;
 
     @NonNull
     @Override

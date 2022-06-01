@@ -3,6 +3,7 @@ package com.example.zooseeker;
 import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
+import android.util.Log;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -20,6 +21,10 @@ public class ExhibitViewModel extends AndroidViewModel {
         Context context = getApplication().getApplicationContext();
         NodeDatabase db = NodeDatabase.getSingleton(context);
         nodeDao = db.nodeDao();
+    }
+
+    public Node getGate() {
+        return nodeDao.getGate();
     }
 
     public List<Node> getAllNodes() {
@@ -46,8 +51,8 @@ public class ExhibitViewModel extends AndroidViewModel {
         exhibit.added = !exhibit.added;
         nodeDao.update(exhibit);
 
-        MainActivity mainActivity = MainActivity.getInstance();
-        TextView numPlanned = mainActivity.findViewById(R.id.main_counter);
+        MainActivity main = MainActivity.getInstance();
+        TextView numPlanned = main.findViewById(R.id.main_counter);
         numPlanned.setText("Planned " + ExhibitList.getNumChecked() + " Exhibit(s)");
 
         MainActivity.update = false;

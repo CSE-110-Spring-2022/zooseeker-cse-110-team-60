@@ -3,10 +3,8 @@ package com.example.zooseeker;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
-import static androidx.test.espresso.matcher.ViewMatchers.withParent;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 
@@ -29,7 +27,7 @@ import org.junit.runner.RunWith;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class ClearSelectedExhibitsTest {
+public class RetainRoutePlanTest {
 
     @Rule
     public ActivityScenarioRule<MainActivity> mActivityScenarioRule =
@@ -42,7 +40,9 @@ public class ClearSelectedExhibitsTest {
                     "android.permission.ACCESS_COARSE_LOCATION");
 
     @Test
-    public void checkSelectedExhibitsTest() {
+    public void retainRoutePlanTests() {
+
+        // 1. Check off Crocodiles, Flamingos, Gorillas, and Hippos
         ViewInteraction materialCheckBox = onView(
                 allOf(withId(R.id.node_checkBox),
                         childAtPosition(
@@ -63,27 +63,61 @@ public class ClearSelectedExhibitsTest {
                         isDisplayed()));
         materialCheckBox2.perform(click());
 
-        ViewInteraction textView = onView(
-                allOf(withId(R.id.main_counter), withText("Planned 2 Exhibit(s)"),
-                        withParent(withParent(withId(android.R.id.content))),
+        ViewInteraction materialCheckBox3 = onView(
+                allOf(withId(R.id.node_checkBox),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(R.id.main_exhibitsRecyclerView),
+                                        5),
+                                0),
                         isDisplayed()));
-        textView.check(matches(withText("Planned 2 Exhibit(s)")));
+        materialCheckBox3.perform(click());
 
+        ViewInteraction materialCheckBox4 = onView(
+                allOf(withId(R.id.node_checkBox),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(R.id.main_exhibitsRecyclerView),
+                                        7),
+                                0),
+                        isDisplayed()));
+        materialCheckBox4.perform(click());
+
+        //2. Click on "Get Directions" Button
         ViewInteraction materialButton = onView(
-                allOf(withId(R.id.main_clearButton), withText("Clear"),
+                allOf(withId(R.id.main_directionsButton), withText("Get Directions"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                7),
+                                8),
                         isDisplayed()));
         materialButton.perform(click());
 
-        ViewInteraction textView2 = onView(
-                allOf(withId(R.id.main_counter), withText("Planned 0 Exhibit(s)"),
-                        withParent(withParent(withId(android.R.id.content))),
+        // 3. On RoutePlanSummary, Click on the "GO" button which will navigate to the directions,
+        ViewInteraction materialButton2 = onView(
+                allOf(withId(R.id.go_btn), withText("Go"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                5),
                         isDisplayed()));
-        textView2.check(matches(withText("Planned 0 Exhibit(s)")));
+        materialButton2.perform(click());
+
+        // 4. Click "Next" to move forward in the Directions
+        ViewInteraction materialButton3 = onView(
+                allOf(withId(R.id.direction_nextButton), withText("Next"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                8),
+                        isDisplayed()));
+        materialButton3.perform(click());
+        // 5. Exit the app
+        // 6. Re-open the app which should be on the direction where you exited the app
+        // DOESN'T WORK, can't simulate closing the app.
     }
 
     private static Matcher<View> childAtPosition(
