@@ -167,7 +167,7 @@ public class DirectionActivity extends AppCompatActivity implements DirectionObs
             switch (i) {
                 // "Yes" button clicked
                 case DialogInterface.BUTTON_POSITIVE:
-                    DirectionTracker.skip(currentId); // change to from current location
+                    DirectionTracker.skip(GPSTracker.findNearestNode(GPSTracker.latitude, GPSTracker.longitude)); // change to from current location
                     setDirection();
                     break;
 
