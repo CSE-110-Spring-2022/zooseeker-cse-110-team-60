@@ -35,7 +35,7 @@ public class CheckBoxTest {
             RecyclerView recyclerView = activity.recyclerView;
             RecyclerView.ViewHolder firstVH = recyclerView.findViewHolderForAdapterPosition(0);
             assertNotNull(firstVH);
-            CheckBox checkBox = firstVH.itemView.findViewById(R.id.exhibit_item_checkBox);
+            CheckBox checkBox = firstVH.itemView.findViewById(R.id.node_checkBox);
 
             // Set the first checkbox to True and verify that it is true.
             checkBox.setChecked(true);

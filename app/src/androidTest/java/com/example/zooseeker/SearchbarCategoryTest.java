@@ -58,7 +58,7 @@ public class SearchbarCategoryTest {
         materialAutoCompleteTextView2.perform(replaceText("reptile"), closeSoftKeyboard());
 
         ViewInteraction textView = onView(
-                allOf(withId(R.id.exhibit_item_text), withText("Alligators"),
+                allOf(withId(R.id.node_name), withText("Alligators"),
                         withParent(withParent(withId(R.id.main_exhibits_recyclerView))),
                         isDisplayed()));
         textView.check(matches(withText("Alligators")));

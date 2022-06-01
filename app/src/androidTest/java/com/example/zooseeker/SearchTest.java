@@ -63,7 +63,7 @@ public class SearchTest {
             RecyclerView.ViewHolder firstVH = recyclerView.findViewHolderForAdapterPosition(0);
             assert firstVH != null;
             TextView exhibit =
-                    firstVH.itemView.findViewById(R.id.exhibit_item_text);
+                    firstVH.itemView.findViewById(R.id.node_name);
             assertNotNull(firstVH);
             assertEquals("Alligators", exhibit.getText().toString());
         });

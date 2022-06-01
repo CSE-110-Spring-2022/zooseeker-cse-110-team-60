@@ -58,7 +58,7 @@ public class SearchbarAutocompleteTest {
         materialAutoCompleteTextView2.perform(replaceText("go"), closeSoftKeyboard());
 
         ViewInteraction textView = onView(
-                allOf(withId(R.id.exhibit_item_text), withText("Gorillas"),
+                allOf(withId(R.id.node_name), withText("Gorillas"),
                         withParent(withParent(withId(R.id.main_exhibits_recyclerView))),
                         isDisplayed()));
         textView.check(matches(withText("Gorillas")));
