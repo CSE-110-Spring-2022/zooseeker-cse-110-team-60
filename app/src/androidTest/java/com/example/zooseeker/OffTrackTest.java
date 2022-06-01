@@ -18,6 +18,7 @@ import static org.hamcrest.Matchers.is;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.widget.ScrollView;
 
 import androidx.test.espresso.ViewInteraction;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
@@ -50,7 +51,7 @@ public class OffTrackTest {
     @Test
     public void offTrackTest() {
         ViewInteraction materialCheckBox = onView(
-                allOf(withId(R.id.exhibit_item_checkBox),
+                allOf(withId(R.id.node_checkBox),
                         childAtPosition(
                                 childAtPosition(
                                         withId(R.id.main_exhibits_recyclerView),
@@ -60,7 +61,7 @@ public class OffTrackTest {
         materialCheckBox.perform(click());
 
         ViewInteraction materialCheckBox2 = onView(
-                allOf(withId(R.id.exhibit_item_checkBox),
+                allOf(withId(R.id.node_checkBox),
                         childAtPosition(
                                 childAtPosition(
                                         withId(R.id.main_exhibits_recyclerView),
@@ -70,7 +71,7 @@ public class OffTrackTest {
         materialCheckBox2.perform(click());
 
         ViewInteraction materialCheckBox3 = onView(
-                allOf(withId(R.id.exhibit_item_checkBox),
+                allOf(withId(R.id.node_checkBox),
                         childAtPosition(
                                 childAtPosition(
                                         withId(R.id.main_exhibits_recyclerView),
@@ -80,7 +81,7 @@ public class OffTrackTest {
         materialCheckBox3.perform(click());
 
         ViewInteraction materialCheckBox4 = onView(
-                allOf(withId(R.id.exhibit_item_checkBox),
+                allOf(withId(R.id.node_checkBox),
                         childAtPosition(
                                 childAtPosition(
                                         withId(R.id.main_exhibits_recyclerView),
@@ -163,13 +164,13 @@ public class OffTrackTest {
 
         ViewInteraction textView = onView(
                 allOf(withId(android.R.id.message), withText("You are off track! Do you want to re-plan your directions?"),
-                        withParent(withParent(IsInstanceOf.<View>instanceOf(android.widget.ScrollView.class))),
+                        withParent(withParent(IsInstanceOf.<View>instanceOf(ScrollView.class))),
                         isDisplayed()));
         textView.check(matches(isDisplayed()));
 
         ViewInteraction textView2 = onView(
                 allOf(withId(android.R.id.message), withText("You are off track! Do you want to re-plan your directions?"),
-                        withParent(withParent(IsInstanceOf.<View>instanceOf(android.widget.ScrollView.class))),
+                        withParent(withParent(IsInstanceOf.<View>instanceOf(ScrollView.class))),
                         isDisplayed()));
         textView2.check(matches(isDisplayed()));
 
