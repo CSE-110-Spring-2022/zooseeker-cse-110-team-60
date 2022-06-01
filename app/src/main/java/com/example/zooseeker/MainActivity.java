@@ -14,17 +14,13 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.TextView;
 
-import org.jgrapht.Graph;
-
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 @SuppressLint("StaticFieldLeak")
 public class MainActivity extends AppCompatActivity {
@@ -194,7 +190,7 @@ public class MainActivity extends AppCompatActivity {
         GPSTracker.latitude = getGate().latitude;
         GPSTracker.longitude = getGate().longitude;
 
-        DirectionTracker.loadGraphData(this, "sample_node_info.JSON", "sample_edge_info.JSON", "sample_zoo_graph.JSON");
+        DirectionTracker.loadGraphData(this, "exhibit_info.json", "trail_info.json", "zoo_graph.json");
         DirectionTracker.loadDatabaseAndDaoByContext(this);
 
         gpsTracker = new GPSTracker(this, this);

@@ -26,7 +26,7 @@ public class RoutePlanSummaryTest {
      */
     @Before
     public void createGraph() {
-        DirectionTracker.loadGraphData(ApplicationProvider.getApplicationContext(), "test_vertex_info.JSON", "test_edge_info.JSON", "test_zoo_graph_info.JSON");
+        DirectionTracker.loadGraphData(ApplicationProvider.getApplicationContext(), "exhibit_info.json", "trail_info.json", "zoo_graph.json");
         DirectionTracker.loadDatabaseAndDaoByContext(ApplicationProvider.getApplicationContext());
 
         Context context = ApplicationProvider.getApplicationContext();
@@ -35,16 +35,16 @@ public class RoutePlanSummaryTest {
                 .build();
         NodeDatabase.injectTestDatabase(testDb);
 
-        List<Node> todos = Node.loadJSON(context, "test_vertex_info.JSON");
+        List<Node> todos = Node.loadJSON(context, "exhibit_info.json");
         dao = testDb.nodeDao();
         dao.insertAll(todos);
 
         DirectionTracker.setDao(dao);
 
         List<Node> toVisit = new ArrayList<Node>();
-        toVisit.add(dao.get("gorillas"));
-        toVisit.add(dao.get("lions"));
-        toVisit.add(dao.get("gators"));
+        toVisit.add(dao.get("gorilla"));
+        toVisit.add(dao.get("flamingo"));
+        toVisit.add(dao.get("toucan"));
         DirectionTracker.initDirections(DirectionTracker.getGateId(), toVisit);
     }
 
@@ -63,7 +63,7 @@ public class RoutePlanSummaryTest {
         List<String> directions = adapter.getDirectionItems();
         String entranceToGators = directions.get(0);
 
-        assertEquals(entranceToGators, "Entrance and Exit Gate to Alligators (110.0 feet)");
+        assertEquals(entranceToGators, "Entrance and Exit Gate to Flamingos (5300.0 feet)");
     }
 
     /**
@@ -87,7 +87,7 @@ public class RoutePlanSummaryTest {
         double dist = Double.parseDouble(clean);
 
 
-        assertEquals(dist, 200.0, 0);
+        assertEquals(dist, 7800.0, 0);
 
     }
 }
