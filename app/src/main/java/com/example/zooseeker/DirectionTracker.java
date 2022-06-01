@@ -3,8 +3,6 @@ package com.example.zooseeker;
 import android.content.Context;
 import android.util.Log;
 
-import androidx.core.util.Pair;
-
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -15,15 +13,18 @@ import java.util.Map;
 
 public class DirectionTracker {
 
-    private static Graph g;
+    public static Graph g;
     private static Map<String, ZooData.VertexInfo> vInfo;
     private static Map<String, ZooData.EdgeInfo> eInfo;
 
     public static int index;
     public static List<String> currentExhibitIdsOrder;
     private static List<String> routePlanSummary;
+    public static Direction currentDirection;
 
     private static NodeDao dao;
+
+    private static ArrayList<DirectionObserver> observers = new ArrayList<>();
 
     static void loadGraphData(Context context, String vertexPath, String edgePath, String graphPath) {
         vInfo = ZooData.loadVertexInfoJSON(context,vertexPath);
@@ -56,6 +57,9 @@ public class DirectionTracker {
             routePlanSummary.add(vInfo.get(previousId).name + " to " + nextNode.name + " (" + distance + " feet)");
             previousId = nextId;
         }
+
+        notifyOrderChange();
+        notifyOrderChange();
 
         ZooData.VertexInfo gate = DirectionTracker.vInfo.get(DirectionTracker.getGateId());
         double distance = getDistanceBetweenNodes(previousId, gate.id);
@@ -159,7 +163,10 @@ public class DirectionTracker {
             i++;
         }
 
-        Direction currentDirection = new Direction(startNodeName, nextNodeName, briefSteps, detailedSteps, path.getWeight());
+        currentDirection = new Direction(startNodeName, nextNodeName, briefSteps, detailedSteps, path.getWeight(), nodes);
+
+        notifyDirectionChange();
+
 //        Log.d("DIR", currentDirection.toString());
         return currentDirection;
     }
@@ -173,6 +180,7 @@ public class DirectionTracker {
         String exhibitToRemoveId = currentExhibitIdsOrder.get(index);
         removeExhibit(exhibitToRemoveId);
         ++index;
+        getDirection(GPSTracker.findNearestNode(GPSTracker.latitude, GPSTracker.longitude));
     }
 
     private static void removeExhibit(String exhibitToRemoveId) {
@@ -190,6 +198,7 @@ public class DirectionTracker {
         String exhibitToAddId = currentExhibitIdsOrder.get(index - 1);
         addExhibit(exhibitToAddId);
         --index;
+        getDirection(GPSTracker.findNearestNode(GPSTracker.latitude, GPSTracker.longitude));
     }
 
     private static void addExhibit(String exhibitToAddId) {
@@ -228,9 +237,13 @@ public class DirectionTracker {
     static void redirect(String currentNodeId) {
 //        List<String> exhibitsToBeReorderedIds = new ArrayList<String>();
 
+        currentExhibitIdsOrder.remove(getGateId());
+        Log.d("REDIRECT", "currentOrderBefore: " + currentExhibitIdsOrder.toString());
+
         List<Node> exhibitsToBeReordered = new ArrayList<Node>();
         for (int i = currentExhibitIdsOrder.size() - 1; i >= index; --i) {
             String currId = currentExhibitIdsOrder.get(i);
+            Log.d("REDIRECT", "currId:" + currId);
 //            exhibitsToBeReorderedIds.add(currId);
             exhibitsToBeReordered.add(dao.get(currId));
             currentExhibitIdsOrder.remove(currId);
@@ -240,11 +253,17 @@ public class DirectionTracker {
 
         while (!exhibitsToBeReordered.isEmpty()) {
             Node nextExhibit = getNextClosestExhibitToVisit(previousId, exhibitsToBeReordered);
+            Log.d("REDIRECT", "nextExhibit: " + nextExhibit.toString());
             exhibitsToBeReordered.remove(nextExhibit);
             String nextId = nextExhibit.id;
             previousId = nextId;
+            Log.d("REDIRECT", "nextId: " + nextId);
             currentExhibitIdsOrder.add(nextId);
         }
+
+        notifyOrderChange();
+
+        getDirection(currentNodeId);
     }
 
     static void skip(String currentNodeId) {
@@ -286,4 +305,25 @@ public class DirectionTracker {
 
     static Node getCurrentExhibit() { return dao.get(currentExhibitIdsOrder.get(index)); }
 
+    public static void register(DirectionObserver directionObserver) {
+        observers.add(directionObserver);
+    }
+
+    public static void notifyOrderChange() {
+        for (DirectionObserver observer : observers) {
+
+Log.d("MOCK notify of order change", "***");
+
+            observer.updateOrder(currentExhibitIdsOrder);
+        }
+    }
+
+    public static void notifyDirectionChange() {
+        for (DirectionObserver observer : observers) {
+
+Log.d("MOCK notify of direction change", "***");
+
+            observer.updateDirection(currentDirection);
+        }
+    }
 }

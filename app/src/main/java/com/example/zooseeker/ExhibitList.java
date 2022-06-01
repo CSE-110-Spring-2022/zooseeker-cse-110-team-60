@@ -10,7 +10,9 @@ public class ExhibitList {
     private final static MainActivity main = MainActivity.getInstance();
 
     public static List<Node> getAllNodes() {
-        return main.getAllNodes();
+        List<Node> nodes = main.getAllNodes();
+        nodes.removeIf(node -> !node.parentId.isEmpty());
+        return nodes;
     }
 
     public static List<Node> getAllExhibits() {
@@ -25,6 +27,10 @@ public class ExhibitList {
 
     public static int getNumChecked() {
         return getCheckedExhibits().size();
+    }
+
+    public static void clearCheckedExhibits() {
+        main.uncheckExhibits();
     }
 
     public static List<Node> getSearchItems(String search) {

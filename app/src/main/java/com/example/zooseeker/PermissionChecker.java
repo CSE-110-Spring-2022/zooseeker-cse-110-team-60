@@ -34,14 +34,17 @@ public class PermissionChecker {
             // precise location access granted
             if (fineLocationGranted != null && fineLocationGranted) {
                 this.activity.recreate();
-                MainActivity main = MainActivity.getInstance();
-                main.gpsTracker = new GPSTracker(this.activity, this.activity); //TODO: call in DirectionActivity.java
+//                MainActivity.locationAllowed = true;
+
+//                MainActivity main = MainActivity.getInstance();
             }
             // only approximate location access granted or no access granted
             else {
+//                this.activity.recreate();
+//                MainActivity.locationAllowed = false; // downgrade
                 DialogInterface.OnClickListener dialog = (dialogInterface, i) -> {
                     if (i == DialogInterface.BUTTON_POSITIVE) {
-                        this.activity.finish(); // TODO: downgrade
+                        this.activity.finish();
                         System.exit(0);
                     }
                 };

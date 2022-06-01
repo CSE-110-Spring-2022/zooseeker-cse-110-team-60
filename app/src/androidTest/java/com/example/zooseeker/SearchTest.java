@@ -45,7 +45,7 @@ public class SearchTest {
         NodeDatabase.injectTestDatabase(testDb);
 
         List<Node>
-                todos = Node.loadJSON(context, "sample_node_info.JSON");
+                todos = Node.loadJSON(context, "exhibit_info.json");
         todoListItemDao = testDb.nodeDao();
         todoListItemDao.insertAll(todos);
     }

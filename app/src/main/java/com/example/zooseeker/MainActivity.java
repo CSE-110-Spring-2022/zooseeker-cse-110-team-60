@@ -14,26 +14,22 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.TextView;
 
-import org.jgrapht.Graph;
-
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
+@SuppressLint("StaticFieldLeak")
 public class MainActivity extends AppCompatActivity {
     private final PermissionChecker permissionChecker = new PermissionChecker(this);
     private static final String[] requiredPermissions =
             new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
                          Manifest.permission.ACCESS_COARSE_LOCATION};
-
-    public GPSTracker gpsTracker;
-
+    
+    public static GPSTracker gpsTracker;
     public RecyclerView recyclerView;
     private ExhibitViewModel viewModel;
     private ExhibitListAdapter adapter;
@@ -48,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     private Button directionsBtn;
 
     public static boolean update = true;
+//    public static boolean locationAllowed = false;
 
     @SuppressLint("StaticFieldLeak")
     static MainActivity main;
@@ -182,7 +179,7 @@ public class MainActivity extends AppCompatActivity {
         displayAllExhibits();
     }
 
-    void getDirectionsClicked(View view) {
+    private void getDirectionsClicked(View view) {
         List<Node> toVisit = ExhibitList.getCheckedExhibits();
 
         if (toVisit.size() == 0) {
@@ -190,33 +187,19 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        DirectionTracker.loadGraphData(this,"sample_node_info.JSON", "sample_edge_info.JSON", "sample_zoo_graph.JSON");
-        DirectionTracker.loadDatabaseAndDaoByContext(this);
-        DirectionTracker.initDirections("entrance_exit_gate", toVisit);
+        GPSTracker.latitude = getGate().latitude;
+        GPSTracker.longitude = getGate().longitude;
 
+        DirectionTracker.loadGraphData(this, "exhibit_info.json", "trail_info.json", "zoo_graph.json");
+        DirectionTracker.loadDatabaseAndDaoByContext(this);
+
+        gpsTracker = new GPSTracker(this, this);
+
+        DirectionTracker.initDirections(GPSTracker.findNearestNode(GPSTracker.latitude, GPSTracker.longitude), toVisit);
+        DirectionTracker.getDirection(GPSTracker.findNearestNode(GPSTracker.latitude, GPSTracker.longitude));
         Intent summaryIntent = new Intent(this, RoutePlanSummaryActivity.class);
         startActivity(summaryIntent);
     }
-
-    /*
-    private void getDirectionsClicked(View view) {
-
-        List<Node> toVisit = ExhibitList.getCheckedExhibits();
-
-        if (toVisit.size() == 0) {
-            Utilities.showAlert(this, "Select Exhibit(s) Before Continuing!", "Ok", "Cancel");
-            return;
-        }
-
-        DirectionTracker.loadGraphData(this,"sample_node_info.JSON", "sample_edge_info.JSON", "sample_zoo_graph.JSON");
-        DirectionTracker.loadDatabaseAndDaoByContext(this);
-        DirectionTracker.initDirections("entrance_exit_gate", toVisit);
-
-        Intent directionIntent = new Intent(this, DirectionActivity.class);
-        startActivity(directionIntent);
-    }
-     */
-
 
     public static MainActivity getInstance() {
         return main;
@@ -230,12 +213,16 @@ public class MainActivity extends AppCompatActivity {
         return viewModel.getAllExhibits();
     }
 
+    public Node getGate() {
+        return viewModel.getGate();
+    }
+
     @SuppressLint("SetTextI18n")
     private void setNumPlanned() {
         numPlanned.setText("Planned " + ExhibitList.getNumChecked() + " Exhibit(s)");
     }
 
-    private void uncheckExhibits() {
+    public void uncheckExhibits() {
         List<Node> checkedExhibits = ExhibitList.getCheckedExhibits();
         for (Node item : checkedExhibits) {
             viewModel.uncheckExhibit(item);

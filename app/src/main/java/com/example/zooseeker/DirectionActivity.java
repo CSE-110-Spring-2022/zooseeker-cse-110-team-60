@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
@@ -12,17 +14,22 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
-public class DirectionActivity extends AppCompatActivity {
+public class DirectionActivity extends AppCompatActivity implements DirectionObserver {
     public TextView header;
-    public TextView body;
+//    public TextView body;
     public Button nextButton;
     public Button previousButton;
     public Button exitButton;
     public Button skipButton;
     public Button toggleButton;
+    public Button mockButton;
+    public LinearLayout mockLocation;
+    public EditText mockLatitude;
+    public EditText mockLongitude;
+    public Button enterMockLocation;
     public int i;
     public boolean detailed = false;
 
@@ -32,10 +39,14 @@ public class DirectionActivity extends AppCompatActivity {
     // for redirect testing
     public String currentId;
 
+//    private GPSTracker gpsTracker;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_direction);
+
+        MainActivity.gpsTracker.updateContext(this);
 
         adapter = new DirectionAdapter();
         adapter.setHasStableIds(true);
@@ -51,15 +62,25 @@ public class DirectionActivity extends AppCompatActivity {
         exitButton = findViewById(R.id.direction_exit_button);
         skipButton = findViewById(R.id.direction_skip_button);
         toggleButton = findViewById(R.id.direction_toggle_button);
+        mockLocation = findViewById(R.id.direction_enter_mock_location);
+        mockButton = findViewById(R.id.direction_mockButton);
+        mockLatitude = findViewById(R.id.direction_mock_lat);
+        mockLongitude = findViewById(R.id.direction_mock_lng);
+        enterMockLocation = findViewById(R.id.direction_mock_mock);
+
         i = 0;
 
         setDirection();
+
+        DirectionTracker.register(this);
 
         nextButton.setOnClickListener(this::nextClicked);
         previousButton.setOnClickListener(this::previousClicked);
         exitButton.setOnClickListener(this::exitClicked);
         skipButton.setOnClickListener(this::skipClicked);
         toggleButton.setOnClickListener(this::toggleClicked);
+        mockButton.setOnClickListener(this::mockClicked);
+        enterMockLocation.setOnClickListener(this::enterMockLocationClicked);
 
         DirectionTracker.loadDatabaseAndDaoByContext(this);
 
@@ -78,14 +99,14 @@ public class DirectionActivity extends AppCompatActivity {
      *   @return
      */
     void nextClicked(View view) {
-        if (DirectionTracker.index == DirectionTracker.currentExhibitIdsOrder.size()) {
+        if (DirectionTracker.index == DirectionTracker.currentExhibitIdsOrder.size() - 1) {
             Utilities.showAlert(this, "No More Directions!", "Ok", "Cancel");
             return;
         }
 
         DirectionTracker.next();
         // if current location == current index, next again
-        setDirection();
+//        setDirection();
     }
 
     /*
@@ -105,7 +126,7 @@ public class DirectionActivity extends AppCompatActivity {
         }
 
         DirectionTracker.previous();
-        setDirection();
+//        setDirection();
     }
 
     /**
@@ -121,6 +142,7 @@ public class DirectionActivity extends AppCompatActivity {
             switch (i) {
                 // "Yes" button clicked
                 case DialogInterface.BUTTON_POSITIVE:
+                    ExhibitList.clearCheckedExhibits();
                     finish();
                     break;
 
@@ -172,12 +194,66 @@ public class DirectionActivity extends AppCompatActivity {
         setDirection();
     }
 
-    /*
+    void mockClicked(View view) {
+        AlertUtilities alert = new AlertUtilities(this, response -> {
+            if (response) {
+                GPSTracker.manualLocation = true;
+                mockLocation.setVisibility(View.VISIBLE);
+            }
+        });
+        alert.showAlert("Do you want to set your current location manually?", "Yes", "No");
+    }
+
+    void enterMockLocationClicked(View view) {
+
+        if (!mockLatitude.getText().toString().equals("")) {
+            double latitude = Double.parseDouble(mockLatitude.getText().toString());
+
+            if (-90 <= latitude && latitude <= 90) {
+                GPSTracker.latitude = Double.parseDouble(mockLatitude.getText().toString());
+            }
+            else {
+                Utilities.showAlert(this, "Please enter a valid latitude!", "Ok", "Cancel");
+                return;
+            }
+        }
+        else {
+            Utilities.showAlert(this, "Please enter a valid latitude!", "Ok", "Cancel");
+            return;
+        }
+
+        if (!mockLongitude.getText().toString().equals("")) {
+            double longitude = Double.parseDouble(mockLongitude.getText().toString());
+
+            if (-180 <= longitude && longitude <= 180) {
+                GPSTracker.longitude = Double.parseDouble(mockLongitude.getText().toString());
+            }
+            else {
+                Utilities.showAlert(this, "Please enter a valid longitude!", "Ok", "Cancel");
+                return;
+            }
+        }
+        else {
+            Utilities.showAlert(this, "Please enter a valid longitude!", "Ok", "Cancel");
+            return;
+        }
+
+Log.d("MOCK manual latitude", String.valueOf(GPSTracker.latitude));
+Log.d("MOCK manual longitude", String.valueOf(GPSTracker.longitude));
+
+        mockLocation.setVisibility(View.INVISIBLE);
+        mockLatitude.getText().clear();
+        mockLongitude.getText().clear();
+
+Log.d("MOCK calling offTrack", "***");
+
+        MainActivity.gpsTracker.offTrack();
+    }
+
+    /**
      *   Name:       setDirection
      *   Behavior:   Update the header and body to reflect the details of the current
      * direction.
-     *   @param      View     view       the view being called from
-     *   @return
      */
     void setDirection() {
 //        String currentLocationId = getCurrentLocationId();
@@ -189,9 +265,10 @@ public class DirectionActivity extends AppCompatActivity {
             String currentExhibitId = DirectionTracker.currentExhibitIdsOrder.get(DirectionTracker.index - 1);
             currentNodeId = DirectionTracker.getParentNodeIfExists(DirectionTracker.getDao().get(currentExhibitId)).id;
         }
-        Direction currentDirection = DirectionTracker.getDirection(currentNodeId);
 
-        header.setText(currentDirection.getStart() + " to " + currentDirection.getEnd() + " (" + currentDirection.getDistance() + " feet)");
+        Direction currentDirection = DirectionTracker.currentDirection; // = DirectionTracker.getDirection(currentNodeId);
+
+        header.setText(currentDirection.getStart() + " to " + currentDirection.getEnd() + "\n(" + currentDirection.getDistance() + " feet)");
 
 //        String directionsString = "";
 //        List<String> steps = currentDirection.get();
@@ -201,12 +278,23 @@ public class DirectionActivity extends AppCompatActivity {
 
 //        body.setText(directionsString);
         List<String> steps;
-        if (detailed) steps = currentDirection.getDetailedDirections();
-        else steps = currentDirection.getBriefDirections();
+        if (detailed) steps = new ArrayList<String>(currentDirection.getDetailedDirections());
+        else steps = new ArrayList<String>(currentDirection.getBriefDirections());
 
         adapter.setDirections(steps);
 
         // for redirect testing
         currentId = currentNodeId;
     }
+
+    @Override
+    public void updateDirection(Direction direction) {
+
+Log.d("MOCK updated directions, setting new directions, updating screen", "***");
+
+        setDirection();
+    }
+
+    @Override
+    public void updateOrder(List<String> exhibitIds) {}
 }
