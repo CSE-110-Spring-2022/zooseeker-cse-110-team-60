@@ -272,7 +272,7 @@ public class DirectionTracker {
         redirect(currentNodeId);
     }
 
-    static Node getParentNodeIfExists(Node node) {
+    public static Node getParentNodeIfExists(Node node) {
         if (node.parentId.equals("")) return node;
         else {
             return dao.get(node.parentId);

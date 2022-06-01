@@ -42,9 +42,9 @@ public class RoutePlanSummaryTest {
         DirectionTracker.setDao(dao);
 
         List<Node> toVisit = new ArrayList<Node>();
-        toVisit.add(dao.get("gorillas"));
-        toVisit.add(dao.get("lions"));
-        toVisit.add(dao.get("gators"));
+        toVisit.add(dao.get("gorilla"));
+        toVisit.add(dao.get("flamingo"));
+        toVisit.add(dao.get("toucan"));
         DirectionTracker.initDirections(DirectionTracker.getGateId(), toVisit);
     }
 
@@ -63,7 +63,7 @@ public class RoutePlanSummaryTest {
         List<String> directions = adapter.getDirectionItems();
         String entranceToGators = directions.get(0);
 
-        assertEquals(entranceToGators, "Entrance and Exit Gate to Alligators (110.0 feet)");
+        assertEquals(entranceToGators, "Entrance and Exit Gate to Flamingos (5300.0 feet)");
     }
 
     /**
@@ -87,7 +87,7 @@ public class RoutePlanSummaryTest {
         double dist = Double.parseDouble(clean);
 
 
-        assertEquals(dist, 200.0, 0);
+        assertEquals(dist, 7800.0, 0);
 
     }
 }

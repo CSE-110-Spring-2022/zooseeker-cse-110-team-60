@@ -2,6 +2,7 @@ package com.example.zooseeker;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import android.content.Context;
@@ -15,6 +16,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +39,8 @@ public class NodeDatabaseTest {
     public void createDb() {
         Context context = ApplicationProvider.getApplicationContext();
         db = Room.inMemoryDatabaseBuilder(context, NodeDatabase.class)
-                 .allowMainThreadQueries().build();
+                 .allowMainThreadQueries()
+                 .build();
         dao = db.nodeDao();
     }
 
@@ -52,8 +55,7 @@ public class NodeDatabaseTest {
 
     /**
      * Name:     testInsertAll
-     * Behavior: Verify that after inserting items into the database that the size is
-     * correct.
+     * Behavior: Verify that after inserting items into the database that the size is correct.
      */
     @Test
     public void testInsertAll() {
@@ -80,8 +82,7 @@ public class NodeDatabaseTest {
         items.add(ex4);
         dao.insertAll(items);
 
-        // Test get() by checking if the Node returned from get() has the correct
-        // parameters
+        // Test get() by checking if the Node returned from get() has the correct parameters
         String id1 = "gorillas";
         Node item1 = dao.get(id1);
         assertEquals(id1, item1.id);
@@ -108,7 +109,7 @@ public class NodeDatabaseTest {
     /**
      * Name:     getAll
      * Behavior: Verify that all exhibits, intersections,
-     * and groups inserted are returned in the correct order
+     *           and groups inserted are returned in the correct order
      */
     @Test
     public void getAll() {
@@ -120,8 +121,7 @@ public class NodeDatabaseTest {
         items.add(ex4);
         dao.insertAll(items);
         List<Node> listToTest = dao.getAll();
-        // Test getAll() by verifying the list is the correct size and that exhibits
-        // are returned in the correct order.
+        // Test getAll() by verifying the list is the correct size and that exhibits are returned in the correct order.
         // Gators should be the first exhibit, then gorillas, and then lions
         assertEquals(items.size(), listToTest.size());
         assertEquals("gators", listToTest.get(0).id);
@@ -144,8 +144,7 @@ public class NodeDatabaseTest {
         items.add(ex4);
         dao.insertAll(items);
         List<Node> listToTest = dao.getAllExhibits();
-        // Test getAll() by verifying the list is the correct size and that exhibits
-        // are returned in the correct order.
+        // Test getAll() by verifying the list is the correct size and that exhibits are returned in the correct order.
         // Gators should be the first exhibit, then gorillas, and then lions
         assertEquals(items.size() - 1, listToTest.size());
         assertEquals("gators", listToTest.get(0).id);
@@ -155,20 +154,17 @@ public class NodeDatabaseTest {
 
     /**
      * Name:     update
-     * Behavior: Verify that update works after changing the added parameter. There should
-     * be one
-     * item marked as updated.
+     * Behavior: Verify that update works after changing the added parameter. There should be one
+     *           item marked as updated.
      */
     @Test
     public void update() {
         // Create a mock exhibit and insert it as a list into the database
-        Node ex1 = new Node("gorillas", "mammal", VertexInfo.Kind.EXHIBIT, "Gorillas",
-                            "gorillas, monkey, ape, mammal", 60, 70);
+        Node ex1 = new Node("gorillas", "mammal", VertexInfo.Kind.EXHIBIT, "Gorillas", "gorillas, monkey, ape, mammal", 60, 70);
         List<Node> items = new ArrayList<>();
         items.add(ex1);
         dao.insertAll(items);
-        // Test update() by checking if itemsUpdated matches and if the added parameter
-        // set to True remains True.
+        // Test update() by checking if itemsUpdated matches and if the added parameter set to True remains True.
         String id = "gorillas";
         Node item = dao.get(id);
         item.added = true;
