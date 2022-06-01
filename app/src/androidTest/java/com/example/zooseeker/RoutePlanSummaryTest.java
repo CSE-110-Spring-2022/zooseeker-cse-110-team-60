@@ -74,7 +74,7 @@ public class RoutePlanSummaryTest {
 
         // Select Gorillas and Alligators, Click "Get Directions" button
         ViewInteraction materialCheckBox = onView(
-                allOf(withId(R.id.exhibit_item_checkBox),
+                allOf(withId(R.id.node_checkBox),
                         childAtPosition(
                                 childAtPosition(
                                         withId(R.id.main_exhibits_recyclerView),
@@ -84,7 +84,7 @@ public class RoutePlanSummaryTest {
         materialCheckBox.perform(click());
 
         ViewInteraction materialCheckBox2 = onView(
-                allOf(withId(R.id.exhibit_item_checkBox),
+                allOf(withId(R.id.node_checkBox),
                         childAtPosition(
                                 childAtPosition(
                                         withId(R.id.main_exhibits_recyclerView),

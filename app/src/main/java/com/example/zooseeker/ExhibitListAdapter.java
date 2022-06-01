@@ -35,7 +35,7 @@ public class ExhibitListAdapter extends RecyclerView.Adapter<ExhibitListAdapter.
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                                  .inflate(R.layout.exhibit_item, parent, false);
+                                  .inflate(R.layout.node, parent, false);
         return new ViewHolder(view);
     }
 
@@ -62,8 +62,8 @@ public class ExhibitListAdapter extends RecyclerView.Adapter<ExhibitListAdapter.
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            this.textView = itemView.findViewById(R.id.exhibit_item_text);
-            this.checkbox = itemView.findViewById(R.id.exhibit_item_checkBox);
+            this.textView = itemView.findViewById(R.id.node_name);
+            this.checkbox = itemView.findViewById(R.id.node_checkBox);
 
             this.checkbox.setOnClickListener(view -> {
                 if (onCheckBoxClicked == null) return;

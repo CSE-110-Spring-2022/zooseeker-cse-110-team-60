@@ -15,33 +15,40 @@ import android.view.ViewGroup;
 import android.view.ViewParent;
 
 import androidx.test.espresso.ViewInteraction;
+import androidx.test.ext.junit.rules.ActivityScenarioRule;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
-import androidx.test.rule.ActivityTestRule;
-import androidx.test.runner.AndroidJUnit4;
+import androidx.test.rule.GrantPermissionRule;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
-import org.hamcrest.core.IsInstanceOf;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class PreviousOnFirstExhibitAlertTest {
+public class ClearSelectedExhibitsTest {
 
     @Rule
-    public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
+    public ActivityScenarioRule<MainActivity> mActivityScenarioRule =
+            new ActivityScenarioRule<>(MainActivity.class);
+
+    @Rule
+    public GrantPermissionRule mGrantPermissionRule =
+            GrantPermissionRule.grant(
+                    "android.permission.ACCESS_FINE_LOCATION",
+                    "android.permission.ACCESS_COARSE_LOCATION");
 
     @Test
-    public void previousOnFirstExhibitAlertTest() {
+    public void checkSelectedExhibitsTest() {
         ViewInteraction materialCheckBox = onView(
                 allOf(withId(R.id.node_checkBox),
                         childAtPosition(
                                 childAtPosition(
                                         withId(R.id.main_exhibits_recyclerView),
-                                        1),
+                                        3),
                                 0),
                         isDisplayed()));
         materialCheckBox.perform(click());
@@ -51,47 +58,32 @@ public class PreviousOnFirstExhibitAlertTest {
                         childAtPosition(
                                 childAtPosition(
                                         withId(R.id.main_exhibits_recyclerView),
-                                        2),
+                                        6),
                                 0),
                         isDisplayed()));
         materialCheckBox2.perform(click());
 
-        ViewInteraction materialCheckBox3 = onView(
-                allOf(withId(R.id.node_checkBox),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.main_exhibits_recyclerView),
-                                        3),
-                                0),
+        ViewInteraction textView = onView(
+                allOf(withId(R.id.counter), withText("Planned 2 Exhibit(s)"),
+                        withParent(withParent(withId(android.R.id.content))),
                         isDisplayed()));
-        materialCheckBox3.perform(click());
+        textView.check(matches(withText("Planned 2 Exhibit(s)")));
 
         ViewInteraction materialButton = onView(
-                allOf(withId(R.id.main_getDirections_button), withText("Get Directions"),
+                allOf(withId(R.id.main_clear_button), withText("Clear"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                3),
+                                7),
                         isDisplayed()));
         materialButton.perform(click());
 
-        ViewInteraction materialButton2 = onView(
-                allOf(withId(R.id.direction_previous_button), withText("Previous"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                2),
+        ViewInteraction textView2 = onView(
+                allOf(withId(R.id.counter), withText("Planned 0 Exhibit(s)"),
+                        withParent(withParent(withId(android.R.id.content))),
                         isDisplayed()));
-        materialButton2.perform(click());
-
-        ViewInteraction textView = onView(
-                allOf(IsInstanceOf.<View>instanceOf(android.widget.TextView.class), withText("Alert!"),
-                        withParent(allOf(IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
-                                withParent(IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class)))),
-                        isDisplayed()));
-        textView.check(matches(isDisplayed()));
+        textView2.check(matches(withText("Planned 0 Exhibit(s)")));
     }
 
     private static Matcher<View> childAtPosition(
