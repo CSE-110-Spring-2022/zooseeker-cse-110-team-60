@@ -17,13 +17,16 @@ public class Direction {
     private List<String> briefSteps;
     private List<String> detailedSteps;
     private double distance;
+    List<String> nodeIds;
 
-    public Direction(String start, String end, List<String> briefSteps, List<String> detailedSteps, double distance) {
+    public Direction(String start, String end, List<String> briefSteps, List<String> detailedSteps, double distance, List<String> nodeIds) {
         this.start = start;
         this.end = end;
         this.briefSteps = briefSteps;
         this.detailedSteps = detailedSteps;
         this.distance = distance;
+        this.nodeIds = nodeIds;
+
     }
 
     public String getStart() {return start;}

@@ -6,20 +6,21 @@ import android.content.DialogInterface;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+
 public class Utilities {
     public static boolean showAlert(Activity activity, String message,
                                     String positiveButtonMsg, String negativeButtonMsg) {
-        AtomicBoolean toReturn = new AtomicBoolean(false);
+        final boolean[] response = new boolean[1];
         DialogInterface.OnClickListener dialog = (dialogInterface, i) -> {
             switch (i) {
                 // "Yes" or "Ok" button clicked
                 case DialogInterface.BUTTON_POSITIVE:
-                    toReturn.set(true);
+                    response[0] = true;
                     break;
 
                 // "No" or "Cancel" button clicked
                 case DialogInterface.BUTTON_NEGATIVE:
-                    toReturn.set(false);
+                    response[0] = false;
                     break;
             }
         };
@@ -29,7 +30,7 @@ public class Utilities {
         alertBuilder.setMessage(message).setPositiveButton(positiveButtonMsg, dialog)
                     .setNegativeButton(negativeButtonMsg, dialog).show();
 
-        return toReturn.get();
+        return response[0];
     }
 
     /**

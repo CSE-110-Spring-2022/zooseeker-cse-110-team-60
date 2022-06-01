@@ -105,37 +105,37 @@ public class RoutePlanSummaryTest {
 
         // Assert "Gate to Alligators" on Summary RecyclerView
         onView(allOf(withId(R.id.summary_item_text), withText("Gate to Alligators (110.0 meters)"),
-                        withParent(withParent(withId(R.id.direction_items))),
+                        withParent(withParent(withId(R.id.summary_RecyclerView))),
                         isDisplayed())).check(matches(withText("Gate to Alligators (110.0 meters)")));
 
         //Assert "Alligators to Gorillas" on Summary RecyclerView
         onView(allOf(withId(R.id.summary_item_text), withText("Alligators to Gorillas (300.0 meters)"),
-                        withParent(withParent(withId(R.id.direction_items))),
+                        withParent(withParent(withId(R.id.summary_RecyclerView))),
                         isDisplayed())).check(matches(withText("Alligators to Gorillas (300.0 meters)")));
 
         //Assert "Gorillas to Gate" on Summary RecyclerView
         onView(allOf(withId(R.id.summary_item_text), withText("Gorillas to Gate (210.0 meters)"),
-                        withParent(withParent(withId(R.id.direction_items))),
+                        withParent(withParent(withId(R.id.summary_RecyclerView))),
                         isDisplayed())).check(matches(withText("Gorillas to Gate (210.0 meters)")));
 
         // Assert that "Back" button is on summary screen
-        onView(allOf(withId(R.id.back_btn), withText("BACK"),
-                        withParent(withParent(withId(android.R.id.content))),
-                        isDisplayed())).check(matches(isDisplayed()));
+        onView(allOf(withId(R.id.summary_backButton), withText("BACK"),
+                     withParent(withParent(withId(android.R.id.content))),
+                     isDisplayed())).check(matches(isDisplayed()));
 
         // Assert that "Go" button is on summary screen
-        onView(allOf(withId(R.id.go_btn), withText("GO"),
-                        withParent(withParent(withId(android.R.id.content))),
-                        isDisplayed())).check(matches(isDisplayed()));
+        onView(allOf(withId(R.id.summary_goButton), withText("GO"),
+                     withParent(withParent(withId(android.R.id.content))),
+                     isDisplayed())).check(matches(isDisplayed()));
 
         // Click "Back" to test persistence of checked exhibits still on search screen
-        onView(allOf(withId(R.id.back_btn), withText("BACK"),
-                        childAtPosition(
+        onView(allOf(withId(R.id.summary_backButton), withText("BACK"),
+                     childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
                                 1),
-                        isDisplayed())).perform(click());
+                     isDisplayed())).perform(click());
 
         // Click "Get Directions" from search screen to return to summary.
         onView(allOf(withId(R.id.main_getDirections_button), withText("Get Directions"),
@@ -147,13 +147,13 @@ public class RoutePlanSummaryTest {
                         isDisplayed())).perform(click());
 
         // From summary screen, click "Go"
-        onView(allOf(withId(R.id.go_btn), withText("GO"),
-                        childAtPosition(
+        onView(allOf(withId(R.id.summary_goButton), withText("GO"),
+                     childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
                                 2),
-                        isDisplayed())).perform(click());
+                     isDisplayed())).perform(click());
 
         onView(
                 allOf(withId(R.id.direction_header_textView), withText("Entrance and Exit Gate to Alligators (110.0m)"),

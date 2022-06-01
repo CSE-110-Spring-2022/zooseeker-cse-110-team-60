@@ -23,6 +23,10 @@ public class ExhibitViewModel extends AndroidViewModel {
         nodeDao = db.nodeDao();
     }
 
+    public Node getGate() {
+        return nodeDao.getGate();
+    }
+
     public List<Node> getAllNodes() {
         return nodeDao.getAll();
     }
