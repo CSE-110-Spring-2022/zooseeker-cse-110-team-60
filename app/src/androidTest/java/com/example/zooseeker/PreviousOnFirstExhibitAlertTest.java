@@ -3,23 +3,25 @@ package com.example.zooseeker;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withParent;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.is;
 
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.test.espresso.ViewInteraction;
+import androidx.test.ext.junit.rules.ActivityScenarioRule;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
-import androidx.test.rule.ActivityTestRule;
-import androidx.test.runner.AndroidJUnit4;
+import androidx.test.rule.GrantPermissionRule;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -34,16 +36,23 @@ import org.junit.runner.RunWith;
 public class PreviousOnFirstExhibitAlertTest {
 
     @Rule
-    public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
+    public ActivityScenarioRule<MainActivity> mActivityScenarioRule =
+            new ActivityScenarioRule<>(MainActivity.class);
+
+    @Rule
+    public GrantPermissionRule mGrantPermissionRule =
+            GrantPermissionRule.grant(
+                    "android.permission.ACCESS_FINE_LOCATION",
+                    "android.permission.ACCESS_COARSE_LOCATION");
 
     @Test
-    public void previousOnFirstExhibitAlertTest() {
+    public void previousOnFirstExhibitAlertTests() {
         ViewInteraction materialCheckBox = onView(
                 allOf(withId(R.id.node_checkBox),
                         childAtPosition(
                                 childAtPosition(
                                         withId(R.id.main_exhibitsRecyclerView),
-                                        1),
+                                        2),
                                 0),
                         isDisplayed()));
         materialCheckBox.perform(click());
@@ -53,47 +62,74 @@ public class PreviousOnFirstExhibitAlertTest {
                         childAtPosition(
                                 childAtPosition(
                                         withId(R.id.main_exhibitsRecyclerView),
-                                        2),
+                                        5),
                                 0),
                         isDisplayed()));
         materialCheckBox2.perform(click());
 
-        ViewInteraction materialCheckBox3 = onView(
-                allOf(withId(R.id.node_checkBox),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.main_exhibitsRecyclerView),
-                                        3),
-                                0),
-                        isDisplayed()));
-        materialCheckBox3.perform(click());
-
         ViewInteraction materialButton = onView(
-                allOf(withId(R.id. main_directionsButton), withText("Get Directions"),
+                allOf(withId(R.id.main_directionsButton), withText("Get Directions"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                3),
+                                8),
                         isDisplayed()));
         materialButton.perform(click());
 
         ViewInteraction materialButton2 = onView(
-                allOf(withId(R.id.direction_previousButton), withText("Previous"),
+                allOf(withId(R.id.go_btn), withText("Go"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                2),
+                                5),
                         isDisplayed()));
         materialButton2.perform(click());
 
+        ViewInteraction materialButton3 = onView(
+                allOf(withId(R.id.direction_previousButton), withText("Prev"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                5),
+                        isDisplayed()));
+        materialButton3.perform(click());
+
         ViewInteraction textView = onView(
-                allOf(IsInstanceOf.<View>instanceOf(TextView.class), withText("Alert!"),
-                        withParent(allOf(IsInstanceOf.<View>instanceOf(LinearLayout.class),
-                                withParent(IsInstanceOf.<View>instanceOf(LinearLayout.class)))),
+                allOf(withId(android.R.id.message), withText("This is the First Direction!"),
+                        withParent(withParent(IsInstanceOf.<View>instanceOf(android.widget.ScrollView.class))),
                         isDisplayed()));
         textView.check(matches(isDisplayed()));
+
+        ViewInteraction materialButton4 = onView(
+                allOf(withId(android.R.id.button1), withText("Ok"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withClassName(is("android.widget.ScrollView")),
+                                        0),
+                                3)));
+        materialButton4.perform(scrollTo(), click());
+
+        ViewInteraction materialButton5 = onView(
+                allOf(withId(R.id.direction_exitButton), withText("Exit"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                6),
+                        isDisplayed()));
+        materialButton5.perform(click());
+
+        ViewInteraction materialButton6 = onView(
+                allOf(withId(android.R.id.button1), withText("Yes"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(androidx.appcompat.R.id.buttonPanel),
+                                        0),
+                                3)));
+        materialButton6.perform(scrollTo(), click());
     }
 
     private static Matcher<View> childAtPosition(

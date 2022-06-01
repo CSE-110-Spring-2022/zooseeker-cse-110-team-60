@@ -3,23 +3,25 @@ package com.example.zooseeker;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withParent;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.is;
 
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.test.espresso.ViewInteraction;
+import androidx.test.ext.junit.rules.ActivityScenarioRule;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
-import androidx.test.rule.ActivityTestRule;
-import androidx.test.runner.AndroidJUnit4;
+import androidx.test.rule.GrantPermissionRule;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -34,26 +36,41 @@ import org.junit.runner.RunWith;
 public class NoExhibitsSelectedAlertTest {
 
     @Rule
-    public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
+    public ActivityScenarioRule<MainActivity> mActivityScenarioRule =
+            new ActivityScenarioRule<>(MainActivity.class);
+
+    @Rule
+    public GrantPermissionRule mGrantPermissionRule =
+            GrantPermissionRule.grant(
+                    "android.permission.ACCESS_FINE_LOCATION",
+                    "android.permission.ACCESS_COARSE_LOCATION");
 
     @Test
-    public void noExhibitsSelectedAlertTest() {
+    public void noExhibitsSelectedAlertTests() {
         ViewInteraction materialButton = onView(
                 allOf(withId(R.id.main_directionsButton), withText("Get Directions"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                3),
+                                8),
                         isDisplayed()));
         materialButton.perform(click());
 
         ViewInteraction textView = onView(
-                allOf(IsInstanceOf.<View>instanceOf(TextView.class), withText("Alert!"),
-                        withParent(allOf(IsInstanceOf.<View>instanceOf(LinearLayout.class),
-                                withParent(IsInstanceOf.<View>instanceOf(LinearLayout.class)))),
+                allOf(withId(android.R.id.message), withText("Select Exhibit(s) Before Continuing!"),
+                        withParent(withParent(IsInstanceOf.<View>instanceOf(android.widget.ScrollView.class))),
                         isDisplayed()));
-        textView.check(matches(isDisplayed()));
+        textView.check(matches(withText("Select Exhibit(s) Before Continuing!")));
+
+        ViewInteraction materialButton2 = onView(
+                allOf(withId(android.R.id.button1), withText("Ok"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withClassName(is("android.widget.ScrollView")),
+                                        0),
+                                3)));
+        materialButton2.perform(scrollTo(), click());
     }
 
     private static Matcher<View> childAtPosition(
