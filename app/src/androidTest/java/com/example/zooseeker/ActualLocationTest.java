@@ -6,11 +6,9 @@ import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.replaceText;
 import static androidx.test.espresso.action.ViewActions.scrollTo;
-import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
-import static androidx.test.espresso.matcher.ViewMatchers.withParent;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.is;
@@ -63,30 +61,10 @@ public class ActualLocationTest {
                         childAtPosition(
                                 childAtPosition(
                                         withId(R.id.main_exhibitsRecyclerView),
-                                        5),
-                                0),
-                        isDisplayed()));
-        materialCheckBox2.perform(click());
-
-        ViewInteraction materialCheckBox3 = onView(
-                allOf(withId(R.id.node_checkBox),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.main_exhibitsRecyclerView),
-                                        5),
-                                0),
-                        isDisplayed()));
-        materialCheckBox3.perform(click());
-
-        ViewInteraction materialCheckBox4 = onView(
-                allOf(withId(R.id.node_checkBox),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.main_exhibitsRecyclerView),
                                         6),
                                 0),
                         isDisplayed()));
-        materialCheckBox4.perform(click());
+        materialCheckBox2.perform(click());
 
         ViewInteraction materialButton = onView(
                 allOf(withId(R.id.main_directionsButton), withText("Get Directions"),
@@ -160,11 +138,44 @@ public class ActualLocationTest {
                         isDisplayed()));
         materialButton5.perform(click());
 
-        ViewInteraction textView = onView(
-                allOf(withId(R.id.direction_header), withText("Treetops Way / Hippo Trail to Hippos\n(1900.0 feet)"),
-                        withParent(withParent(withId(android.R.id.content))),
+        ViewInteraction materialButton6 = onView(
+                allOf(withId(R.id.direction_nextButton), withText("Next"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                8),
                         isDisplayed()));
-        textView.check(matches(withText("Treetops Way / Hippo Trail to Hippos (1900.0 feet)")));
+        materialButton6.perform(click());
+
+        ViewInteraction materialButton7 = onView(
+                allOf(withId(R.id.direction_previousButton), withText("Prev"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                5),
+                        isDisplayed()));
+        materialButton7.perform(click());
+
+        ViewInteraction materialButton8 = onView(
+                allOf(withId(R.id.direction_exitButton), withText("Exit"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                6),
+                        isDisplayed()));
+        materialButton8.perform(click());
+
+        ViewInteraction materialButton9 = onView(
+                allOf(withId(android.R.id.button1), withText("Yes"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(androidx.appcompat.R.id.buttonPanel),
+                                        0),
+                                3)));
+        materialButton9.perform(scrollTo(), click());
     }
 
     private static Matcher<View> childAtPosition(

@@ -42,13 +42,13 @@ public class ClearSelectedExhibitsTest {
                     "android.permission.ACCESS_COARSE_LOCATION");
 
     @Test
-    public void clearButtonTest() {
+    public void clearSelectedExhibitsTest() {
         ViewInteraction materialCheckBox = onView(
                 allOf(withId(R.id.node_checkBox),
                         childAtPosition(
                                 childAtPosition(
                                         withId(R.id.main_exhibitsRecyclerView),
-                                        6),
+                                        0),
                                 0),
                         isDisplayed()));
         materialCheckBox.perform(click());
@@ -58,7 +58,7 @@ public class ClearSelectedExhibitsTest {
                         childAtPosition(
                                 childAtPosition(
                                         withId(R.id.main_exhibitsRecyclerView),
-                                        2),
+                                        1),
                                 0),
                         isDisplayed()));
         materialCheckBox2.perform(click());
@@ -68,7 +68,7 @@ public class ClearSelectedExhibitsTest {
                         childAtPosition(
                                 childAtPosition(
                                         withId(R.id.main_exhibitsRecyclerView),
-                                        3),
+                                        2),
                                 0),
                         isDisplayed()));
         materialCheckBox3.perform(click());
